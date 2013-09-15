@@ -13,20 +13,21 @@ class Gnop extends Sprite
 	{
 		super();
 		
-		if (stage != null) {
+		if ( stage != null ) {
 			init();
 		} else {
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			addEventListener( Event.ADDED_TO_STAGE, init );
 		}
 	}
 	
 	private function init( ?E:Event ):Void 
 	{
-		if (hasEventListener(Event.ADDED_TO_STAGE)) {
-			removeEventListener(Event.ADDED_TO_STAGE, init);
+		if ( hasEventListener( Event.ADDED_TO_STAGE ) ) {
+			removeEventListener( Event.ADDED_TO_STAGE, init );
 		}
 		
 		tf = new TextField();
+		tf.textColor = 0xffffff;
 		tf.text = "Hello world!";
 		addChild( tf );
 	}

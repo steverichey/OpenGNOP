@@ -10,7 +10,7 @@ import haxe.Log;
 
 class GnopPreloader extends NMEPreloader
 {
-	private var bg:Bitmap;
+	private var loadBar:Bitmap;
 	
 	public function new()
 	{
@@ -26,14 +26,21 @@ class GnopPreloader extends NMEPreloader
 		outline = null;
 		progress = null;
 		
-		//bg = new Bitmap( new BitmapData( Std.int( Lib.current.stage.width ), Std.int( Lib.current.stage.height ), false, 0xff00ff00 ) );
-		bg = new Bitmap( new BitmapData( 8, 8, false, 0xff00ff00 ) );
-		addChild( bg );
+		var barBorder = new Bitmap( new BitmapData( Std.int( getWidth() ) - 20, 20, false, 0xffffffff ) );
+		barBorder.x = ( getWidth() - barBorder.width ) / 2;
+		barBorder.y = ( getHeight() - barBorder.height ) / 2;
+		addChild( barBorder );
+		
+		loadBar = new Bitmap( new BitmapData( Std.int( getWidth() ) - 22, 18, false, 0xffffffff ) );
+		loadBar.x = ( getWidth() - loadBar.width ) / 2;
+		loadBar.y = ( getHeight() - loadBar.height ) / 2;
+		loadBar.width = 1;
+		addChild( loadBar );
 	}
 	
 	override public function onUpdate(bytesLoaded:Int, bytesTotal:Int)
 	{
-		bg.x ++;
+		loadBar.width = ( bytesLoaded / bytesTotal ) * ( getWidth() - 22 );
 	}
 	
 	override public function onLoaded()

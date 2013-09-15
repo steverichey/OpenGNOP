@@ -18,6 +18,8 @@ class AssetData {
 		
 		if (!initialized) {
 			
+			className.set ("assets/gnop.svg", nme.NME_assets_gnop_svg);
+			type.set ("assets/gnop.svg", Reflect.field (AssetType, "text".toUpperCase ()));
 			
 			
 			initialized = true;
@@ -30,3 +32,4 @@ class AssetData {
 }
 
 
+class NME_assets_gnop_svg extends flash.utils.ByteArray { }
