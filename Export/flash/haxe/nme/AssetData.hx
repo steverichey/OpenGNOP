@@ -18,6 +18,12 @@ class AssetData {
 		
 		if (!initialized) {
 			
+			className.set ("assets/desktop.png", nme.NME_assets_desktop_png);
+			type.set ("assets/desktop.png", Reflect.field (AssetType, "image".toUpperCase ()));
+			className.set ("assets/icon.png", nme.NME_assets_icon_png);
+			type.set ("assets/icon.png", Reflect.field (AssetType, "image".toUpperCase ()));
+			className.set ("assets/septagon.png", nme.NME_assets_septagon_png);
+			type.set ("assets/septagon.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			
 			
 			initialized = true;
@@ -30,3 +36,6 @@ class AssetData {
 }
 
 
+class NME_assets_desktop_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
+class NME_assets_icon_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
+class NME_assets_septagon_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
