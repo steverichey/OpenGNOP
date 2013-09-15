@@ -7,15 +7,22 @@ import flash.display.Sprite;
 import flash.text.TextField;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.geom.ColorTransform;
 import haxe.Log;
 
-@:bitmap( "Assets/desktop.png" ) class Desktop extends BitmapData { }
-@:bitmap( "Assets/icon.png" ) class Icon extends BitmapData { }
-
+#if cpp || neko
+	@:bitmap( "Assets/desktop.png" ) class Desktop extends BitmapData { }
+	@:bitmap( "Assets/icon.png" ) class Icon extends BitmapData { }
+	@:bitmap( "Assets/septagon.png" ) class Septagon extends BitmapData { }
+#else
+	import openfl.Assets;
+#end
+	
 class Gnop extends Sprite
 {
 	private var invisibleBG:Sprite;
 	private var icon:Sprite;
+	private var iconInverted:Bool;
 	private var fakeSeptagon:Bitmap;
 	
 	public function new()
@@ -35,28 +42,65 @@ class Gnop extends Sprite
 			removeEventListener( Event.ADDED_TO_STAGE, init );
 		}
 		
-		var desktop:Bitmap = new Bitmap( new Desktop(0,0) );
-		//addChild( desktop );
+		#if cpp || neko
+			var desktop:Bitmap = new Bitmap( new Desktop(0, 0) );
+		#else
+			var desktop:Bitmap = new Bitmap( Assets.getBitmapData( "assets/desktop.png" ) );
+		#end
+		
+		addChild( desktop );
 		
 		invisibleBG = new Sprite();
-		invisibleBG.graphics.beginFill( 0x000000, 0 );
+		invisibleBG.graphics.beginFill( 0x0000ff, 0 );
 		invisibleBG.graphics.drawRect( 0, 0, stage.stageWidth, stage.stageHeight );
 		invisibleBG.graphics.endFill();
 		addChild( invisibleBG );
 		
-		invisibleBG.addEventListener( MouseEvent.MOUSE_DOWN, invisclick );
-		
 		icon = new Sprite();
-		icon.addChild( new Bitmap( new Icon(0, 0) ) );
+		
+		#if cpp || neko
+			icon.addChild( new Bitmap( new Icon(0, 0) ) );
+		#else
+			icon.addChild( new Bitmap( Assets.getBitmapData( "assets/icon.png" ) ) );
+		#end
+		
 		icon.x = ( stage.stageWidth - icon.width ) / 2;
 		icon.y = ( stage.stageHeight - icon.height ) / 2;
 		addChild( icon );
 		
-		Log.trace( "loaded" );
+		#if cpp || neko
+			fakeSeptagon = new Bitmap( new Septagon(0, 0) );
+		#else
+			fakeSeptagon = new Bitmap( Assets.getBitmapData( "assets/septagon.png" ) );
+		#end
+		
+		fakeSeptagon.x = 17;
+		fakeSeptagon.y = 3;
+		addChild( fakeSeptagon );
+		
+		invisibleBG.addEventListener( MouseEvent.MOUSE_DOWN, clickDesktop );
+		icon.addEventListener( MouseEvent.DOUBLE_CLICK, openFile );
+		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon );
 	}
 	
-	private function invisclick( m:MouseEvent ):Void
+	private function clickDesktop( m:MouseEvent ):Void
 	{
-		Lib.trace( "you click" );
+		if ( iconInverted ) {
+			icon.transform.colorTransform = new ColorTransform( 1, 1, 1, 1, 0, 0, 0 );
+			iconInverted = false;
+		}
+	}
+	
+	private function clickIcon( m:MouseEvent ):Void
+	{
+		if ( !iconInverted ) {
+			icon.transform.colorTransform = new ColorTransform( -1, -1, -1, 1, 255, 255, 255 );
+			iconInverted = true;
+		}
+	}
+	
+	private function openFile( m:MouseEvent ):Void
+	{
+		Log.trace( "aww yeah" );
 	}
 }
