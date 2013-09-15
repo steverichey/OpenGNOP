@@ -108,7 +108,6 @@ class DesktopState extends GnopState
 	
 	private function openFile():Void
 	{
-		icon.visible = false;
-		invisibleBG.removeEventListener( MouseEvent.MOUSE_DOWN, clickDesktop );
+		switchState( new SplashState() );
 	}
 }

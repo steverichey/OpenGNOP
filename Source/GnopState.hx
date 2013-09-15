@@ -30,4 +30,9 @@ class GnopState extends Sprite
 	{
 		// update
 	}
+	
+	public function switchState( i:GnopState ):Void
+	{
+		Gnop.switchState( i );
+	}
 }

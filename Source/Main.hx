@@ -3,6 +3,7 @@ package;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
+import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.Lib;
 
@@ -40,5 +41,6 @@ class Main extends Sprite
 	{
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+		Lib.current.stage.displayState = StageDisplayState.NORMAL;
 	}
 }
