@@ -1,0 +1,14 @@
+-main ApplicationMain 
+-lib openfl
+-cp Source
+-D tools=1
+-D openfl_ver=1.0.10
+-D openfl
+-D web
+-swf-version 11
+-swf Export/flash/bin/Opengnop.swf
+-swf-header 640:480:60:000000
+-cp Export/flash/haxe
+#--remap nme:flash
+--no-inline
+-debug

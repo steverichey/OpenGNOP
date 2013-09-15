@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Opengnop" package="com.steverichey.opengnop" version="1.0.0" company="STVR" />
+	<app main="Main" path="Export" file="Opengnop" />
+	
+	<!-- Establish default window size, etc -->
+	<window width="640" height="480" fps="60" orientation="portrait" resizable="false" background="0x000000" />
+	
+	<!-- Define preloader -->
+	<app preloader="GnopPreloader" />
+	
+	<source path="Source" />
+	
+	<haxelib name="openfl" />
+	
+	<assets path="Assets" rename="assets" exclude="openfl.svg" />
+	<icon path="Assets/gnop.svg" />
+	
+</project>
