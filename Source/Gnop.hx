@@ -13,8 +13,7 @@ import flash.display.StageScaleMode;
 
 class Gnop extends Sprite
 {
-	private var currentState:GnopState;
-	private var previousState:GnopState;
+	private static var _game:GameClass;
 	
 	public function new()
 	{
@@ -35,33 +34,19 @@ class Gnop extends Sprite
 		
 		Reg.init();
 		
-		currentState = new DesktopState();
-		addChild( currentState );
+		_game = new GameClass();
+		addChild( _game );
+	}
+	
+	public static function staticInit():Void
+	{
+		_game = new GameClass();
 		
-		//Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, keyPress );
-		Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
-	}
-	
-	private function update( e:Event = null ):Void
-	{
-		currentState.update();
-	}
-	
-	private function keyPress( k:KeyboardEvent ):Void
-	{
-		/*
-		if ( k.charCode == 122 ) {
-			if ( Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE ) {
-				Lib.current.stage.displayState = StageDisplayState.NORMAL;
-			} else {
-				Lib.current.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
-			}
-		}*/
+		//addChild( _game );
 	}
 	
 	public static function switchState( newState:GnopState ):Void
 	{
-		Log.trace( " youd like a new state " );
-		Log.trace( newState );
+		_game.switchState( newState );
 	}
 }

@@ -61,8 +61,7 @@ class DesktopState extends GnopState
 		super.update();
 		
 		if ( dragging && icon.visible ) {
-			icon.x = mouseX - iconDiffX;
-			icon.y = mouseY - iconDiffY;
+			limit( icon, mouseX - iconDiffX, mouseY - iconDiffY, 0, 20, 640, 480 );
 		}
 	}
 	
@@ -108,6 +107,6 @@ class DesktopState extends GnopState
 	
 	private function openFile():Void
 	{
-		switchState( new SplashState() );
+		//this.parent.switchState( new SplashState() );
 	}
 }
