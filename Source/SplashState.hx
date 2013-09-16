@@ -12,9 +12,7 @@ import haxe.Log;
 
 class SplashState extends GnopState
 {
-	private var shadow:Bitmap;
-	private var border:Bitmap;
-	private var white:Bitmap;
+	private var window:Sprite;
 	private var splash:Bitmap;
 	private var type:String;
 	
@@ -30,17 +28,9 @@ class SplashState extends GnopState
 	
 	override public function init( ?E:Event ):Void 
 	{
-		shadow = Reg.makeRect( 502, 312, 0xff000000 );
-		shadow.x = SPLASH_WINDOW_X + 2;
-		shadow.y = SPLASH_WINDOW_Y + 2;
-		
-		border = Reg.makeRect( 502, 312, 0xff000000 );
-		border.x = SPLASH_WINDOW_X;
-		border.y = SPLASH_WINDOW_Y;
-		
-		white = Reg.makeRect( 500, 310 );
-		white.x = SPLASH_WINDOW_X + 1;
-		white.y = SPLASH_WINDOW_Y + 1;
+		window = Reg.drawShadowedWindow( 502, 312 );
+		window.x = SPLASH_WINDOW_X;
+		window.y = SPLASH_WINDOW_Y;
 		
 		if ( type == "lose" ) {
 			splash = Reg.lose;
@@ -56,9 +46,7 @@ class SplashState extends GnopState
 			splash.y = SPLASH_WINDOW_Y + 49;
 		}
 		
-		addChild( shadow );
-		addChild ( border );
-		addChild( white );
+		addChild( window );
 		addChild( splash );
 		
 		super.init();

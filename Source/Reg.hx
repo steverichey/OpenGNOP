@@ -121,10 +121,10 @@ class Reg
 	}
 	
 	/*
-	 * Draws an OS-styled window with a white background, as a sprite
+	 * Draws an OS-styled bordered window with a white background, as a sprite
 	*/
 	
-	public static function drawWindow( Width:Int = 20, Height:Int = 20 ):Sprite
+	public static function drawBorderedWindow( Width:Int = 20, Height:Int = 20 ):Sprite
 	{
 		var window:Sprite = new Sprite();
 		
@@ -171,6 +171,31 @@ class Reg
 		window.addChild( border2 );
 		window.addChild( border3 );
 		window.addChild( border4 );
+		
+		return window;
+	}
+	
+	/*
+	 * Draws an OS-styled shadowed window with a white background, as a sprite
+	*/
+	
+	public static function drawShadowedWindow( Width:Int = 20, Height:Int = 20 ):Sprite
+	{
+		var window:Sprite = new Sprite();
+		
+		var shadow:Bitmap = Reg.makeRect( Width, Height, 0xff000000 );
+		shadow.x = 2;
+		shadow.y = 2;
+		
+		var border:Bitmap = Reg.makeRect( Width, Height, 0xff000000 );
+		
+		var white:Bitmap = Reg.makeRect( Width - 2, Height - 2 );
+		white.x = 1;
+		white.y = 1;
+		
+		window.addChild( shadow );
+		window.addChild( border );
+		window.addChild( white );
 		
 		return window;
 	}

@@ -10,7 +10,6 @@ import haxe.Log;
 class GnopState extends Sprite
 {
 	private var invisibleBG:Sprite;
-	private var window:Sprite;
 	
 	public function new()
 	{

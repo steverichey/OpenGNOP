@@ -101,6 +101,6 @@ class DesktopState extends GnopState
 	private function openFile():Void
 	{
 		dragging = false;
-		Gnop.addLayer( new SplashState( "lose" ) );
+		Gnop.addLayer( new SplashState() );
 	}
 }
