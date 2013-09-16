@@ -107,6 +107,6 @@ class DesktopState extends GnopState
 	
 	private function openFile():Void
 	{
-		//this.parent.switchState( new SplashState() );
+		Gnop.switchState( new SplashState() );
 	}
 }
