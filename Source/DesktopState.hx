@@ -11,7 +11,6 @@ import flash.Lib;
 
 class DesktopState extends GnopState
 {
-	private var invisibleBG:Sprite;
 	private var icon:Sprite;
 	private var iconInverted:Bool;
 	private var fakeSeptagon:Bitmap;
@@ -30,14 +29,9 @@ class DesktopState extends GnopState
 	
 	override public function init( ?E:Event ):Void 
 	{
+		super.init();
+		
 		timeOfFirstClick = NEGATIVE_DEFAULT_CLICK_TIME;
-		
-		var desktop:Bitmap = Reg.desktop;
-		addChild( desktop );
-		
-		invisibleBG = new Sprite();
-		invisibleBG.addChild( Reg.makeRect( stage.stageWidth, stage.stageHeight, 0xff00ff00, 0 ) );
-		addChild( invisibleBG );
 		
 		icon = new Sprite();
 		icon.addChild( Reg.icon );
@@ -50,10 +44,8 @@ class DesktopState extends GnopState
 		fakeSeptagon.y = 3;
 		addChild( fakeSeptagon );
 		
-		invisibleBG.addEventListener( MouseEvent.MOUSE_DOWN, clickDesktop, false, 0, true  );
 		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true  );
-		
-		super.init();
+		invisibleBG.addEventListener( MouseEvent.MOUSE_DOWN, clickDesktop, false, 0, true  );
 	}
 	
 	override public function update( e:Event = null ):Void
@@ -61,14 +53,14 @@ class DesktopState extends GnopState
 		super.update();
 		
 		if ( dragging && icon.visible ) {
-			limit( icon, mouseX - iconDiffX, mouseY - iconDiffY, 0, 20, 640, 480 );
+			limit( icon, mouseX - iconDiffX, mouseY - iconDiffY, 0, 20, getStageWidth(), getStageHeight() );
 		}
 	}
 	
 	private function clickDesktop( m:MouseEvent ):Void
 	{
 		if ( iconInverted ) {
-			icon.transform.colorTransform = new ColorTransform( 1, 1, 1, 1, 0, 0, 0 );
+			invert( icon );
 			iconInverted = false;
 		}
 	}
@@ -78,7 +70,7 @@ class DesktopState extends GnopState
 		icon.removeEventListener( MouseEvent.MOUSE_DOWN, clickIcon );
 		
 		if ( !iconInverted ) {
-			icon.transform.colorTransform = new ColorTransform( -1, -1, -1, 1, 255, 255, 255 );
+			invert( icon );
 			iconInverted = true;
 		}
 		
@@ -86,6 +78,7 @@ class DesktopState extends GnopState
 		
 		if ( timeBetweenClicks < DOUBLE_CLICK_TIME ) {
 			openFile();
+			return;
 		}
 		
 		dragging = true;
@@ -107,6 +100,7 @@ class DesktopState extends GnopState
 	
 	private function openFile():Void
 	{
-		Gnop.switchState( new SplashState() );
+		dragging = false;
+		Gnop.addLayer( new SplashState( "lose" ) );
 	}
 }

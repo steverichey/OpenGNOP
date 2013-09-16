@@ -49,4 +49,9 @@ class Gnop extends Sprite
 	{
 		_game.switchState( newState );
 	}
+	
+	public static function addLayer( newState:GnopState ):Void
+	{
+		_game.addLayer( newState );
+	}
 }

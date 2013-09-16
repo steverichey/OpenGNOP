@@ -1,6 +1,7 @@
 package;
 
 import flash.display.Sprite;
+import flash.display.Bitmap;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.Lib;
@@ -8,6 +9,7 @@ import flash.Lib;
 class GameClass extends Sprite
 {
 	private var currentState:GnopState;
+	private var stateLayers:Array<GnopState>;
 	
 	public function new()
 	{
@@ -25,6 +27,12 @@ class GameClass extends Sprite
 		if ( hasEventListener( Event.ADDED_TO_STAGE ) ) {
 			removeEventListener( Event.ADDED_TO_STAGE, init );
 		}
+		
+		// this should always be displayed, might as well add it now
+		
+		addChild( Reg.desktop );
+		
+		stateLayers = new Array<GnopState>();
 		
 		switchState( new DesktopState() );
 		
@@ -58,5 +66,11 @@ class GameClass extends Sprite
 		
 		currentState = newState;
 		addChild( currentState );
+	}
+	
+	public function addLayer( newState:GnopState ):Void
+	{
+		addChild( newState );
+		stateLayers.push( newState );
 	}
 }

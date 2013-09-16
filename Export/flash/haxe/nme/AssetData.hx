@@ -52,10 +52,6 @@ class AssetData {
 			type.set ("assets/ok.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			className.set ("assets/ok_inv.png", nme.NME_assets_ok_inv_png);
 			type.set ("assets/ok_inv.png", Reflect.field (AssetType, "image".toUpperCase ()));
-			className.set ("assets/play_border_1px.png", nme.NME_assets_play_border_1px_png);
-			type.set ("assets/play_border_1px.png", Reflect.field (AssetType, "image".toUpperCase ()));
-			className.set ("assets/play_corner.png", nme.NME_assets_play_corner_png);
-			type.set ("assets/play_corner.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			className.set ("assets/scoreboard.png", nme.NME_assets_scoreboard_png);
 			type.set ("assets/scoreboard.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			className.set ("assets/scorewarning.png", nme.NME_assets_scorewarning_png);
@@ -72,6 +68,10 @@ class AssetData {
 			type.set ("assets/win.mp3", Reflect.field (AssetType, "music".toUpperCase ()));
 			className.set ("assets/win.png", nme.NME_assets_win_png);
 			type.set ("assets/win.png", Reflect.field (AssetType, "image".toUpperCase ()));
+			className.set ("assets/window_border.png", nme.NME_assets_window_border_png);
+			type.set ("assets/window_border.png", Reflect.field (AssetType, "image".toUpperCase ()));
+			className.set ("assets/window_corner.png", nme.NME_assets_window_corner_png);
+			type.set ("assets/window_corner.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			
 			
 			initialized = true;
@@ -101,8 +101,6 @@ class NME_assets_matchpoint_mp3 extends flash.media.Sound { }
 class NME_assets_miss_mp3 extends flash.media.Sound { }
 class NME_assets_ok_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_ok_inv_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
-class NME_assets_play_border_1px_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
-class NME_assets_play_corner_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_scoreboard_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_scorewarning_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_septagon_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
@@ -111,3 +109,5 @@ class NME_assets_splash_png extends flash.display.BitmapData { public function n
 class NME_assets_start_mp3 extends flash.media.Sound { }
 class NME_assets_win_mp3 extends flash.media.Sound { }
 class NME_assets_win_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
+class NME_assets_window_border_png extends flash.display.BitmapData { public function new () { super (0, 0); } }
+class NME_assets_window_corner_png extends flash.display.BitmapData { public function new () { super (0, 0); } }

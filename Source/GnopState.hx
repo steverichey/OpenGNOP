@@ -1,12 +1,17 @@
 package;
 
+import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.geom.ColorTransform;
 import flash.Lib;
 import haxe.Log;
 
 class GnopState extends Sprite
 {
+	private var invisibleBG:Sprite;
+	private var window:Sprite;
+	
 	public function new()
 	{
 		super();
@@ -23,6 +28,12 @@ class GnopState extends Sprite
 		if ( hasEventListener( Event.ADDED_TO_STAGE ) ) {
 			removeEventListener( Event.ADDED_TO_STAGE, init );
 		}
+		
+		// used to capture clicks "away" as well as prevent interaction with underlying layers
+		
+		invisibleBG = new Sprite();
+		invisibleBG.addChild( Reg.makeRect( stage.stageWidth, stage.stageHeight, 0xff00ff00, 0 ) );
+		addChild( invisibleBG );
 		
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
 	}
@@ -67,5 +78,26 @@ class GnopState extends Sprite
 		
 		sprite.x = newSpriteX;
 		sprite.y = newSpriteY;
+	}
+	
+	public function invert( sprite:Sprite )
+	{
+		var temp:ColorTransform = sprite.transform.colorTransform;
+		
+		temp.redMultiplier *= -1;
+		temp.greenMultiplier *= -1;
+		temp.blueMultiplier *= -1;
+		
+		if ( temp.redOffset == 0 ) {
+			temp.redOffset = 255;
+			temp.greenOffset = 255;
+			temp.blueOffset = 255;
+		} else {
+			temp.redOffset = 0;
+			temp.greenOffset = 0;
+			temp.blueOffset = 0;
+		}
+		
+		sprite.transform.colorTransform = temp;
 	}
 }
