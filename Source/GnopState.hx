@@ -3,6 +3,7 @@ package;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.Lib;
+import haxe.Log;
 
 class GnopState extends Sprite
 {
@@ -40,28 +41,28 @@ class GnopState extends Sprite
 	{
 		return stage.stageHeight;
 	}
-	// borked, probably should be split into x,y
-	public function limit( sprite:Sprite, newX:Float, newY:Float, minX:Int = 0, minY:Int = 0, maxX:Int = 0, maxY:Int = 0 ):Void
+	
+	public function limit( sprite:Sprite, newX:Float, newY:Float, minX:Int = 0, minY:Int = 0, maxX:Int = 640, maxY:Int = 480 ):Void
 	{
 		var newSpriteX:Int = Std.int( newX );
 		var newSpriteY:Int = Std.int( newY );
-		var spriteXLim:Int = Std.int( getStageWidth() - sprite.width );
-		var spriteYLim:Int = Std.int( getStageHeight() - sprite.height );
+		var spriteXLim:Int = Std.int( maxX - sprite.width );
+		var spriteYLim:Int = Std.int( maxY - sprite.height );
 		
 		if ( newSpriteX < minX ) {
 			newSpriteX = minX;
 		}
 		
-		if ( newSpriteX > maxX ) {
-			newSpriteX = maxX;
+		if ( newSpriteX > spriteXLim ) {
+			newSpriteX = spriteXLim;
 		}
 		
 		if ( newSpriteY < minY ) {
 			newSpriteY = minY;
 		}
 		
-		if ( newSpriteY > maxY ) {
-			newSpriteY = maxY;
+		if ( newSpriteY > spriteYLim ) {
+			newSpriteY = spriteYLim;
 		}
 		
 		sprite.x = newSpriteX;
