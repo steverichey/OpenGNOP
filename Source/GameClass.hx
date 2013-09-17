@@ -4,12 +4,17 @@ import flash.display.Sprite;
 import flash.display.Bitmap;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
+import flash.events.TimerEvent;
 import flash.Lib;
 
 class GameClass extends Sprite
 {
 	private var currentState:GnopState;
 	private var stateLayers:Array<GnopState>;
+	private var time:Time;
+	
+	static inline var TIME_X:Int = 468;
+	static inline var TIME_Y:Int = 1;
 	
 	public function new()
 	{
@@ -32,6 +37,11 @@ class GameClass extends Sprite
 		
 		addChild( Reg.desktop );
 		
+		time = new Time();
+		time.x = TIME_X;
+		time.y = TIME_Y;
+		addChild( time );
+		
 		stateLayers = new Array<GnopState>();
 		
 		switchState( new DesktopState() );
@@ -43,6 +53,7 @@ class GameClass extends Sprite
 	private function update( e:Event = null ):Void
 	{
 		currentState.update();
+		time.update();
 	}
 	
 	private function keyPress( k:KeyboardEvent ):Void

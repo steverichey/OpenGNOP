@@ -14,7 +14,7 @@
 	
 	<haxelib name="openfl" />
 	
-	<assets path="Assets" rename="assets" exclude="gnop.svg" unless="cpp || neko" />
+	<assets path="Assets" rename="assets" exclude="gnop.svg" if="flash" />
 	
 	<icon path="Assets/gnop.svg" />
 </project>

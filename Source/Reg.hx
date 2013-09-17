@@ -6,7 +6,7 @@ import flash.display.Sprite;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.media.Sound;
-import haxe.Log;
+import flash.text.Font;
 
 #if cpp || neko
 	@:bitmap( "Assets/about.png" ) class About extends BitmapData { }
@@ -43,9 +43,13 @@ import haxe.Log;
 	@:sound( "Assets/miss.mp3" ) class Miss extends Sound { }
 	@:sound( "Assets/start.mp3" ) class Start extends Sound { }
 	@:sound( "Assets/win.mp3" ) class Win extends Sound { }
+	
+	//@:font( "Assets/pixchicago_e2.ttf" ) private class ChicagoFont extends Font { }
 #else
 	import openfl.Assets;
 #end
+
+@:font( "Assets/pixchicago.ttf" ) private class ChicagoFont extends Font { }
 
 /*
  * A handy HaxeFlixel-esque class to store images in one place.
@@ -104,6 +108,7 @@ class Reg
 			windowCorner2 = new Bitmap( Assets.getBitmapData( "assets/window_corner.png" ) );
 			windowCorner3 = new Bitmap( Assets.getBitmapData( "assets/window_corner.png" ) );
 			windowCorner4 = new Bitmap( Assets.getBitmapData( "assets/window_corner.png" ) );
+			Font.registerFont( ChicagoFont );
 		#end
 	}
 	
