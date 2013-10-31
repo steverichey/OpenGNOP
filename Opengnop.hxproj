@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="project.xml" />
+    <movie path="Project.xml" />
     <movie fps="60" />
     <movie width="640" />
     <movie height="480" />
@@ -12,20 +12,20 @@
     <movie minorVersion="0" />
     <movie platform="NME" />
     <movie background="000000" />
-    <movie preferredSDK=";3;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
-    <class path="Source" />
-    <class path="Export\flash\haxe" />
+    <class path="source" />
+    <class path="export\flash\haxe" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="tools=1&#xA;openfl_ver=1.0.10&#xA;openfl&#xA;display&#xA;web" />
     <option flashStrict="False" />
+    <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="False" />
-    <option additional="--no-output&#xA;-swf-version 11&#xA;#--remap nme:flash" />
+    <option additional="--no-output&#xA;-swf-version 11.2&#xA;#--remap nme:flash" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -33,7 +33,7 @@
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <!-- example: <compile path="..." /> -->
+    <compile path="source\GameClass.hx" />
   </compileTargets>
   <!-- Assets to embed into the output SWF -->
   <library>

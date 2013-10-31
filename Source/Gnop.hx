@@ -1,57 +1,54 @@
 package;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.Lib;
-import flash.display.Sprite;
 import flash.events.Event;
-import flash.events.KeyboardEvent;
-import haxe.Log;
-import flash.display.StageAlign;
-import flash.display.StageDisplayState;
-import flash.display.StageScaleMode;
+import openfl.Assets;
 
-class Gnop extends Sprite
+class Gnop extends BunState
 {
-	private static var _game:GameClass;
+	private var splash:BunWindow;
+	private var menu:BunMenu;
+	
+	// about image is 21,12 from top-left of white
+	// instructions image is 27,12 from top-left of white
+	// score warning image is 23,13 from top-left of white
+	//         TODO: simplify score warning to just use hand sign as image
+	// score set image is 35,22 from top-left of white
+	//         TODO: simplify this window, doesn't even need image
 	
 	public function new()
 	{
 		super();
-		
-		if ( stage != null ) {
-			init();
-		} else {
-			addEventListener( Event.ADDED_TO_STAGE, init );
-		}
 	}
 	
-	private function init( ?E:Event ):Void 
+	override public function init( e:Event = null ):Void
 	{
-		if ( hasEventListener( Event.ADDED_TO_STAGE ) ) {
-			removeEventListener( Event.ADDED_TO_STAGE, init );
-		}
+		super.init( e );
 		
-		Reg.init();
+		splash = new BunWindow( 502, 312, BunWindow.SHADOWED, Assets.getBitmapData( "images/splash.png" ), 57, 49 );
+		splash.x = 69;
+		splash.y = 94;
+		addChild( splash );
 		
-		_game = new GameClass();
-		addChild( _game );
+		menu = new BunMenu( getMenuItems() );
+		addChild( menu );
 	}
 	
-	public static function staticInit():Void
+	override public function update( ?e:Event ):Void
 	{
-		_game = new GameClass();
 		
-		//addChild( _game );
 	}
 	
-	public static function switchState( newState:GnopState ):Void
+	private function getMenuItems():Array<Array<String>>
 	{
-		_game.switchState( newState );
-	}
-	
-	public static function addLayer( newState:GnopState ):Void
-	{
-		_game.addLayer( newState );
+		var a:Array<Array<String>> = [
+			[ "SEPTAGON", "About Gnop..." ],
+			[ "File", "New Game", "LINE", "Quit" ],
+			[ "Paddles", "GREY_Player", "TAB_Small", "TAB_Normal", "TAB_Large", "LINE", "GREY_Computer", "TAB_Small", "TAB_Normal", "TAB_Large" ],
+			[ "Ball", "Small", "Normal", "Large", "LINE", "Slow", "Normal", "Fast" ],
+			[ "Options", "Novice", "Intermediate", "Expert", "LINE", "Set Ending Score...", "LINE", "Computer Serves First", "You Serve First", "LINE", "Sound" ],
+			[ "Help", "Instructions..." ]
+			];
+		
+		return a;
 	}
 }

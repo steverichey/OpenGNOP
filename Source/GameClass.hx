@@ -1,87 +1,89 @@
 package;
 
-import flash.display.Sprite;
 import flash.display.Bitmap;
+import flash.display.Sprite;
+import flash.display.BitmapData;
 import flash.events.Event;
-import flash.events.KeyboardEvent;
-import flash.events.TimerEvent;
+import flash.events.EventDispatcher;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.Lib;
+import haxe.Log;
 
 class GameClass extends Sprite
 {
-	private var currentState:GnopState;
-	private var stateLayers:Array<GnopState>;
-	private var time:Time;
-	
-	static inline var TIME_X:Int = 468;
-	static inline var TIME_Y:Int = 1;
+	private var _bg:Bitmap;
+	private var _desktop:DesktopState;
+	private var _time:BunTime;
 	
 	public function new()
 	{
 		super();
 		
-		if ( stage != null ) {
-			init();
-		} else {
-			addEventListener( Event.ADDED_TO_STAGE, init );
-		}
+		_bg = generateDesktopBg();
+		addChild( _bg );
+		
+		_desktop = new DesktopState();
+		addChild( _desktop );
+		
+		addEventListener( Event.ENTER_FRAME, update );
+		addEventListener( Event.RESIZE, onResize );
 	}
 	
-	public function init( e:Event = null ):Void
+	private function update( ?e:Event ):Void
 	{
-		if ( hasEventListener( Event.ADDED_TO_STAGE ) ) {
-			removeEventListener( Event.ADDED_TO_STAGE, init );
-		}
-		
-		// this should always be displayed, might as well add it now
-		
-		addChild( Reg.desktop );
-		
-		time = new Time();
-		time.x = TIME_X;
-		time.y = TIME_Y;
-		addChild( time );
-		
-		stateLayers = new Array<GnopState>();
-		
-		switchState( new DesktopState() );
-		
-		//Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, keyPress );
-		Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
+		_desktop.update();
 	}
 	
-	private function update( e:Event = null ):Void
+	private function onResize( e:Event ):Void
 	{
-		currentState.update();
-		time.update();
+		// this doesn't seem to get called, ever
 	}
 	
-	private function keyPress( k:KeyboardEvent ):Void
+	private function generateDesktopBg():Bitmap
 	{
-		/*
-		if ( k.charCode == 122 ) {
-			if ( Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE ) {
-				Lib.current.stage.displayState = StageDisplayState.NORMAL;
-			} else {
-				Lib.current.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+		var w:Int = Lib.current.stage.stageWidth;
+		var h:Int = Lib.current.stage.stageHeight;
+		var blk:Int = 0xff000000;
+		var wht:Int = 0xffFFFFFF;
+		var dgrey:Int = 0xff666666;
+		var lgrey:Int = 0xffAAAAAA;
+		
+		// create black background
+		
+		var bd:BitmapData = new BitmapData( w, h, false, blk );
+		
+		// draw white top, grey bottom
+		
+		bd.fillRect( new Rectangle( 0, 0, w, 19 ), wht );
+		bd.fillRect( new Rectangle( 0, 20, w, 460 ), lgrey );
+		
+		// alternating dark grey pixels on bottom
+		
+		var X:Int = 0;
+		var Y:Int = 20;
+		
+		while ( Y < 480 ) {
+			while ( X < 640 ) {
+				bd.setPixel( X, Y, dgrey );
+				X += 2;
 			}
-		}*/
-	}
-	
-	public function switchState( newState:GnopState ):Void
-	{
-		if ( currentState != null ) {
-			removeChild( currentState );
-			currentState = null;
+			Y += 1;
+			X = Y % 2;
 		}
 		
-		currentState = newState;
-		addChild( currentState );
-	}
-	
-	public function addLayer( newState:GnopState ):Void
-	{
-		addChild( newState );
-		stateLayers.push( newState );
+		// round corners
+		
+		var cX:Array<Int> = [ 5, 3, 2, 2, 1 ];
+		var cY:Array<Int> = [ 1, 2, 2, 3, 5 ];
+		
+		for ( i in 0...5 ) {
+			bd.fillRect( new Rectangle( 0, 0, cX[i], cY[i] ), blk );
+			bd.fillRect( new Rectangle( w-cX[i], 0, cX[i], cY[i] ), blk );
+			bd.fillRect( new Rectangle( 0, h-cY[i], cX[i], cY[i] ), blk );
+			bd.fillRect( new Rectangle( w-cX[i], h-cY[i], cX[i], cY[i] ), blk );
+		}
+		
+		return new Bitmap( bd );
 	}
 }

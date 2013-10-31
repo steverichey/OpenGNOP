@@ -17,7 +17,7 @@ import flash.Lib;
 class ApplicationMain {
 
 	private static var completed:Int;
-	private static var preloader:GnopPreloader;
+	private static var preloader:NMEPreloader;
 	private static var total:Int;
 
 	public static var loaders:Map <String, Loader>;
@@ -29,7 +29,7 @@ class ApplicationMain {
 		urlLoaders = new Map <String, URLLoader>();
 		total = 0;
 		
-		//flash.Lib.setPackage("STVR", "Opengnop", "com.steverichey.opengnop", "1.0.0");
+		//flash.Lib.setPackage("Steve Richey", "OpenGNOP", "com.example.myapp", "0.0.1");
 		flash.Lib.current.loaderInfo = flash.display.LoaderInfo.create (null);
 		
 		try {
@@ -47,7 +47,7 @@ class ApplicationMain {
 		
 
 		
-		preloader = new GnopPreloader();
+		preloader = new NMEPreloader();
 		
 		Lib.current.addChild(preloader);
 		preloader.onInit();
@@ -55,18 +55,109 @@ class ApplicationMain {
 		
 		
 		var loader:Loader = new Loader();
-		loaders.set("assets/desktop.png", loader);
+		loaders.set("images/about.png", loader);
 		total ++;
 		
 		
 		var loader:Loader = new Loader();
-		loaders.set("assets/icon.png", loader);
+		loaders.set("images/cancel.png", loader);
 		total ++;
 		
 		
 		var loader:Loader = new Loader();
-		loaders.set("assets/septagon.png", loader);
+		loaders.set("images/cancel_inv.png", loader);
 		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/checkmark.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/desktop.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/fail01.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/fail02.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/font.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/icon.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/icon_tiny.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/instructions.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/lose.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/ok.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/ok_inv.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/scoreboard.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/scorewarning.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/septagon.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/setendscore.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/splash.png", loader);
+		total ++;
+		
+		
+		var loader:Loader = new Loader();
+		loaders.set("images/win.png", loader);
+		total ++;
+		
+		
+		
+		
+		
+		
 		
 		
 		var resourcePrefix = "NME_:bitmap_";

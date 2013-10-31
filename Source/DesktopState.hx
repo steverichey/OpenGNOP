@@ -7,8 +7,9 @@ import flash.text.TextField;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.Lib;
+import haxe.Log;
 
-class DesktopState extends GnopState
+class DesktopState extends BunState
 {
 	private var icon:Sprite;
 	private var iconInverted:Bool;
@@ -18,6 +19,9 @@ class DesktopState extends GnopState
 	private var iconDiffX:Float;
 	private var iconDiffY:Float;
 	
+	private var _time:BunTime;
+	private var _game:Gnop;
+	
 	static inline var DOUBLE_CLICK_TIME:Int = 500;
 	static inline var NEGATIVE_DEFAULT_CLICK_TIME:Int = -2000;
 	
@@ -26,38 +30,50 @@ class DesktopState extends GnopState
 		super();
 	}
 	
-	override public function init( ?E:Event ):Void 
+	override public function init( ?e:Event ):Void 
 	{
 		super.init();
 		
 		timeOfFirstClick = NEGATIVE_DEFAULT_CLICK_TIME;
 		
 		icon = new Sprite();
-		icon.addChild( Reg.icon );
+		icon.addChild( new BunAsset( "icon" ) );
 		icon.x = ( stage.stageWidth - icon.width ) / 2;
 		icon.y = ( stage.stageHeight - icon.height ) / 2;
 		addChild( icon );
 		
-		fakeSeptagon = Reg.septagon;
+		fakeSeptagon = new BunAsset( "septagon" );
 		fakeSeptagon.x = 17;
 		fakeSeptagon.y = 3;
 		addChild( fakeSeptagon );
 		
+		_time = new BunTime();
+		_time.x = 468;
+		_time.y = 4;
+		addChild( _time );
+		
 		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true  );
-		invisibleBG.addEventListener( MouseEvent.MOUSE_DOWN, clickDesktop, false, 0, true  );
 	}
 	
-	override public function update( e:Event = null ):Void
+	override public function update( ?e:Event ):Void
 	{
 		super.update();
 		
-		if ( dragging && icon.visible ) {
-			limit( icon, mouseX - iconDiffX, mouseY - iconDiffY, 0, 20, getStageWidth(), getStageHeight() );
+		if ( _game == null ) {
+			if ( dragging && icon.visible ) {
+				limit( icon, mouseX - iconDiffX, mouseY - iconDiffY, 0, 20, getStageWidth(), getStageHeight() );
+			}
+		} else {
+			_game.update( e );
 		}
+		
+		_time.update();
 	}
 	
-	private function clickDesktop( m:MouseEvent ):Void
+	override public function clickAway( m:MouseEvent ):Void
 	{
+		super.clickAway( m );
+		
 		if ( iconInverted ) {
 			invert( icon );
 			iconInverted = false;
@@ -100,6 +116,24 @@ class DesktopState extends GnopState
 	private function openFile():Void
 	{
 		dragging = false;
-		Gnop.addLayer( new SplashState() );
+		
+		// Change this file for other games.
+		// For example, if you wanted to use the Bun files to run OpenODS, you
+		// could change _game = new Gnop(); to _game = new ODS(); and then put
+		// the necessary game logic in a new file called ODS.hx with class ODS.
+		
+		_game = new Gnop();
+		addChild( _game );
+		
+		_game.addEventListener( Event.COMPLETE, onCloseGame, false, 0, true );
+	}
+	
+	private function onCloseGame( e:Event ):Void
+	{
+		_game.removeEventListener( Event.COMPLETE, onCloseGame );
+		removeChild( _game );
+		_game = null;
+		
+		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true );
 	}
 }

@@ -19,6 +19,7 @@ Export/
 *.exe
 *.o
 *.so
+*.bin
 
 # Packages #
 ############
@@ -48,3 +49,8 @@ Export/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Custom Settings #
+###################
+etc/
+export/

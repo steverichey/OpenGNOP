@@ -3,11 +3,13 @@ package;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
-import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.Lib;
 
-class Main extends Sprite 
+/**
+ * @author Joshua Granick
+ */
+class Main extends Sprite
 {
 	static public function main():Void
 	{	
@@ -21,19 +23,19 @@ class Main extends Sprite
 		if (stage != null) {
 			init();
 		} else {
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			addEventListener( Event.ADDED_TO_STAGE, init );
 		}
 	}
 	
 	private function init(?E:Event):Void 
 	{
-		if (hasEventListener(Event.ADDED_TO_STAGE)) {
-			removeEventListener(Event.ADDED_TO_STAGE, init);
+		if (hasEventListener( Event.ADDED_TO_STAGE ) ) {
+			removeEventListener( Event.ADDED_TO_STAGE, init );
 		}
 		
 		initialize();
 		
-		var game:Gnop = new Gnop();
+		var game:Sprite = new GameClass();
 		addChild( game );
 	}
 	
@@ -41,6 +43,5 @@ class Main extends Sprite
 	{
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-		Lib.current.stage.displayState = StageDisplayState.NORMAL;
 	}
 }

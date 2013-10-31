@@ -8,12 +8,12 @@ import flash.events.Event;
 
 class ApplicationMain {
 
-	static var mPreloader:GnopPreloader;
+	static var mPreloader:NMEPreloader;
 
 	public static function main() {
 		var call_real = true;
 		
-		//nme.Lib.setPackage("STVR", "Opengnop", "com.steverichey.opengnop", "1.0.0");
+		//nme.Lib.setPackage("Steve Richey", "OpenGNOP", "com.example.myapp", "0.0.1");
 		
 		
 		var loaded:Int = flash.Lib.current.loaderInfo.bytesLoaded;
@@ -24,7 +24,7 @@ class ApplicationMain {
 		
 		if (loaded < total || true) /* Always wait for event */ {
 			call_real = false;
-			mPreloader = new GnopPreloader();
+			mPreloader = new NMEPreloader();
 			flash.Lib.current.addChild(mPreloader);
 			mPreloader.onInit();
 			mPreloader.onUpdate(loaded,total);
