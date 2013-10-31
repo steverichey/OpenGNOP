@@ -14,20 +14,26 @@ class BunMenuItem extends Sprite
 	private var _tf:BunText;
 	private var _bm:Bitmap;
 	private var _bg:Bitmap;
+	private var _inverted:Bool;
+	
+	public var position:Int;
+	public var inverted:Bool;
 	
 	public static var TOP_MENU:String = "topmenu";
 	public static var DROP_MENU:String = "dropmenu";
 	
 	private static var GREY:Int = 0xff888888;
 	
-	public function new( Text:String, Width:Int, ItemType:String )
+	public function new( Text:String, Width:Int, ItemType:String, Position:Int )
 	{
 		super();
+		
+		this.position = Position;
 		
 		var w:Int = Width;
 		var inactive:Bool = false;
 		
-		if ( Text.substring(0, 5) == "GREY_" || Text.substring(0, 4) == "TAB_" || Text == "LINE" ) {
+		if ( Text.substring(0, 5) == "GREY_" || Text == "LINE" ) {
 			inactive = true;
 		}
 		
@@ -47,19 +53,28 @@ class BunMenuItem extends Sprite
 			_bm.y = ( _bg.height - _bm.height ) / 2;
 		} else if ( Text == "LINE" ) {
 			_bm = new Bitmap( new BitmapData( w, 1, false, GREY ) );
-			_bm.x = ( _bg.width - _bm.width ) / 2;
 			_bm.y = ( _bg.height - _bm.height ) / 2;
+			
+			if ( ItemType == DROP_MENU ) {
+				_bm.x += 1;
+				_bg.x += 1;
+			}
 		} else {
 			if ( Text.substring(0, 5) == "GREY_" ) {
-				_tf = new BunText( Text.substring( 6, Text.length ) );
+				_tf = new BunText( Text.substring( 5, Text.length ) );
 				_tf.color = GREY;
 			} else if ( Text.substring(0, 4) == "TAB_" ) {
-				_tf = new BunText( Text.substring( 5, Text.length ) );
+				_tf = new BunText( Text.substring( 4, Text.length ) );
 			} else {
 				_tf = new BunText( Text );
 			}
 			
-			_tf.x = ( _bg.width - _tf.width ) / 2;
+			if ( ItemType == TOP_MENU ) {
+				_tf.x = ( _bg.width - _tf.width ) / 2;
+			} else {
+				_tf.x = 1;
+				_bg.x = 1;
+			}
 			
 			if ( Text.substring(0, 4) == "TAB_" ) {
 				_tf.x += 5;
@@ -82,24 +97,35 @@ class BunMenuItem extends Sprite
 			this.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true );
 		} else if ( !inactive ) {
 			this.addEventListener( MouseEvent.MOUSE_OVER, onMouseOver, false, 0, true );
+			this.addEventListener( MouseEvent.MOUSE_OUT, onMouseOut, false, 0, true );
 		}
 	}
 	
 	private function onMouseDown( m:MouseEvent ):Void
 	{
-		invert( _bg );
-		
-		if ( _tf != null ) {
-			invert( _tf );
-		}
+		setInverted( !inverted );
 	}
 	
 	private function onMouseOver( m:MouseEvent ):Void
 	{
-		invert( _bg );
-		
-		if ( _tf != null ) {
-			invert( _tf );
+		setInverted( true );
+	}
+	
+	private function onMouseOut( m:MouseEvent ):Void
+	{
+		setInverted( false );
+	}
+	
+	public function setInverted( NewInverted:Bool ):Void
+	{
+		if ( inverted != NewInverted ) {
+			invert( _bg );
+			
+			if ( _tf != null ) {
+				invert( _tf );
+			}
+			
+			inverted = NewInverted;
 		}
 	}
 	
