@@ -49,7 +49,7 @@ class BunState extends Sprite
 		// update
 	}
 	
-	public function clickAway( m:MouseEvent ):Void
+	public function clickAway( ?m:MouseEvent ):Void
 	{
 		// handle clicks away from active state here, via override
 	}

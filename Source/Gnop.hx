@@ -1,5 +1,6 @@
 package;
 
+import flash.display.Bitmap;
 import flash.events.Event;
 import openfl.Assets;
 
@@ -7,6 +8,7 @@ class Gnop extends BunState
 {
 	private var splash:BunWindow;
 	private var menu:BunMenu;
+	private var tinyicon:Bitmap;
 	
 	// about image is 21,12 from top-left of white
 	// instructions image is 27,12 from top-left of white
@@ -24,10 +26,21 @@ class Gnop extends BunState
 	{
 		super.init( e );
 		
+		// Add the initial splash screen.
+		
 		splash = new BunWindow( 502, 312, BunWindow.SHADOWED, Assets.getBitmapData( "images/splash.png" ), 57, 49 );
 		splash.x = 69;
 		splash.y = 94;
 		addChild( splash );
+		
+		// Add the "tiny icon" in the top menu.
+		
+		tinyicon = new Bitmap( Assets.getBitmapData( "images/icon_tiny.png" ) );
+		tinyicon.x = 609;
+		tinyicon.y = 5;
+		addChild( tinyicon );
+		
+		// Add the top menu.
 		
 		menu = new BunMenu( getMenuItems() );
 		addChild( menu );
@@ -41,11 +54,11 @@ class Gnop extends BunState
 	private function getMenuItems():Array<Array<String>>
 	{
 		var a:Array<Array<String>> = [
-			[ "SEPTAGON", "About Gnop..." ],
-			[ "File", "New Game", "LINE", "Quit" ],
-			[ "Paddles", "GREY_Player", "TAB_Small", "TAB_Normal", "TAB_Large", "LINE", "GREY_Computer", "TAB_Small", "TAB_Normal", "TAB_Large" ],
-			[ "Ball", "Small", "Normal", "Large", "LINE", "Slow", "Normal", "Fast" ],
-			[ "Options", "Novice", "Intermediate", "Expert", "LINE", "Set Ending Score...", "LINE", "Computer Serves First", "You Serve First", "LINE", "Sound" ],
+			[ BunMenuItem.SEPTAGON, "About Gnop..." ],
+			[ "File", "New Game", BunMenuItem.LINE, "Quit" ],
+			[ "Paddles", BunMenuItem.GREYED("Player"), BunMenuItem.TABBED("Small"), BunMenuItem.TABBED("Normal"), BunMenuItem.TABBED("Large"), BunMenuItem.LINE, BunMenuItem.GREYED("Computer"), BunMenuItem.TABBED("Small"), BunMenuItem.TABBED("Normal"), BunMenuItem.TABBED("Large") ],
+			[ "Ball", "Small", "Normal", "Large", BunMenuItem.LINE, "Slow", "Normal", "Fast" ],
+			[ "Options", "Novice", "Intermediate", "Expert", BunMenuItem.LINE, "Set Ending Score...", BunMenuItem.LINE, "Computer Serves First", "You Serve First", BunMenuItem.LINE, "Sound" ],
 			[ "Help", "Instructions..." ]
 			];
 		

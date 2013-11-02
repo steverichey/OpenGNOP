@@ -21,8 +21,34 @@ class BunMenuItem extends Sprite
 	
 	public static var TOP_MENU:String = "topmenu";
 	public static var DROP_MENU:String = "dropmenu";
+	public static var TAB_PADDING:Int = 8;
+	public static var LEFT_PADDING:Int = 14;
+	public static var RIGHT_PADDING:Int = 11;
+	public static var DROP_ITEM_HEIGHT:Int = 16;
+	public static var TOP_ITEM_HEIGHT:Int = 18;
 	
-	private static var GREY:Int = 0xff888888;
+	private static var COLOR_GREY:Int = 0xff888888;
+	
+	/**
+	 * Constants which are parsed to create items that are not simple text.
+	 */
+	public static var SEPTAGON:String = "SEPTAGON";
+	public static var LINE:String = "LINE";
+	public static var GREY:String = "GREY_";
+	public static var TAB:String = "TAB_";
+	
+	/**
+	 * Functions to prepend GREY_ or TAB_ to a string.
+	 */
+	public static function GREYED( S:String ):String
+	{
+		return GREY + S;
+	}
+	
+	public static function TABBED( S:String ):String
+	{
+		return TAB + S;
+	}
 	
 	public function new( Text:String, Width:Int, ItemType:String, Position:Int )
 	{
@@ -33,26 +59,26 @@ class BunMenuItem extends Sprite
 		var w:Int = Width;
 		var inactive:Bool = false;
 		
-		if ( Text.substring(0, 5) == "GREY_" || Text == "LINE" ) {
+		if ( Text.substring(0, 5) == GREY || Text == LINE ) {
 			inactive = true;
 		}
 		
-		if ( Text == "SEPTAGON" ) {
+		if ( Text == SEPTAGON ) {
 			w = 29;
 		}
 		
 		if ( ItemType == TOP_MENU ) {
-			_bg = new Bitmap( new BitmapData( w, 18, false ) );
+			_bg = new Bitmap( new BitmapData( w, TOP_ITEM_HEIGHT, false ) );
 		} else {
-			_bg = new Bitmap( new BitmapData( w, 16, false ) );
+			_bg = new Bitmap( new BitmapData( w, DROP_ITEM_HEIGHT, false ) );
 		}
 		
-		if ( Text == "SEPTAGON" ) {
+		if ( Text == SEPTAGON ) {
 			_bm = new Bitmap( Assets.getBitmapData( "images/septagon.png" ) );
 			_bm.x = ( _bg.width - _bm.width ) / 2;
 			_bm.y = ( _bg.height - _bm.height ) / 2;
-		} else if ( Text == "LINE" ) {
-			_bm = new Bitmap( new BitmapData( w, 1, false, GREY ) );
+		} else if ( Text == LINE ) {
+			_bm = new Bitmap( new BitmapData( w, 1, false, COLOR_GREY ) );
 			_bm.y = ( _bg.height - _bm.height ) / 2;
 			
 			if ( ItemType == DROP_MENU ) {
@@ -60,10 +86,10 @@ class BunMenuItem extends Sprite
 				_bg.x += 1;
 			}
 		} else {
-			if ( Text.substring(0, 5) == "GREY_" ) {
+			if ( Text.substring(0, 5) == GREY ) {
 				_tf = new BunText( Text.substring( 5, Text.length ) );
-				_tf.color = GREY;
-			} else if ( Text.substring(0, 4) == "TAB_" ) {
+				_tf.color = COLOR_GREY;
+			} else if ( Text.substring(0, 4) == TAB ) {
 				_tf = new BunText( Text.substring( 4, Text.length ) );
 			} else {
 				_tf = new BunText( Text );
@@ -72,12 +98,12 @@ class BunMenuItem extends Sprite
 			if ( ItemType == TOP_MENU ) {
 				_tf.x = ( _bg.width - _tf.width ) / 2;
 			} else {
-				_tf.x = 1;
+				_tf.x = 1 + LEFT_PADDING;
 				_bg.x = 1;
 			}
 			
-			if ( Text.substring(0, 4) == "TAB_" ) {
-				_tf.x += 5;
+			if ( Text.substring(0, 4) == TAB ) {
+				_tf.x += TAB_PADDING;
 			}
 			
 			_tf.y = ( _bg.height - _tf.height ) / 2;

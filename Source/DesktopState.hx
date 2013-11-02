@@ -48,8 +48,8 @@ class DesktopState extends BunState
 		addChild( fakeSeptagon );
 		
 		_time = new BunTime();
-		_time.x = 468;
-		_time.y = 4;
+		_time.x = 519;
+		_time.y = 5;
 		addChild( _time );
 		
 		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true  );
@@ -70,7 +70,7 @@ class DesktopState extends BunState
 		_time.update();
 	}
 	
-	override public function clickAway( m:MouseEvent ):Void
+	override public function clickAway( ?m:MouseEvent ):Void
 	{
 		super.clickAway( m );
 		
