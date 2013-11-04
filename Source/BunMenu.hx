@@ -5,6 +5,9 @@ import flash.display.BitmapData;
 import flash.events.Event;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.events.TimerEvent;
+import flash.geom.Point;
+import flash.utils.Timer;
 import haxe.Log;
 
 /**
@@ -27,6 +30,26 @@ class BunMenu extends BunState
 	 */
 	private var dropMenus:Array<Sprite>;
 	
+	/**
+	 * Storage for the selected item position.
+	 */
+	private var selectedItemPosition:Point;
+	
+	/**
+	 * Storage for the actual selected item, as a BunMenuItem.
+	 */
+	private var selectedItem:BunMenuItem;
+	
+	/**
+	 * Timer for the flicker effect when an item is selected.
+	 */
+	private var animTimer:Timer;
+	
+	/**
+	 * Variable that indicates whether or not the menu should be inactive (used during flicker animation).
+	 */
+	private static var lockOut:Bool;
+	
 	public function new( MenuItems:Array<Array<String>> )
 	{
 		super();
@@ -45,12 +68,18 @@ class BunMenu extends BunState
 		
 		topMenu = [];
 		dropMenus = [];
+		selectedItemPosition = new Point(0, 0);
+		
+		animTimer = new Timer( 100, 10 );
+		animTimer.addEventListener( TimerEvent.TIMER, flickerTimer, false, 0, true );
+		animTimer.addEventListener( TimerEvent.TIMER_COMPLETE, endFlickerTimer, false, 0, true );
+		
 		var currentX:Int = 9;
 		var posX:Int = 0;
 		
 		for ( i in menuItems ) {
 			createTopItem( i[0], currentX, posX );
-			createDropMenu( currentX, i );
+			createDropMenu( currentX, i, posX );
 			currentX += Std.int( topMenu[topMenu.length - 1].width );
 			//currentX += Std.int( topMenu[topMenu.length - 1].width ) - 5; // really there's a 5px overlap, but that is causing some problems
 			posX++;
@@ -97,7 +126,7 @@ class BunMenu extends BunState
 				i.removeEventListener( MouseEvent.MOUSE_OVER, moveMenu );
 			}
 		} else {
-			showOneMenu( m.target.position );
+			showOneMenu( m.target.position.x );
 			
 			for ( i in topMenu ) {
 				i.addEventListener( MouseEvent.MOUSE_OVER, moveMenu, false, 0, true );
@@ -112,12 +141,12 @@ class BunMenu extends BunState
 	 */
 	private function moveMenu( ?m:MouseEvent ):Void
 	{
-		showOneMenu( m.target.position );
+		showOneMenu( m.target.position.x );
 		
 		var i:Int = 0;
 		
 		while ( i < topMenu.length ) {
-			if ( i != m.target.position ) {
+			if ( i != m.target.position.x ) {
 				topMenu[i].setInverted( false );
 			} else {
 				topMenu[i].setInverted( true );
@@ -166,12 +195,32 @@ class BunMenu extends BunState
 	private function clearMenu( ?m:MouseEvent ):Void
 	{
 		m.target.removeEventListener( MouseEvent.MOUSE_OUT, clearMenu );
-		dropMenus[ m.target.position ].visible = false;
+		dropMenus[ m.target.position.x ].visible = false;
 	}
 	
 	private function clickDropItem( ?m:MouseEvent ):Void
 	{
-		Log.trace( "You clicked a thing" );
+		selectedItemPosition = m.target.position;
+		selectedItem = m.target;
+		
+		lockOut = true;
+		
+		animTimer.start();
+	}
+	
+	private function flickerTimer( ?t:TimerEvent ):Void
+	{
+		selectedItem.setInverted( !selectedItem.inverted );
+	}
+	
+	private function endFlickerTimer( ?t:TimerEvent ):Void
+	{
+		clickAway();
+		lockOut = false;
+		Log.trace( "selected: " + selectedItemPosition );
+		if ( selectedItemPosition == new Point( 1, 2 ) ) {
+			dispatchEvent( new Event( Event.COMPLETE ) );
+		}
 	}
 	
 	/**
@@ -184,7 +233,8 @@ class BunMenu extends BunState
 	private function createTopItem( Name:String, X:Int, Position:Int ):Void
 	{
 		var temp:BunText = new BunText( Name );
-		var s:BunMenuItem = new BunMenuItem( Name, Std.int( temp.width + BunMenuItem.LEFT_PADDING_TOP + BunMenuItem.RIGHT_PADDING_TOP ), BunMenuItem.TOP_MENU, Position );
+		var len:Int = Std.int ( temp.width ) + BunMenuItem.LEFT_PADDING_TOP + BunMenuItem.RIGHT_PADDING_TOP;
+		var s:BunMenuItem = new BunMenuItem( Name, len, BunMenuItem.TOP_MENU, new Point( Position, 0 ) );
 		s.x = X;
 		s.y = 1;
 		
@@ -194,10 +244,11 @@ class BunMenu extends BunState
 	/**
 	 * Creates a drop menu at X from an array of menu item names.
 	 * 
-	 * @param	X	The position at which this menu should be created; Y is always 19.
-	 * @param	Arr	The contents of the array; the first item is assumed to be the menu title and is ignored.
+	 * @param	X			The position at which this menu should be created; Y is always 19.
+	 * @param	Arr			The contents of the array; the first item is assumed to be the menu title and is ignored.
+	 * @param 	XPosition	The X position of this menu, in terms of the number of drop menus. The first is 0, the second is 1, etc.
 	 */
-	private function createDropMenu( X:Int, Arr:Array<String> ):Void
+	private function createDropMenu( X:Int, Arr:Array<String>, XPosition:Int ):Void
 	{
 		// Remove the first array element, which is the top menu name.
 		
@@ -241,7 +292,7 @@ class BunMenu extends BunState
 		var posY:Int = 0;
 		
 		for ( i in Arr ) {
-			var btf:BunMenuItem = new BunMenuItem( i, longest, BunMenuItem.DROP_MENU, posY );
+			var btf:BunMenuItem = new BunMenuItem( i, longest, BunMenuItem.DROP_MENU, new Point( XPosition, posY ) );
 			btf.y = currentY;
 			s.addChild( btf );
 			btf.addEventListener( MouseEvent.MOUSE_UP, clickDropItem, false, 0, true );

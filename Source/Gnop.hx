@@ -43,12 +43,18 @@ class Gnop extends BunState
 		// Add the top menu.
 		
 		menu = new BunMenu( getMenuItems() );
+		menu.addEventListener( Event.COMPLETE, onQuit, false, 0, true );
 		addChild( menu );
 	}
 	
 	override public function update( ?e:Event ):Void
 	{
 		super.update( e );
+	}
+	
+	private function onQuit( ?e:Event ):Void
+	{
+		dispatchEvent( new Event( Event.COMPLETE ) );
 	}
 	
 	private function getMenuItems():Array<Array<String>>

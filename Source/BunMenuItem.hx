@@ -6,6 +6,7 @@ import flash.events.Event;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.geom.ColorTransform;
+import flash.geom.Point;
 import haxe.Log;
 import openfl.Assets;
 
@@ -16,7 +17,7 @@ class BunMenuItem extends Sprite
 	private var _bg:Bitmap;
 	private var _inverted:Bool;
 	
-	public var position:Int;
+	public var position:Point;
 	public var inverted:Bool;
 	
 	public static var TOP_MENU:String = "topmenu";
@@ -52,7 +53,15 @@ class BunMenuItem extends Sprite
 		return TAB + S;
 	}
 	
-	public function new( Text:String, Width:Int, ItemType:String, Position:Int )
+	/**
+	 * Create a new BunMenuItem, which is a sprite with BunText that can be easily inverted and report its position in the menu.
+	 * 
+	 * @param	Text		The text for the BunText item to display.
+	 * @param	Width		The width of the menu item.
+	 * @param	ItemType	Whether this is a top menu or drop menu item; use BunItemMenu.TOP_ITEM or BunItemMenu.DROP_ITEM.
+	 * @param	Position	A point describing this item's x,y position, with the septagon being 0,0
+	 */
+	public function new( Text:String, Width:Int, ItemType:String, Position:Point )
 	{
 		super();
 		
