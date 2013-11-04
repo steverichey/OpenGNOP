@@ -217,10 +217,12 @@ class BunMenu extends BunState
 	{
 		clickAway();
 		lockOut = false;
-		Log.trace( "selected: " + selectedItemPosition );
-		if ( selectedItemPosition == new Point( 1, 2 ) ) {
-			dispatchEvent( new Event( Event.COMPLETE ) );
-		}
+		cast( this.parent, BunState ).menuSelect( selectedItemPosition );
+	}
+	
+	public function updateCheckmarks():Void
+	{
+		Log.trace( "Updating checkmarks..." );
 	}
 	
 	/**

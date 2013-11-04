@@ -6,6 +6,7 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.ColorTransform;
+import flash.geom.Point;
 import flash.Lib;
 import haxe.Log;
 
@@ -52,6 +53,11 @@ class BunState extends Sprite
 	public function clickAway( ?m:MouseEvent ):Void
 	{
 		// handle clicks away from active state here, via override
+	}
+	
+	public function menuSelect( Selection:Point ):Void
+	{
+		// handle menu selections here
 	}
 	
 	public function getStageWidth():Int
