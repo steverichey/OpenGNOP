@@ -7,7 +7,6 @@ import flash.text.TextField;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.Lib;
-import haxe.Log;
 
 class DesktopState extends BunState
 {
@@ -22,8 +21,12 @@ class DesktopState extends BunState
 	private var _time:BunTime;
 	private var _game:Gnop;
 	
-	static inline var DOUBLE_CLICK_TIME:Int = 500;
-	static inline var NEGATIVE_DEFAULT_CLICK_TIME:Int = -2000;
+	private static inline var DOUBLE_CLICK_TIME:Int = 500;
+	private static inline var NEGATIVE_DEFAULT_CLICK_TIME:Int = -2000;
+	private static inline var SEPTAGON_X:Int = 17;
+	private static inline var SEPTAGON_Y:Int = 2;
+	private static inline var TIME_X:Int = 571;
+	private static inline var TIME_Y:Int = 5;
 	
 	public function new()
 	{
@@ -43,13 +46,13 @@ class DesktopState extends BunState
 		addChild( icon );
 		
 		fakeSeptagon = new BunAsset( "septagon" );
-		fakeSeptagon.x = 17;
-		fakeSeptagon.y = 3;
+		fakeSeptagon.x = SEPTAGON_X;
+		fakeSeptagon.y = SEPTAGON_Y;
 		addChild( fakeSeptagon );
 		
 		_time = new BunTime();
-		_time.x = 519;
-		_time.y = 5;
+		_time.x = TIME_X;
+		_time.y = TIME_Y;
 		addChild( _time );
 		
 		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true  );

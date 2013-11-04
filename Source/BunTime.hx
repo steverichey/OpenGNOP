@@ -20,6 +20,7 @@ class BunTime extends Sprite
 	public function init( ?e:Event ):Void 
 	{	
 		tf = new BunText( currentTime() );
+		tf.x = -tf.width;
 		addChild( tf );
 	}
 	
@@ -29,6 +30,7 @@ class BunTime extends Sprite
 		
 		if ( cur != tf.text ) {
 			tf.text = cur;
+			tf.x = -tf.width;
 		}
 	}
 	

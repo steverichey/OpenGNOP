@@ -48,7 +48,7 @@ class Gnop extends BunState
 	
 	override public function update( ?e:Event ):Void
 	{
-		
+		super.update( e );
 	}
 	
 	private function getMenuItems():Array<Array<String>>

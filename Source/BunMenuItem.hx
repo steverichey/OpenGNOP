@@ -22,8 +22,10 @@ class BunMenuItem extends Sprite
 	public static var TOP_MENU:String = "topmenu";
 	public static var DROP_MENU:String = "dropmenu";
 	public static var TAB_PADDING:Int = 8;
-	public static var LEFT_PADDING:Int = 14;
-	public static var RIGHT_PADDING:Int = 11;
+	public static var LEFT_PADDING_DROP:Int = 14;
+	public static var RIGHT_PADDING_DROP:Int = 10;
+	public static var LEFT_PADDING_TOP:Int = 9;
+	public static var RIGHT_PADDING_TOP:Int = 9;
 	public static var DROP_ITEM_HEIGHT:Int = 16;
 	public static var TOP_ITEM_HEIGHT:Int = 18;
 	
@@ -75,8 +77,8 @@ class BunMenuItem extends Sprite
 		
 		if ( Text == SEPTAGON ) {
 			_bm = new Bitmap( Assets.getBitmapData( "images/septagon.png" ) );
-			_bm.x = ( _bg.width - _bm.width ) / 2;
-			_bm.y = ( _bg.height - _bm.height ) / 2;
+			_bm.x = 8;
+			_bm.y = 1;
 		} else if ( Text == LINE ) {
 			_bm = new Bitmap( new BitmapData( w, 1, false, COLOR_GREY ) );
 			_bm.y = ( _bg.height - _bm.height ) / 2;
@@ -96,9 +98,9 @@ class BunMenuItem extends Sprite
 			}
 			
 			if ( ItemType == TOP_MENU ) {
-				_tf.x = ( _bg.width - _tf.width ) / 2;
+				_tf.x = LEFT_PADDING_TOP;
 			} else {
-				_tf.x = 1 + LEFT_PADDING;
+				_tf.x = 1 + LEFT_PADDING_DROP;
 				_bg.x = 1;
 			}
 			

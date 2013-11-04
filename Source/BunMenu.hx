@@ -45,13 +45,14 @@ class BunMenu extends BunState
 		
 		topMenu = [];
 		dropMenus = [];
-		var currentX:Int = 10;
+		var currentX:Int = 9;
 		var posX:Int = 0;
 		
 		for ( i in menuItems ) {
 			createTopItem( i[0], currentX, posX );
 			createDropMenu( currentX, i );
 			currentX += Std.int( topMenu[topMenu.length - 1].width );
+			//currentX += Std.int( topMenu[topMenu.length - 1].width ) - 5; // really there's a 5px overlap, but that is causing some problems
 			posX++;
 		}
 		
@@ -120,6 +121,7 @@ class BunMenu extends BunState
 				topMenu[i].setInverted( false );
 			} else {
 				topMenu[i].setInverted( true );
+				//setChildIndex( topMenu[i], 1 );
 			}
 			
 			i++;
@@ -181,7 +183,8 @@ class BunMenu extends BunState
 	 */
 	private function createTopItem( Name:String, X:Int, Position:Int ):Void
 	{
-		var s:BunMenuItem = new BunMenuItem( Name, Name.length * 10, BunMenuItem.TOP_MENU, Position );
+		var temp:BunText = new BunText( Name );
+		var s:BunMenuItem = new BunMenuItem( Name, Std.int( temp.width + BunMenuItem.LEFT_PADDING_TOP + BunMenuItem.RIGHT_PADDING_TOP ), BunMenuItem.TOP_MENU, Position );
 		s.x = X;
 		s.y = 1;
 		
@@ -229,9 +232,9 @@ class BunMenu extends BunState
 			}
 		}
 		
-		longest += BunMenuItem.LEFT_PADDING + BunMenuItem.RIGHT_PADDING;
+		longest += BunMenuItem.LEFT_PADDING_DROP + BunMenuItem.RIGHT_PADDING_DROP;
 		
-		var w:BunWindow = new BunWindow( longest, Arr.length * BunMenuItem.DROP_ITEM_HEIGHT, BunWindow.SHADOWED );
+		var w:BunWindow = new BunWindow( longest + 2, Arr.length * BunMenuItem.DROP_ITEM_HEIGHT + 2, BunWindow.SHADOWED_MENU );
 		s.addChild( w );
 		
 		var currentY:Int = 1;

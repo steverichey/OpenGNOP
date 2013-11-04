@@ -14,9 +14,11 @@ import flash.geom.Point;
 class BunWindow extends Bitmap
 {
 	private var _pixels:BitmapData;
+	private var _isMenu:Bool;
 	
 	public static var BORDERED:String = "bordered";
 	public static var SHADOWED:String = "shadowed";
+	public static var SHADOWED_MENU:String = "menu";
 	
 	/**
 	 * Class to create an OS window.
@@ -30,6 +32,10 @@ class BunWindow extends Bitmap
 	 */
 	public function new( Width:Int, Height:Int, type:String, Content:BitmapData = null, ContentX:Int = 0, ContentY:Int = 0 )
 	{
+		if ( type == SHADOWED_MENU ) {
+			_isMenu = true;
+		}
+		
 		if ( type == BORDERED ) {
 			_pixels = drawBorderedWindow( Width, Height, Content, ContentX, ContentY );
 		} else {
@@ -78,7 +84,12 @@ class BunWindow extends Bitmap
 	{
 		var window:BitmapData = new BitmapData( Width + 2, Height + 2, true, 0 );
 		
-		window.fillRect( new Rectangle( 2, 2, Width, Height ), 0xff000000 );
+		if ( _isMenu ) {
+			window.fillRect( new Rectangle( 3, 3, Width - 2, Height - 2 ), 0xff000000 );
+		} else {
+			window.fillRect( new Rectangle( 2, 2, Width, Height ), 0xff000000 );
+		}
+		
 		window.fillRect( new Rectangle( 0, 0, Width, Height ), 0xff000000 );
 		window.fillRect( new Rectangle( 1, 1, Width - 2, Height - 2 ), 0xffFFFFFF );
 		
