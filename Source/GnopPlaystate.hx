@@ -70,8 +70,18 @@ class GnopPlaystate extends BunState
 		super.update( e );
 		
 		_player.y = limit( mouseY, Y_MIN, Y_MAX - _player.height );
-		_ball.x = limit( _ball.x + 1, X_MIN, X_MAX - _ball.width );
-		_ball.y = limit( _ball.y + 1, Y_MIN, Y_MAX - _ball.height );
+		_ball.x = limit( _ball.x + _ball.velocity.x, X_MIN, X_MAX - _ball.width, paddleBounce );
+		_ball.y = limit( _ball.y + _ball.velocity.y, Y_MIN, Y_MAX - _ball.height, wallBounce );
+	}
+	
+	private function paddleBounce():Void
+	{
+		_ball.reverse( GnopBall.X_AXIS );
+	}
+	
+	private function wallBounce():Void
+	{
+		_ball.reverse( GnopBall.Y_AXIS );
 	}
 	
 	private function onKeyUp( ?k:KeyboardEvent ):Void

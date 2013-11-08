@@ -13,7 +13,7 @@ import haxe.Log;
 class GameClass extends Sprite
 {
 	private var _bg:Bitmap;
-	private var _desktop:DesktopState;
+	private var _desktop:BunDesktop;
 	private var _time:BunTime;
 	
 	public function new()
@@ -23,7 +23,7 @@ class GameClass extends Sprite
 		_bg = generateDesktopBg();
 		addChild( _bg );
 		
-		_desktop = new DesktopState();
+		_desktop = new BunDesktop();
 		addChild( _desktop );
 		
 		addEventListener( Event.ENTER_FRAME, update );

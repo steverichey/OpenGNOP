@@ -8,7 +8,7 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.Lib;
 
-class DesktopState extends BunState
+class BunDesktop extends BunState
 {
 	private var icon:Sprite;
 	private var iconInverted:Bool;

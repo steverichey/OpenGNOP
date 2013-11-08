@@ -2,10 +2,16 @@ package;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 
 class GnopBall extends Bitmap
 {
+	public var velocity:Point;
+	
+	public static inline var X_AXIS:Int = 0;
+	public static inline var Y_AXIS:Int = 1;
+	
 	public function new()
 	{
 		var ball:BitmapData = new BitmapData( 10, 10, true, 0 );
@@ -16,6 +22,17 @@ class GnopBall extends Bitmap
 		this.x = 320;
 		this.y = 240;
 		
+		velocity = new Point( -1, 1 );
+		
 		super( ball );
+	}
+	
+	public function reverse( Axis:Int ):Void
+	{
+		if ( Axis  == X_AXIS ) {
+			velocity.x *= -1;
+		} else {
+			velocity.y *= -1;
+		}
 	}
 }

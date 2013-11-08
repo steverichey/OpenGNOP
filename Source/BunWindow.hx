@@ -15,19 +15,19 @@ class BunWindow extends Bitmap
 	public static inline var SHADOWED:UInt = 1;
 	public static inline var SHADOWED_MENU:UInt = 2;
 	
-	public static inline var BLACK:UInt = 0xff000000;
-	public static inline var BLUE_LIGHT:UInt = 0xffCCCCFF;
-	public static inline var GREY:UInt = 0xffBBBBBB;
-	public static inline var BLUE_DARK:UInt = 0xff666699;
-	public static inline var WHITE:UInt = 0xffFFFFFF;
+	private static inline var BLACK:UInt = 0xff000000;
+	private static inline var BLUE_LIGHT:UInt = 0xffCCCCFF;
+	private static inline var GREY:UInt = 0xffBBBBBB;
+	private static inline var BLUE_DARK:UInt = 0xff666699;
+	private static inline var WHITE:UInt = 0xffFFFFFF;
 	
 	/**
 	 * Class to create an OS window.
 	 * 
-	 * @param	Width	The width of the window to be created.
-	 * @param	Height	The height of the window to be created.
-	 * @param	type	The type of window, either BunWindow.BORDERED, BunWindow.SHADOWED, or BunWindow.SHADOWED_MENU.
-	 * @param 	Content	Optional, an additional element to draw in the window.
+	 * @param	Width		The width of the window to be created.
+	 * @param	Height		The height of the window to be created.
+	 * @param	type		The type of window, either BunWindow.BORDERED, BunWindow.SHADOWED, or BunWindow.SHADOWED_MENU.
+	 * @param 	Content		Optional, an additional element to draw in the window.
 	 * @param 	ContentX	X position of content, relative to window top-left.
 	 * @param 	ContentY	Y position of content, relative to window top-left.
 	 */
@@ -72,20 +72,14 @@ class BunWindow extends Bitmap
 	{
 		// Wipe previous content by drawing over it with white.
 		
-		Log.trace( "Pixel: " + bitmapData.getPixel32( 1, 1 ) );
-		Log.trace( "White: " + WHITE );
-		Log.trace( "Blue: " + BLUE_LIGHT );
-		Log.trace( "Equals Blue? " + ( bitmapData.getPixel32(1, 1) == BLUE_LIGHT ) );
-		Log.trace( "Equals White? " + ( bitmapData.getPixel32(1, 1) == WHITE ) );
-		/*
-		if ( windowType == BORDERED ) {
+		if ( bitmapData.getPixel32(1, 1) == BLUE_LIGHT ) {
 			bitmapData.fillRect( new Rectangle( 5, 5, bitmapData.width - 10, bitmapData.height - 10 ), 0xffFFFFFF );
-		} else if ( windowType == SHADOWED_MENU ) {
+		} else if ( bitmapData.getPixel32( Std.int( width - 1 ), 2 ) == 0 ) {
 			bitmapData.fillRect( new Rectangle( 1, 1, bitmapData.width - 3, bitmapData.height - 3 ), 0xffFFFFFF );
 		} else {
 			bitmapData.fillRect( new Rectangle( 1, 1, bitmapData.width - 4, bitmapData.height - 4 ), 0xffFFFFFF );
 		}
-		*/
+		
 		drawContent( bitmapData, NewContent, X, Y );
 	}
 	

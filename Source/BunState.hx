@@ -70,14 +70,22 @@ class BunState extends Sprite
 		return Lib.current.stage.stageHeight;
 	}
 	
-	public function limit( VarToLimit:Float, MinLimit:Float = 0, MaxLimit:Float = 640 ):Float
+	public function limit( VarToLimit:Float, MinLimit:Float = 0, MaxLimit:Float = 640, ?Handler:Void->Void ):Float
 	{
+		var limited:Bool = false;
+		
 		if ( VarToLimit < MinLimit ) {
 			VarToLimit = MinLimit;
+			limited = true;
 		}
 		
 		if ( VarToLimit > MaxLimit ) {
 			VarToLimit = MaxLimit;
+			limited = true;
+		}
+		
+		if ( Handler != null && limited ) {
+			Handler();
 		}
 		
 		return VarToLimit;
