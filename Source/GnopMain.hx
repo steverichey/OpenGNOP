@@ -1,12 +1,14 @@
 package;
 
 import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.events.Event;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 import haxe.Log;
 import openfl.Assets;
 
-class Gnop extends BunState
+class GnopMain extends BunState
 {
 	private var splash:BunWindow;
 	private var menu:BunMenu;
@@ -14,6 +16,7 @@ class Gnop extends BunState
 	private var about:BunWindowExt;
 	private var endscore:BunWindowExt;
 	private var instructions:BunWindowExt;
+	private var playstate:GnopPlaystate;
 	
 	private var playerPaddleSize:Int = 1;
 	private var computerPaddleSize:Int = 1;
@@ -33,6 +36,8 @@ class Gnop extends BunState
 	private static inline var ABOUT_HEIGHT:Int = 314;
 	private static inline var ABOUT_OK_X:Int = 361;
 	private static inline var ABOUT_OK_Y:Int = 191;
+	private static inline var ABOUT_IMG_X:Int = 21;
+	private static inline var ABOUT_IMG_Y:Int = 12;
 	
 	private static inline var SET_X:Int = 75;
 	private static inline var SET_Y:Int = 45;
@@ -42,6 +47,8 @@ class Gnop extends BunState
 	private static inline var SET_OK_Y:Int = 67;
 	private static inline var SET_CANCEL_X:Int = 46;
 	private static inline var SET_CANCEL_Y:Int = 71;
+	private static inline var SET_TEXT_X:Int = 39;
+	private static inline var SET_TEXT_Y:Int = 32;
 	
 	private static inline var INSTRUCTIONS_X:Int = 20;
 	private static inline var INSTRUCTIONS_Y:Int = 27;
@@ -73,6 +80,11 @@ class Gnop extends BunState
 		splash.y = 94;
 		addChild( splash );
 		
+		// Add the top menu.
+		
+		menu = new BunMenu( getMenuItems() );
+		addChild( menu );
+		
 		// Add the "tiny icon" in the top menu.
 		
 		tinyicon = new Bitmap( Assets.getBitmapData( "images/icon_tiny.png" ) );
@@ -80,14 +92,9 @@ class Gnop extends BunState
 		tinyicon.y = 5;
 		addChild( tinyicon );
 		
-		// Add the top menu.
-		
-		menu = new BunMenu( getMenuItems() );
-		addChild( menu );
-		
 		// setup child windows
 		
-		about = new BunWindowExt( ABOUT_WIDTH, ABOUT_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/about.png" ), 21, 12 );
+		about = new BunWindowExt( ABOUT_WIDTH, ABOUT_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/about.png" ), ABOUT_IMG_X, ABOUT_IMG_Y );
 		about.x = ABOUT_X;
 		about.y = ABOUT_Y;
 		about.addOk( ABOUT_OK_X, ABOUT_OK_Y );
@@ -100,11 +107,42 @@ class Gnop extends BunState
 		instructions.addOk( INSTRUCTIONS_OK_X, INSTRUCTIONS_OK_Y );
 		instructions.visible = false;
 		addChild( instructions );
+		
+		var temp:BitmapData = new BitmapData( 41, 27, false, 0xff000000 );
+		temp.fillRect( new Rectangle( 1, 1, temp.width - 2, temp.height - 2 ), 0xffFFFFFF );
+		endscore = new BunWindowExt( SET_WIDTH, SET_HEIGHT, BunWindow.BORDERED, temp, 151, 27 );
+		endscore.x = SET_X;
+		endscore.y = SET_Y;
+		endscore.addOk( SET_OK_X, SET_OK_Y );
+		endscore.addText( SET_TEXT_X, SET_TEXT_Y, "Set Ending Score" );
+		endscore.addCancel( SET_CANCEL_X, SET_CANCEL_Y );
+		endscore.visible = false;
+		addChild( endscore );
 	}
 	
 	override public function update( ?e:Event ):Void
 	{
 		super.update( e );
+		
+		if ( playstate != null ) {
+			playstate.update();
+		}
+	}
+	
+	private function startNewGame():Void
+	{
+		playstate = new GnopPlaystate();
+		playstate.addEventListener( Event.COMPLETE, onGameComplete, false, 0, true );
+		addChild( playstate );
+		splash.visible = false;
+	}
+	
+	private function onGameComplete( ?e:Event ):Void
+	{
+		playstate.removeEventListener( Event.COMPLETE, onGameComplete );
+		splash.visible = true;
+		removeChild( playstate );
+		playstate = null;
 	}
 	
 	override public function menuSelect( Selection:Point ):Void
@@ -115,7 +153,7 @@ class Gnop extends BunState
 			case { x:0, y:0 }:
 				createWindow( ABOUT_GNOP );
 			case { x:1, y:0 }:
-				// new game
+				startNewGame();
 			case { x:1, y:2 }:
 				dispatchEvent( new Event( Event.COMPLETE ) );
 			case { x:2, y:1 }:
@@ -189,6 +227,11 @@ class Gnop extends BunState
 			instructions.visible = true;
 			instructions.addEventListener( Event.COMPLETE, onCloseInstructions, false, 0, true );
 		}
+		
+		if ( WindowType == SET_ENDING_SCORE ) {
+			endscore.visible = true;
+			endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
+		}
 	}
 	
 	private function onCloseAbout( ?e:Event ):Void
@@ -201,6 +244,24 @@ class Gnop extends BunState
 	{
 		instructions.removeEventListener( Event.COMPLETE, onCloseInstructions );
 		instructions.visible = false;
+	}
+	
+	private function onCloseEndScore( ?e:Event ):Void
+	{
+		// todo add code here to check if the end score submitted is valid
+		endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
+		endscore.visible = false;
+	}
+	
+	public function setSplash( type:Int ):Void
+	{
+		if ( type == GnopPlaystate.END_QUIT ) {
+			splash.updateContent( Assets.getBitmapData( "images/splash.png" ), 57, 49 );
+		} else if ( type == GnopPlaystate.END_LOSE ) {
+			splash.updateContent( Assets.getBitmapData( "images/lose.png" ), 125, 72 );
+		} else {
+			splash.updateContent(  Assets.getBitmapData( "images/win.png" ), 104, 62 );
+		}
 	}
 	
 	private function getMenuItems():Array<Array<String>>

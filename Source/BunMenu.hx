@@ -287,7 +287,7 @@ class BunMenu extends BunState
 		
 		longest += BunMenuItem.LEFT_PADDING_DROP + BunMenuItem.RIGHT_PADDING_DROP;
 		
-		var w:BunWindow = new BunWindow( longest + 2, Arr.length * BunMenuItem.DROP_ITEM_HEIGHT + 2, BunWindow.SHADOWED_MENU );
+		var w:BunWindow = new BunWindow( longest + 3, Arr.length * BunMenuItem.DROP_ITEM_HEIGHT + 3, BunWindow.SHADOWED_MENU );
 		s.addChild( w );
 		
 		var currentY:Int = 1;

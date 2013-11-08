@@ -19,6 +19,7 @@ class BunWindowExt extends Sprite
 	private var _bitmap:BunWindow;
 	private var _ok:BunButton;
 	private var _cancel:BunButton;
+	private var _text:BunText;
 	
 	/**
 	 * Create an OS window that can contain buttons and text entry fields.
@@ -30,7 +31,7 @@ class BunWindowExt extends Sprite
 	 * @param 	ContentX	X position of content, relative to window top-left.
 	 * @param 	ContentY	Y position of content, relative to window top-left.
 	 */
-	public function new( Width:Int, Height:Int, type:String, Content:BitmapData = null, ContentX:Int = 0, ContentY:Int = 0 )
+	public function new( Width:Int, Height:Int, type:UInt, Content:BitmapData = null, ContentX:Int = 0, ContentY:Int = 0 )
 	{
 		_bitmap = new BunWindow( Width, Height, type, Content, ContentX, ContentY );
 		addChild( _bitmap );
@@ -50,5 +51,27 @@ class BunWindowExt extends Sprite
 	private function onClickOk( ?e:Event ):Void
 	{
 		dispatchEvent( new Event( Event.COMPLETE ) );
+	}
+	
+	public function addCancel( X:Int, Y:Int ):Void
+	{
+		_cancel = new BunButton( BunButton.CANCEL );
+		_cancel.x = X;
+		_cancel.y = Y;
+		_cancel.addEventListener( Event.COMPLETE, onClickCancel, false, 0, true );
+		addChild( _cancel );
+	}
+	
+	private function onClickCancel( ?e:Event ):Void
+	{
+		dispatchEvent( new Event( Event.CANCEL ) );
+	}
+	
+	public function addText( X:Int, Y:Int, Text:String ):Void
+	{
+		_text = new BunText( Text );
+		_text.x = X;
+		_text.y = Y;
+		addChild( _text );
 	}
 }

@@ -19,7 +19,7 @@ class DesktopState extends BunState
 	private var iconDiffY:Float;
 	
 	private var _time:BunTime;
-	private var _game:Gnop;
+	private var _game:GnopMain;
 	
 	private static inline var DOUBLE_CLICK_TIME:Int = 500;
 	private static inline var NEGATIVE_DEFAULT_CLICK_TIME:Int = -2000;
@@ -64,7 +64,8 @@ class DesktopState extends BunState
 		
 		if ( _game == null ) {
 			if ( dragging && icon.visible ) {
-				limit( icon, mouseX - iconDiffX, mouseY - iconDiffY, 0, 20, getStageWidth(), getStageHeight() );
+				icon.x = limit( mouseX - iconDiffX, 0, getStageWidth() - icon.width );
+				icon.y = limit( mouseY - iconDiffY, 20, getStageHeight() - icon.height );
 			}
 		} else {
 			_game.update( e );
@@ -125,7 +126,7 @@ class DesktopState extends BunState
 		// could change _game = new Gnop(); to _game = new ODS(); and then put
 		// the necessary game logic in a new file called ODS.hx with class ODS.
 		
-		_game = new Gnop();
+		_game = new GnopMain();
 		addChild( _game );
 		
 		_game.addEventListener( Event.COMPLETE, onCloseGame, false, 0, true );

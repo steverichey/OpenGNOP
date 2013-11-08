@@ -49,14 +49,14 @@ class GameClass extends Sprite
 		var dgrey:Int = 0xff666666;
 		var lgrey:Int = 0xffAAAAAA;
 		
-		// create black background
+		// create grey background
 		
-		var bd:BitmapData = new BitmapData( w, h, false, blk );
+		var bd:BitmapData = new BitmapData( w, h, false, lgrey );
 		
-		// draw white top, grey bottom
+		// draw white top, black bar
 		
 		bd.fillRect( new Rectangle( 0, 0, w, 19 ), wht );
-		bd.fillRect( new Rectangle( 0, 20, w, 460 ), lgrey );
+		bd.fillRect( new Rectangle( 0, 19, w, 1 ), blk );
 		
 		// alternating dark grey pixels on bottom
 		

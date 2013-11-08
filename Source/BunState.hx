@@ -70,31 +70,17 @@ class BunState extends Sprite
 		return Lib.current.stage.stageHeight;
 	}
 	
-	public function limit( sprite:Sprite, newX:Float, newY:Float, minX:Int = 0, minY:Int = 0, maxX:Int = 640, maxY:Int = 480 ):Void
+	public function limit( VarToLimit:Float, MinLimit:Float = 0, MaxLimit:Float = 640 ):Float
 	{
-		var newSpriteX:Int = Std.int( newX );
-		var newSpriteY:Int = Std.int( newY );
-		var spriteXLim:Int = Std.int( maxX - sprite.width );
-		var spriteYLim:Int = Std.int( maxY - sprite.height );
-		
-		if ( newSpriteX < minX ) {
-			newSpriteX = minX;
+		if ( VarToLimit < MinLimit ) {
+			VarToLimit = MinLimit;
 		}
 		
-		if ( newSpriteX > spriteXLim ) {
-			newSpriteX = spriteXLim;
+		if ( VarToLimit > MaxLimit ) {
+			VarToLimit = MaxLimit;
 		}
 		
-		if ( newSpriteY < minY ) {
-			newSpriteY = minY;
-		}
-		
-		if ( newSpriteY > spriteYLim ) {
-			newSpriteY = spriteYLim;
-		}
-		
-		sprite.x = newSpriteX;
-		sprite.y = newSpriteY;
+		return VarToLimit;
 	}
 	
 	public function invert( sprite:Sprite )
