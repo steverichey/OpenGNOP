@@ -5,18 +5,31 @@ import flash.display.BitmapData;
 import flash.events.Event;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import haxe.Log;
+
+#if desktop
+import flash.media.Sound;
+
+@:sound( "sounds/start.ogg" ) class Sound_Start extends Sound { }
+@:sound( "sounds/lose.ogg" ) class Sound_Lose extends Sound { }
+@:sound( "sounds/win.ogg" ) class Sound_Win extends Sound { }
+#else
 import openfl.Assets;
+#end
 
 class GnopMain extends BunState
 {
-	private var splash:BunWindow;
-	private var menu:BunMenu;
-	private var tinyicon:Bitmap;
-	private var about:BunWindowExt;
-	private var endscore:BunWindowExt;
-	private var instructions:BunWindowExt;
-	private var playstate:GnopPlaystate;
+	private var _splash:BunWindow;
+	private var _menu:BunMenu;
+	private var _tinyicon:Bitmap;
+	private var _about:BunWindowExt;
+	private var _endscore:BunWindowExt;
+	private var _instructions:BunWindowExt;
+	private var _scoreWarning:BunWindowExt;
+	private var _playstate:GnopPlaystate;
+	private var _start:BunSound;
+	private var _lose:BunSound;
+	private var _win:BunSound;
+	private var _endType:Int;
 	
 	public static var playerPaddleSize:Int = 1;
 	public static var computerPaddleSize:Int = 1;
@@ -30,6 +43,7 @@ class GnopMain extends BunState
 	private static inline var ABOUT_GNOP:Int = 0;
 	private static inline var SET_ENDING_SCORE:Int = 1;
 	private static inline var INSTRUCTIONS:Int = 2;
+	private static inline var SCORE_WARNING:Int = 3;
 	
 	private static inline var ABOUT_X:Int = 4;
 	private static inline var ABOUT_Y:Int = 26;
@@ -50,6 +64,7 @@ class GnopMain extends BunState
 	private static inline var SET_CANCEL_Y:Int = 71;
 	private static inline var SET_TEXT_X:Int = 39;
 	private static inline var SET_TEXT_Y:Int = 32;
+	private static inline var SET_TEXT:String = "Set Ending Score";
 	
 	private static inline var INSTRUCTIONS_X:Int = 20;
 	private static inline var INSTRUCTIONS_Y:Int = 27;
@@ -58,8 +73,18 @@ class GnopMain extends BunState
 	private static inline var INSTRUCTIONS_OK_X:Int = 180;
 	private static inline var INSTRUCTIONS_OK_Y:Int = 269;
 	
-	// about image is 21,12 from top-left of white
-	// instructions image is 27,12 from top-left of white
+	private static inline var WARNING_X:Int = 33;
+	private static inline var WARNING_Y:Int = 58;
+	private static inline var WARNING_WIDTH:Int = 350;
+	private static inline var WARNING_HEIGHT:Int = 90;
+	private static inline var WARNING_HAND_X:Int = 28;
+	private static inline var WARNING_HAND_Y:Int = 18;
+	private static inline var WARNING_TEXT_X:Int = 71;
+	private static inline var WARNING_TEXT_Y:Int = 25;
+	private static inline var WARNING_TEXT:String = "Ending score must be/between 0 and 100.";
+	private static inline var WARNING_OK_X:Int = 248;
+	private static inline var WARNING_OK_Y:Int = 29;
+	
 	// score warning image is 23,13 from top-left of white
 	//         TODO: simplify score warning to just use hand sign as image
 	// score set image is 35,22 from top-left of white
@@ -76,74 +101,98 @@ class GnopMain extends BunState
 		
 		// Add the initial splash screen.
 		
-		splash = new BunWindow( 502, 312, BunWindow.SHADOWED, Assets.getBitmapData( "images/splash.png" ), 57, 49 );
-		splash.x = 69;
-		splash.y = 94;
-		addChild( splash );
+		_splash = new BunWindow( 502, 312, BunWindow.SHADOWED, Assets.getBitmapData( "images/splash.png" ), 57, 49 );
+		_splash.x = 69;
+		_splash.y = 94;
+		addChild( _splash );
 		
 		// Add the top menu.
 		
-		menu = new BunMenu( getMenuItems() );
-		addChild( menu );
+		_menu = new BunMenu( getMenuItems() );
+		addChild( _menu );
 		
 		// Add the "tiny icon" in the top menu.
 		
-		tinyicon = new Bitmap( Assets.getBitmapData( "images/icon_tiny.png" ) );
-		tinyicon.x = 609;
-		tinyicon.y = 5;
-		addChild( tinyicon );
+		_tinyicon = new Bitmap( Assets.getBitmapData( "images/icon_tiny.png" ) );
+		_tinyicon.x = 609;
+		_tinyicon.y = 5;
+		addChild( _tinyicon );
 		
 		// setup child windows
 		
-		about = new BunWindowExt( ABOUT_WIDTH, ABOUT_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/about.png" ), ABOUT_IMG_X, ABOUT_IMG_Y );
-		about.x = ABOUT_X;
-		about.y = ABOUT_Y;
-		about.addOk( ABOUT_OK_X, ABOUT_OK_Y );
-		about.visible = false;
-		addChild( about );
+		_about = new BunWindowExt( ABOUT_WIDTH, ABOUT_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/about.png" ), ABOUT_IMG_X, ABOUT_IMG_Y );
+		_about.x = ABOUT_X;
+		_about.y = ABOUT_Y;
+		_about.addOk( ABOUT_OK_X, ABOUT_OK_Y );
+		_about.visible = false;
+		addChild( _about );
 		
-		instructions = new BunWindowExt( INSTRUCTIONS_WIDTH, INSTRUCTIONS_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/instructions.png" ), 27, 12 );
-		instructions.x = INSTRUCTIONS_X;
-		instructions.y = INSTRUCTIONS_Y;
-		instructions.addOk( INSTRUCTIONS_OK_X, INSTRUCTIONS_OK_Y );
-		instructions.visible = false;
-		addChild( instructions );
+		_instructions = new BunWindowExt( INSTRUCTIONS_WIDTH, INSTRUCTIONS_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/instructions.png" ), 27, 12 );
+		_instructions.x = INSTRUCTIONS_X;
+		_instructions.y = INSTRUCTIONS_Y;
+		_instructions.addOk( INSTRUCTIONS_OK_X, INSTRUCTIONS_OK_Y );
+		_instructions.visible = false;
+		addChild( _instructions );
 		
 		var temp:BitmapData = new BitmapData( 41, 27, false, 0xff000000 );
 		temp.fillRect( new Rectangle( 1, 1, temp.width - 2, temp.height - 2 ), 0xffFFFFFF );
-		endscore = new BunWindowExt( SET_WIDTH, SET_HEIGHT, BunWindow.BORDERED, temp, 151, 27 );
-		endscore.x = SET_X;
-		endscore.y = SET_Y;
-		endscore.addOk( SET_OK_X, SET_OK_Y );
-		endscore.addText( SET_TEXT_X, SET_TEXT_Y, "Set Ending Score" );
-		endscore.addCancel( SET_CANCEL_X, SET_CANCEL_Y );
-		endscore.visible = false;
-		addChild( endscore );
+		_endscore = new BunWindowExt( SET_WIDTH, SET_HEIGHT, BunWindow.BORDERED, temp, 151, 27 );
+		_endscore.x = SET_X;
+		_endscore.y = SET_Y;
+		_endscore.addOk( SET_OK_X, SET_OK_Y );
+		_endscore.addText( SET_TEXT_X, SET_TEXT_Y, SET_TEXT );
+		_endscore.addCancel( SET_CANCEL_X, SET_CANCEL_Y );
+		_endscore.visible = false;
+		addChild( _endscore );
+		
+		_scoreWarning = new BunWindowExt( WARNING_WIDTH, WARNING_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/warn.png" ), WARNING_HAND_X, WARNING_HAND_Y );
+		_scoreWarning.x = WARNING_X;
+		_scoreWarning.y = WARNING_Y;
+		_scoreWarning.addText( WARNING_TEXT_X, WARNING_TEXT_Y, WARNING_TEXT );
+		_scoreWarning.addOk( WARNING_OK_X, WARNING_OK_Y );
+		_scoreWarning.visible = false;
+		addChild( _scoreWarning );
+		
+		_start = new BunSound( "start" );
+		_start.addEventListener( Event.SOUND_COMPLETE, beginGame, false, 0, true );
+		_win = new BunSound( "win" );
+		_lose = new BunSound( "lose" );
 	}
 	
 	override public function update( ?e:Event ):Void
 	{
 		super.update( e );
 		
-		if ( playstate != null ) {
-			playstate.update();
+		if ( _playstate != null ) {
+			_playstate.update();
 		}
 	}
 	
 	private function startNewGame():Void
 	{
-		playstate = new GnopPlaystate();
-		playstate.addEventListener( Event.COMPLETE, onGameComplete, false, 0, true );
-		addChild( playstate );
-		splash.visible = false;
+		_start.play();
+	}
+	
+	private function beginGame( ?e:Event ):Void
+	{
+		_playstate = new GnopPlaystate();
+		_playstate.addEventListener( Event.COMPLETE, onGameComplete, false, 0, true );
+		addChild( _playstate );
+		_splash.visible = false;
 	}
 	
 	private function onGameComplete( ?e:Event ):Void
 	{
-		playstate.removeEventListener( Event.COMPLETE, onGameComplete );
-		splash.visible = true;
-		removeChild( playstate );
-		playstate = null;
+		_playstate.removeEventListener( Event.COMPLETE, onGameComplete );
+		_splash.visible = true;
+		removeChild( _playstate );
+		_playstate = null;
+		
+		if ( _endType == GnopPlaystate.END_LOSE ) {
+			_lose.play();
+		} else {
+			_win.play();
+		}
 	}
 	
 	override public function menuSelect( Selection:Point ):Void
@@ -159,49 +208,49 @@ class GnopMain extends BunState
 				dispatchEvent( new Event( Event.COMPLETE ) );
 			case { x:2, y:1 }:
 				playerPaddleSize = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:2, y:2 }:
 				playerPaddleSize = 1;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:2, y:3 }:
 				playerPaddleSize = 2;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:2, y:6 }:
 				computerPaddleSize = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:2, y:7 }:
 				computerPaddleSize = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:2, y:8 }:
 				computerPaddleSize = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:3, y:0 }:
 				ballSize = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:3, y:1 }:
 				ballSize = 1;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:3, y:2 }:
 				ballSize = 2;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:3, y:4 }:
 				ballSpeed = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:3, y:5 }:
 				ballSpeed = 1;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:3, y:6 }:
 				ballSpeed = 2;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:4, y:0 }:
 				difficulty = 0;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:4, y:1 }:
 				difficulty = 1;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:4, y:2 }:
 				difficulty = 2;
-				menu.updateCheckmarks();
+				_menu.updateCheckmarks();
 			case { x:4, y:4 }:
 				createWindow( SET_ENDING_SCORE );
 			case { x:4, y:6 }:
@@ -220,48 +269,61 @@ class GnopMain extends BunState
 	private function createWindow( WindowType:Int ):Void
 	{
 		if ( WindowType == ABOUT_GNOP ) {
-			about.visible = true;
-			about.addEventListener( Event.COMPLETE, onCloseAbout, false, 0, true );
+			_about.visible = true;
+			_about.addEventListener( Event.COMPLETE, onCloseAbout, false, 0, true );
 		}
 		
 		if ( WindowType == INSTRUCTIONS ) {
-			instructions.visible = true;
-			instructions.addEventListener( Event.COMPLETE, onCloseInstructions, false, 0, true );
+			_instructions.visible = true;
+			_instructions.addEventListener( Event.COMPLETE, onCloseInstructions, false, 0, true );
 		}
 		
 		if ( WindowType == SET_ENDING_SCORE ) {
-			endscore.visible = true;
-			endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
+			_endscore.visible = true;
+			_endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
+		}
+		
+		if ( WindowType == SCORE_WARNING ) {
+			_scoreWarning.visible = true;
+			_scoreWarning.addEventListener( Event.COMPLETE, onCloseWarning, false, 0, true );
 		}
 	}
 	
 	private function onCloseAbout( ?e:Event ):Void
 	{
-		about.removeEventListener( Event.COMPLETE, onCloseAbout );
-		about.visible = false;
+		_about.removeEventListener( Event.COMPLETE, onCloseAbout );
+		_about.visible = false;
 	}
 	
 	private function onCloseInstructions( ?e:Event ):Void
 	{
-		instructions.removeEventListener( Event.COMPLETE, onCloseInstructions );
-		instructions.visible = false;
+		_instructions.removeEventListener( Event.COMPLETE, onCloseInstructions );
+		_instructions.visible = false;
 	}
 	
 	private function onCloseEndScore( ?e:Event ):Void
 	{
 		// todo add code here to check if the end score submitted is valid
-		endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
-		endscore.visible = false;
+		_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
+		_endscore.visible = false;
+	}
+	
+	private function onCloseWarning( ?e:Event ):Void
+	{
+		_scoreWarning.removeEventListener( Event.COMPLETE, onCloseWarning );
+		_scoreWarning.visible = false;
 	}
 	
 	public function setSplash( type:Int ):Void
 	{
+		_endType = type;
+		
 		if ( type == GnopPlaystate.END_QUIT ) {
-			splash.updateContent( Assets.getBitmapData( "images/splash.png" ), 57, 49 );
+			_splash.updateContent( Assets.getBitmapData( "images/splash.png" ), 57, 49 );
 		} else if ( type == GnopPlaystate.END_LOSE ) {
-			splash.updateContent( Assets.getBitmapData( "images/lose.png" ), 125, 72 );
+			_splash.updateContent( Assets.getBitmapData( "images/lose.png" ), 125, 72 );
 		} else {
-			splash.updateContent(  Assets.getBitmapData( "images/win.png" ), 104, 62 );
+			_splash.updateContent(  Assets.getBitmapData( "images/win.png" ), 104, 62 );
 		}
 	}
 	

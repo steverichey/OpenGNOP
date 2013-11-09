@@ -14,7 +14,7 @@ import openfl.Assets;
  * 
  * @author STVR
  */
-class BunSound
+class BunSound extends flash.events.EventDispatcher
 {
 	/**
 	 * Internal tracker for paused status.
@@ -84,7 +84,9 @@ class BunSound
 	#else
 	public function new( File:String )
 	#end
-	{	
+	{
+		super();
+		
 		this.volume = 1.0;
 		this._loop = false;
 		this._paused = false;
@@ -257,6 +259,8 @@ class BunSound
 		}
 		
 		stop();
+		
+		dispatchEvent( new Event( Event.SOUND_COMPLETE ) );
 	}
 	
 	public function destroy():Void

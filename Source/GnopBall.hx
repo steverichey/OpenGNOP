@@ -22,8 +22,11 @@ class GnopBall extends Bitmap
 	public static inline var FAST:Int = 2;
 	
 	private static inline var BLK:Int = 0xff000000;
+	private static inline var SPEED_X_SLOW:Int = 2;
+	private static inline var SPEED_X_NORMAL:Int = 4;
+	private static inline var SPEED_X_FAST:Int = 8;
 	
-	public function new( BallSize:Int = NORMAL_SIZE, BallSpeed:Int = NORMAL_SPEED )
+	public function new( BallSize:Int, BallSpeed:Int )
 	{
 		var ball:BitmapData;
 		
@@ -50,10 +53,21 @@ class GnopBall extends Bitmap
 			ball.fillRect( new Rectangle( 1, 1, 6, 6 ), BLK );
 		}
 		
-		this.x = 320;
-		this.y = 240;
+		var xspeed:Int = 0;
 		
-		velocity = new Point( -1, 1 );
+		if ( BallSpeed == SLOW ) {
+			xspeed = SPEED_X_SLOW;
+		} else if ( BallSpeed == NORMAL_SPEED ) {
+			xspeed = SPEED_X_NORMAL;
+		} else {
+			xspeed = SPEED_X_FAST;
+		}
+		
+		if ( GnopMain.playerServesFirst ) {
+			xspeed *= -1;
+		}
+		
+		velocity = new Point( xspeed, 0 );
 		
 		super( ball );
 	}
@@ -67,8 +81,13 @@ class GnopBall extends Bitmap
 		}
 	}
 	
-	public function reset():Void
+	public function calculateY( PaddleY:Float, PaddleHeight:Float ):Void
 	{
-		this.x = 320;
+		var thisMid:Float = this.y + this.height / 2;
+		var paddleMid:Float = PaddleY + PaddleHeight / 2;
+		var fromCenter:Float = paddleMid - thisMid;
+		var maxDist:Float = ( this.height + PaddleHeight ) / 2;
+		
+		velocity.y = fromCenter / maxDist;
 	}
 }
