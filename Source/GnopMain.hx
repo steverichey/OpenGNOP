@@ -24,6 +24,7 @@ class GnopMain extends BunState
 	public static var ballSpeed:Int = 1;
 	public static var difficulty:Int = 1;
 	public static var endScore:Int = 4;
+	public static var playerServesFirst:Bool = true;
 	public static var sound:Bool = true;
 	
 	private static inline var ABOUT_GNOP:Int = 0;

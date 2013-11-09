@@ -22,7 +22,13 @@ class GnopPlaystate extends BunState
 	private var _scorePlayer:GnopScore;
 	private var _scoreToWin:GnopScore;
 	private var _scoreComputer:GnopScore;
-	private var _paused:Bool = false;
+	
+	private var _matchPoint:BunSound;
+	private var _bounce:BunSound;
+	
+	private var _paused:Bool;
+	private var _serving:Bool;
+	private var _playerServing:Bool;
 	
 	private static inline var BG_X:Int = 62;
 	private static inline var BG_Y:Int = 87;
@@ -59,9 +65,21 @@ class GnopPlaystate extends BunState
 		_computer = new GnopPaddle( GnopMain.computerPaddleSize, GnopPaddle.COMPUTER );
 		_ball = new GnopBall( GnopMain.ballSize, GnopMain.ballSpeed );
 		_scorePlayer = new GnopScore( GnopScore.PLAYER );
-		_scoreToWin = new GnopScore( GnopScore.WIN );
-		_scoreToWin.score = GnopMain.endScore;
+		_scoreToWin = new GnopScore( GnopScore.WIN, GnopMain.endScore );
 		_scoreComputer = new GnopScore( GnopScore.COMPUTER );
+		
+		_serving = true;
+		
+		if ( GnopMain.playerServesFirst ) {
+			_ball.x = _player.x - _ball.width - 1;
+			_playerServing = true;
+		} else {
+			_ball.x = _computer.x + _computer.width + 1;
+			_playerServing = false;
+		}
+		
+		_bounce = new BunSound( "bounce" );
+		_matchPoint = new BunSound( "matchpoint" );
 		
 		addChild( _bg );
 		addChild( _player );
@@ -72,7 +90,7 @@ class GnopPlaystate extends BunState
 		addChild( _scoreComputer );
 		
 		Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp, false, 0, true );
-		this.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true );		
+		Lib.current.stage.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true );		
 	}
 	
 	override public function update( ?e:Event ):Void
@@ -85,8 +103,17 @@ class GnopPlaystate extends BunState
 		
 		_player.y = limit( mouseY, Y_MIN, Y_MAX - _player.height );
 		_computer.y = limit( _ball.y, Y_MIN, Y_MAX - _computer.height );
-		_ball.y = limit( _ball.y + _ball.velocity.y, Y_MIN, Y_MAX - _ball.height, wallBounce );
-		_ball.x = limit( _ball.x + _ball.velocity.x, X_MIN, X_MAX - _ball.width, paddleBounce );
+		
+		if ( _serving ) {
+			if ( _playerServing ) {
+				_ball.y = _player.y + ( _player.height - _ball.height ) / 2;
+			} else {
+				_ball.y = _computer.y + ( _computer.height - _ball.height ) / 2;
+			}
+		} else {
+			_ball.y = limit( _ball.y + _ball.velocity.y, Y_MIN, Y_MAX - _ball.height, wallBounce );
+			_ball.x = limit( _ball.x + _ball.velocity.x, X_MIN, X_MAX - _ball.width, paddleBounce );
+		}
 	}
 	
 	private function paddleBounce( type:Int, value:Float ):Float
@@ -106,13 +133,22 @@ class GnopPlaystate extends BunState
 		
 		if ( ballMaxY > paddleMinY && ballMinY < paddleMaxY ) {
 			_ball.reverse( GnopBall.X_AXIS );
+			_bounce.play( true );
 		} else {
 			value = 320;
 			
 			if ( type == BunState.MINIMUM ) {
-				_scoreComputer.score ++;
-			} else {
 				_scorePlayer.score ++;
+				
+				if ( _scorePlayer.score >= _scoreToWin.score ) {
+					endGame( END_WIN );
+				}
+			} else {
+				_scoreComputer.score ++;
+				
+				if ( _scoreComputer.score >= _scoreToWin.score ) {
+					endGame( END_LOSE );
+				}
 			}
 		}
 		
@@ -122,6 +158,7 @@ class GnopPlaystate extends BunState
 	private function wallBounce( type:Int, value:Float ):Float
 	{
 		_ball.reverse( GnopBall.Y_AXIS );
+		_bounce.play( true );
 		
 		return value;
 	}
@@ -132,6 +169,10 @@ class GnopPlaystate extends BunState
 			endGame( END_QUIT );
 		}
 		
+		if ( k.keyCode == 80 ) {
+			_paused = !_paused;
+		}
+		
 		#if debug
 		Log.trace( "Key Pressed: " + k.keyCode );
 		#end
@@ -139,7 +180,13 @@ class GnopPlaystate extends BunState
 	
 	private function onMouseDown( ?m:MouseEvent ):Void
 	{
-		Log.trace( "mouse down" );
+		if ( _serving ) {
+			_serving = false;
+		}
+		
+		#if debug
+		Log.trace( "Mouse down." );
+		#end
 	}
 	
 	private function endGame( type:Int ):Void

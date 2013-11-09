@@ -11,7 +11,7 @@ class GnopScore extends BunText
 	private static inline var MIN_SCORE:Int = 0;
 	private static inline var MAX_SCORE:Int = 999;
 	
-	public function new( type:Int )
+	public function new( type:Int, ?DefaultScore:Int )
 	{
 		this.y = 101;
 		
@@ -25,6 +25,10 @@ class GnopScore extends BunText
 		}
 		
 		super( "000" );
+		
+		if ( DefaultScore != null ) {
+			score = DefaultScore;
+		}
 	}
 	
 	public var score(get, set):Int;
