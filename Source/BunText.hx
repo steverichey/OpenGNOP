@@ -93,7 +93,7 @@ class BunText extends Bitmap
 	private var _text:String;
 	
 	/**
-	 * Create a new PkText object.
+	 * Create a new BunText object.
 	 * 
 	 * @param	Text		Initial text of this object.
 	 */
@@ -197,7 +197,7 @@ class BunText extends Bitmap
 		var g:Int = ( NewColor >> 8 ) & 255;
 		var b:Int = ( NewColor >> 16 ) & 255;
 		
-		bitmapData.colorTransform( new Rectangle( 0, 0, bitmapData.width, bitmapData.height ), new ColorTransform( 0, 0, 0, 1, r, g, b ) );
+		bitmapData.colorTransform( bitmapData.rect, new ColorTransform( 0, 0, 0, 1, r, g, b ) );
 		
 		return NewColor;
 	}

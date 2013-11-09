@@ -14,7 +14,8 @@
 	
 	<!--You can use rename="newName" to shorten the paths to the individual subdirectories!-->
 	<assets path="assets/images" rename="images" />
-	<assets path="assets/sounds" rename="sounds" />
+	<assets path="assets/sounds" rename="sounds" exclude="*.ogg" if="flash"/>
+	<assets path="assets/sounds" rename="sounds" exclude="*.mp3" if="desktop"/>
 	
 	<haxelib name="openfl" />
 </project>

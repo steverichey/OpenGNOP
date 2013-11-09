@@ -18,13 +18,13 @@ class GnopMain extends BunState
 	private var instructions:BunWindowExt;
 	private var playstate:GnopPlaystate;
 	
-	private var playerPaddleSize:Int = 1;
-	private var computerPaddleSize:Int = 1;
-	private var ballSize:Int = 1;
-	private var ballSpeed:Int = 1;
-	private var difficulty:Int = 1;
-	private var endScore:Int = 4;
-	private var sound:Bool = true;
+	public static var playerPaddleSize:Int = 1;
+	public static var computerPaddleSize:Int = 1;
+	public static var ballSize:Int = 1;
+	public static var ballSpeed:Int = 1;
+	public static var difficulty:Int = 1;
+	public static var endScore:Int = 4;
+	public static var sound:Bool = true;
 	
 	private static inline var ABOUT_GNOP:Int = 0;
 	private static inline var SET_ENDING_SCORE:Int = 1;

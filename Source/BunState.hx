@@ -18,6 +18,9 @@ class BunState extends Sprite
 {
 	private var invisibleBG:Sprite;
 	
+	public static inline var MINIMUM:Int = 0;
+	public static inline var MAXIMUM:Int = 1;
+	
 	public function new()
 	{
 		super();
@@ -70,22 +73,34 @@ class BunState extends Sprite
 		return Lib.current.stage.stageHeight;
 	}
 	
-	public function limit( VarToLimit:Float, MinLimit:Float = 0, MaxLimit:Float = 640, ?Handler:Void->Void ):Float
+	/**
+	 * Checks to see if a variable is in range, and returns either that variable, the minimum if the variable is too low, or the maximum if the variable is too high.
+	 * 
+	 * @param	VarToLimit	The variable to range check.
+	 * @param	MinLimit	The minimum amount this variable should be.
+	 * @param	MaxLimit	The maximum amount this variable should be.
+	 * @param	?Handler	Optional: A function to call if the variable was limited; should be of type myFunction( type:Int ):Void where type can be either BunState.MINIMUM or BunState.MAXIMUM
+	 * @return	The variable, or if it was out of range, the applicable limit.
+	 */
+	public function limit( VarToLimit:Float, MinLimit:Float, MaxLimit:Float, ?Handler:Int->Float->Float ):Float
 	{
 		var limited:Bool = false;
+		var limitType:Int = 0;
 		
 		if ( VarToLimit < MinLimit ) {
 			VarToLimit = MinLimit;
 			limited = true;
+			limitType = MINIMUM;
 		}
 		
 		if ( VarToLimit > MaxLimit ) {
 			VarToLimit = MaxLimit;
 			limited = true;
+			limitType = MAXIMUM;
 		}
 		
 		if ( Handler != null && limited ) {
-			Handler();
+			VarToLimit = Handler( limitType, VarToLimit );
 		}
 		
 		return VarToLimit;
