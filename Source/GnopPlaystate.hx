@@ -55,6 +55,12 @@ class GnopPlaystate extends BunState
 	public static inline var END_LOSE:Int = 1;
 	public static inline var END_WIN:Int = 2;
 	
+	// debug
+	
+	#if debug
+	private static var SHOW_PATH:Bool = true;
+	#end
+	
 	public function new()
 	{
 		super();
@@ -116,7 +122,6 @@ class GnopPlaystate extends BunState
 		}
 		
 		_player.y = limit( mouseY, Y_MIN, Y_MAX - _player.height );
-		_computer.y = limit( mouseY, Y_MIN, Y_MAX - _computer.height );
 		
 		if ( _serving ) {
 			if ( _playerServing ) {
@@ -127,6 +132,10 @@ class GnopPlaystate extends BunState
 		} else {
 			_ball.y = limit( _ball.y + _ball.velocity.y, Y_MIN, Y_MAX - _ball.height, wallBounce );
 			_ball.x = limit( _ball.x + _ball.velocity.x, X_MIN, X_MAX - _ball.width, paddleBounce );
+			
+			if ( _ball.velocity.x < 0 ) {
+				_computer.y = limit( _computer.moveTowardPredictedY(), Y_MIN, Y_MAX - _computer.height );
+			}
 		}
 	}
 	
@@ -154,6 +163,7 @@ class GnopPlaystate extends BunState
 			
 			if ( isPlayer ) {
 				_ball.calculateY( _player.x, _player.height );
+				_computer.predictedY = predictBallDestination();
 			} else {
 				_ball.calculateY( _computer.x, _computer.height );
 			}
@@ -162,41 +172,68 @@ class GnopPlaystate extends BunState
 			_ball.visible = false;
 			
 			if ( isPlayer ) {
-				_player.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
-				_player.explode();
-				_playerServing = false;
-				value = _computer.x + _computer.width + 1;
-			} else {
-				_computer.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
-				_computer.explode();
-				_playerServing = true;
-				value = _player.x - _ball.width - 1;
-			}
-			
-			if ( type == BunState.MINIMUM ) {
-				_scorePlayer.score ++;
-				
-				if ( _scorePlayer.score == _scoreToWin.score - 1 ) {
-					_matchPoint.play();
-				}
-				
-				if ( _scorePlayer.score >= _scoreToWin.score ) {
-					endGame( END_WIN );
-				}
-			} else {
 				_scoreComputer.score ++;
-				
-				if ( _scoreComputer.score == _scoreToWin.score - 1 ) {
-					_matchPoint.play();
-				}
 				
 				if ( _scoreComputer.score >= _scoreToWin.score ) {
 					endGame( END_LOSE );
+				} else {
+					_player.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
+					_player.explode();
+					_playerServing = false;
+					value = _computer.x + _computer.width + 1;
+					
+					if ( _scoreComputer.score == _scoreToWin.score - 1 ) {
+						_matchPoint.play();
+					}
+				}
+			} else {
+				_scorePlayer.score ++;
+				
+				if ( _scorePlayer.score >= _scoreToWin.score ) {
+					endGame( END_WIN );
+				} else {
+					_computer.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
+					_computer.explode();
+					_playerServing = true;
+					value = _player.x - _ball.width - 1;
+					
+					if ( _scorePlayer.score == _scoreToWin.score - 1 ) {
+						_matchPoint.play();
+					}
 				}
 			}
 		}
 		
 		return value;
+	}
+	
+	private function predictBallDestination():Float
+	{
+		var ballX:Float = _ball.x;
+		var ballY:Float = _ball.y;
+		var ballVelY:Float = _ball.velocity.y;
+		
+		while ( ballX > X_MIN ) {
+			ballY = limit( ballY + ballVelY, Y_MIN, Y_MAX - _ball.height, function( a:Int, v:Float ) {
+				ballVelY *= -1;
+				return v;
+			} );
+			
+			#if debug
+			if ( SHOW_PATH ) {
+				var t:Bitmap = new Bitmap( new BitmapData( 2, 2, false, Std.int( Math.random() * 0xffFFFFFF ) ) );
+				t.x = ballX;
+				t.y = ballY;
+				addChild( t );
+			}
+			#end
+			
+			ballX += _ball.velocity.x;
+		}
+		
+		Log.trace( "Predicted Y: " + ballY + ", Current Y: " + _ball.y + ", Velocity Y: " + _ball.velocity.y );
+		
+		return ballY;
 	}
 	
 	private function wallBounce( type:Int, value:Float ):Float
@@ -226,21 +263,24 @@ class GnopPlaystate extends BunState
 	{
 		if ( _serving ) {
 			_serving = false;
+			
+			if ( _playerServing ) {
+				_computer.predictedY = predictBallDestination();
+			}
 		}
-		
-		#if debug
-		Log.trace( "Mouse down." );
-		#end
 	}
 	
 	private function onCompleteExplosion( ?e:Event ):Void
 	{
 		e.target.removeEventListener( Event.COMPLETE, onCompleteExplosion );
-		_ball.visible = true;
+		_computer.y = GnopPaddle.SPAWN_Y;
+		_ball.reset();
 	}
 	
 	private function endGame( type:Int ):Void
 	{
+		_paused = true;
+		
 		cast( this.parent, GnopMain ).setSplash( type );
 		
 		Lib.current.stage.removeEventListener( KeyboardEvent.KEY_UP, onKeyUp );
@@ -253,6 +293,14 @@ class GnopPlaystate extends BunState
 		removeChild( _scorePlayer );
 		removeChild( _scoreToWin );
 		removeChild( _scoreComputer );
+		
+		if ( _computer.hasEventListener( Event.COMPLETE ) ) {
+			_computer.removeEventListener( Event.COMPLETE, onCompleteExplosion );
+		}
+		
+		if ( _computer.hasEventListener( Event.COMPLETE ) ) {
+			_player.removeEventListener( Event.COMPLETE, onCompleteExplosion );
+		}
 		
 		_bg = null;
 		_player = null;

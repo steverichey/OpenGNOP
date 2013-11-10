@@ -90,4 +90,10 @@ class GnopBall extends Bitmap
 		
 		velocity.y = fromCenter / maxDist;
 	}
+	
+	public function reset():Void
+	{
+		velocity.y = 0;
+		visible = true;
+	}
 }
