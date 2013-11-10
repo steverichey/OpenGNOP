@@ -4,6 +4,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import haxe.Log;
 
 class GnopBall extends Bitmap
 {
@@ -87,8 +88,15 @@ class GnopBall extends Bitmap
 		var paddleMid:Float = PaddleY + PaddleHeight / 2;
 		var fromCenter:Float = paddleMid - thisMid;
 		var maxDist:Float = ( this.height + PaddleHeight ) / 2;
+		var sign:Int = 1;
 		
-		velocity.y = fromCenter / maxDist;
+		if ( fromCenter > 0 ) {
+			sign = -1;
+		}
+		
+		velocity.y *= sign * ( fromCenter * fromCenter ) / maxDist;
+		
+		Log.trace( "ThisMid: " + thisMid + ", PaddleMid: " + paddleMid + ", FromCenter: " + fromCenter + ", Max: " + maxDist + ", PaddleY: " + PaddleY + ", PaddleHeight: " + PaddleHeight );
 	}
 	
 	public function reset():Void

@@ -39,10 +39,11 @@ class GnopPaddle extends Bitmap
 	private static inline var WIDTH:Int = 8;
 	private static inline var HEIGHT_MULTIPLIER:Int = 14;
 	private static inline var TIMER_FREQ:Int = 20;
-	private static inline var TIMER_NUM_TIMES:Int = 50;
+	private static inline var TIMER_NUM_TIMES:Int = 100;
 	private static inline var NOVICE_SPEED:Float = 1.0;
 	private static inline var INTERMEDIATE_SPEED:Float = 2.0;
 	private static inline var EXPERT_SPEED:Float = 4.0;
+	private static inline var FALL_SPEED:Float = 4.0;
 	
 	public function new( Height:Int, PaddleType:Int )
 	{
@@ -77,7 +78,7 @@ class GnopPaddle extends Bitmap
 	{
 		var amountToMove:Float = 0.0;
 		
-		if ( predictedY < this.y ) {
+		if ( predictedY < this.y + this.height / 2 ) {
 			amountToMove = -_speed;
 		} else {
 			amountToMove = _speed;
@@ -91,6 +92,11 @@ class GnopPaddle extends Bitmap
 		animating = true;
 		bitmapData = Assets.getBitmapData( "images/paddle_explode.png" );
 		this.x -= 4;
+		
+		if ( this.y > GnopPlaystate.Y_MAX - this.height ) {
+			this.y = GnopPlaystate.Y_MAX - this.height;
+		}
+		
 		_playedLand = false;
 		_explodeTimer.start();
 		_explode.play();
@@ -98,7 +104,7 @@ class GnopPaddle extends Bitmap
 	
 	private function onExplodeTimer( ?t:TimerEvent ):Void
 	{
-		if ( _explodeTimer.currentCount > TIMER_NUM_TIMES / 2 ) {
+		if ( _explodeTimer.currentCount > TIMER_NUM_TIMES / 4 ) {
 			ash();
 		}
 	}
@@ -109,7 +115,11 @@ class GnopPaddle extends Bitmap
 			bitmapData = Assets.getBitmapData( "images/paddle_ash.png" );
 			_ashen = true;
 		} else if ( this.y < GnopPlaystate.Y_MAX - this.height ) {
-			this.y += 4;
+			if ( this.y + FALL_SPEED > GnopPlaystate.Y_MAX - this.height ) {
+				this.y += FALL_SPEED;
+			} else {
+				this.y = GnopPlaystate.Y_MAX - this.height;
+			}
 		} else if ( !_playedLand ) {
 			_land.play();
 			_playedLand = true;

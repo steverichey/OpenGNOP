@@ -133,8 +133,10 @@ class GnopPlaystate extends BunState
 			_ball.y = limit( _ball.y + _ball.velocity.y, Y_MIN, Y_MAX - _ball.height, wallBounce );
 			_ball.x = limit( _ball.x + _ball.velocity.x, X_MIN, X_MAX - _ball.width, paddleBounce );
 			
-			if ( _ball.velocity.x < 0 ) {
-				_computer.y = limit( _computer.moveTowardPredictedY(), Y_MIN, Y_MAX - _computer.height );
+			if ( _ball != null ) {
+				if ( _ball.velocity.x < 0 ) {
+					_computer.y = limit( _computer.moveTowardPredictedY(), Y_MIN, Y_MAX - _computer.height );
+				}
 			}
 		}
 	}
@@ -145,33 +147,30 @@ class GnopPlaystate extends BunState
 		var ballMaxY:Float = _ball.y + _ball.height;
 		var paddleMinY:Float;
 		var paddleMaxY:Float;
-		var isPlayer:Bool;
 		
 		if ( type == BunState.MINIMUM ) {
 			paddleMinY = _computer.y;
 			paddleMaxY = _computer.y + _computer.height;
-			isPlayer = false;
 		} else {
 			paddleMinY = _player.y;
 			paddleMaxY = _player.y + _player.height;
-			isPlayer = true;
 		}
 		
 		if ( ballMaxY > paddleMinY && ballMinY < paddleMaxY ) {
 			_ball.reverse( GnopBall.X_AXIS );
 			_bounce.play( true );
 			
-			if ( isPlayer ) {
-				_ball.calculateY( _player.x, _player.height );
+			if ( type == BunState.MAXIMUM ) {
+				_ball.calculateY( _player.y, _player.height );
 				_computer.predictedY = predictBallDestination();
 			} else {
-				_ball.calculateY( _computer.x, _computer.height );
+				_ball.calculateY( _computer.y, _computer.height );
 			}
 		} else {
 			_serving = true;
 			_ball.visible = false;
 			
-			if ( isPlayer ) {
+			if ( type == BunState.MAXIMUM ) {
 				_scoreComputer.score ++;
 				
 				if ( _scoreComputer.score >= _scoreToWin.score ) {
@@ -187,7 +186,7 @@ class GnopPlaystate extends BunState
 					}
 				}
 			} else {
-				_scorePlayer.score ++;
+				_scorePlayer.score++;
 				
 				if ( _scorePlayer.score >= _scoreToWin.score ) {
 					endGame( END_WIN );
@@ -231,9 +230,9 @@ class GnopPlaystate extends BunState
 			ballX += _ball.velocity.x;
 		}
 		
-		Log.trace( "Predicted Y: " + ballY + ", Current Y: " + _ball.y + ", Velocity Y: " + _ball.velocity.y );
+		//Log.trace( "Predicted Y: " + ballY + ", Current Y: " + _ball.y + ", Velocity Y: " + _ball.velocity.y );
 		
-		return ballY;
+		return ballY + ( _ball.height / 2 );
 	}
 	
 	private function wallBounce( type:Int, value:Float ):Float
