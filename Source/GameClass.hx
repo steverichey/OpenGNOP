@@ -1,13 +1,15 @@
 package;
 
+import flash.Lib;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.display.BitmapData;
-import flash.events.Event;
-import flash.events.EventDispatcher;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.Lib;
+import flash.display.StageDisplayState;
+
 import haxe.Log;
 
 class GameClass extends Sprite
@@ -27,17 +29,28 @@ class GameClass extends Sprite
 		addChild( _desktop );
 		
 		addEventListener( Event.ENTER_FRAME, update );
-		addEventListener( Event.RESIZE, onResize );
+		//Lib.current.stage.addEventListener( Event.RESIZE, onResize, false, 0, true );
+	}
+	
+	private function onResize( ?e:Event ):Void
+	{
+		if ( Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE ) {
+			Log.trace( "You went full screen, this w: " + this.width + ", stage w: " + Lib.current.stage.stageWidth );
+		} else {
+			Log.trace( "You went windowed" );
+		}
+		
+		var ratio:Float = Math.min( Lib.current.stage.stageWidth / this.width, Lib.current.stage.stageHeight / this.height );
+		
+		this.width *= ratio;
+		this.height *= ratio;
+		this.x = ( Lib.current.stage.stageWidth - this.width ) / 2;
+		this.y = ( Lib.current.stage.stageHeight - this.height ) / 2;
 	}
 	
 	private function update( ?e:Event ):Void
 	{
 		_desktop.update();
-	}
-	
-	private function onResize( e:Event ):Void
-	{
-		// this doesn't seem to get called, ever
 	}
 	
 	private function generateDesktopBg():Bitmap
