@@ -3,9 +3,6 @@ package;
 import flash.display.Sprite;
 import flash.events.Event;
 
-/**
- * Simple preloader class with OS-esque visuals. Influenced by NMEPreloader.
- */
 class BunPreloader extends Sprite
 {
 	private var _progress:Sprite;
@@ -55,7 +52,7 @@ class BunPreloader extends Sprite
 	
 	public function onLoaded():Void
 	{
-		//dispatchEvent ( new Event ( Event.COMPLETE ) );
+		dispatchEvent ( new Event ( Event.COMPLETE ) );
 	}
 	
 	public function onUpdate( bytesLoaded:Int, bytesTotal:Int ):Void
