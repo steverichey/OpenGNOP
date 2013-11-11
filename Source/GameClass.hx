@@ -29,23 +29,6 @@ class GameClass extends Sprite
 		addChild( _desktop );
 		
 		addEventListener( Event.ENTER_FRAME, update );
-		//Lib.current.stage.addEventListener( Event.RESIZE, onResize, false, 0, true );
-	}
-	
-	private function onResize( ?e:Event ):Void
-	{
-		if ( Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE ) {
-			Log.trace( "You went full screen, this w: " + this.width + ", stage w: " + Lib.current.stage.stageWidth );
-		} else {
-			Log.trace( "You went windowed" );
-		}
-		
-		var ratio:Float = Math.min( Lib.current.stage.stageWidth / this.width, Lib.current.stage.stageHeight / this.height );
-		
-		this.width *= ratio;
-		this.height *= ratio;
-		this.x = ( Lib.current.stage.stageWidth - this.width ) / 2;
-		this.y = ( Lib.current.stage.stageHeight - this.height ) / 2;
 	}
 	
 	private function update( ?e:Event ):Void

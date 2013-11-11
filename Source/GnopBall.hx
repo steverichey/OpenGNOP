@@ -94,9 +94,7 @@ class GnopBall extends Bitmap
 			sign = -1;
 		}
 		
-		velocity.y = sign * ( fromCenter * fromCenter ) / maxDist;
-		
-		Log.trace( "ThisMid: " + thisMid + ", PaddleMid: " + paddleMid + ", FromCenter: " + fromCenter + ", Max: " + maxDist + ", PaddleY: " + PaddleY + ", PaddleHeight: " + PaddleHeight );
+		velocity.y = sign * ( ( fromCenter * fromCenter ) / maxDist ) + ( velocity.y / maxDist );
 	}
 	
 	public function reset():Void

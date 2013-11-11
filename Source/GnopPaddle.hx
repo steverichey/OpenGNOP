@@ -43,7 +43,7 @@ class GnopPaddle extends Bitmap
 	private static inline var NOVICE_SPEED:Float = 1.0;
 	private static inline var INTERMEDIATE_SPEED:Float = 2.0;
 	private static inline var EXPERT_SPEED:Float = 4.0;
-	private static inline var FALL_SPEED:Float = 4.0;
+	private static inline var FALL_SPEED:Float = 1.0;
 	
 	public function new( Height:Int, PaddleType:Int )
 	{

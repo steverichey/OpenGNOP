@@ -173,33 +173,17 @@ class GnopPlaystate extends BunState
 			if ( type == BunState.MAXIMUM ) {
 				_scoreComputer.score ++;
 				
-				if ( _scoreComputer.score >= _scoreToWin.score ) {
-					endGame( END_LOSE );
-				} else {
-					_player.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
-					_player.explode();
-					_playerServing = false;
-					value = _computer.x + _computer.width + 1;
-					
-					if ( _scoreComputer.score == _scoreToWin.score - 1 ) {
-						_matchPoint.play();
-					}
-				}
+				_player.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
+				_player.explode();
+				_playerServing = false;
+				value = _computer.x + _computer.width + 1;
 			} else {
 				_scorePlayer.score++;
 				
-				if ( _scorePlayer.score >= _scoreToWin.score ) {
-					endGame( END_WIN );
-				} else {
-					_computer.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
-					_computer.explode();
-					_playerServing = true;
-					value = _player.x - _ball.width - 1;
-					
-					if ( _scorePlayer.score == _scoreToWin.score - 1 ) {
-						_matchPoint.play();
-					}
-				}
+				_computer.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
+				_computer.explode();
+				_playerServing = true;
+				value = _player.x - _ball.width - 1;
 			}
 		}
 		
@@ -220,7 +204,7 @@ class GnopPlaystate extends BunState
 			
 			#if debug
 			if ( SHOW_PATH ) {
-				var t:Bitmap = new Bitmap( new BitmapData( 2, 2, false, Std.int( Math.random() * 0xffFFFFFF ) ) );
+				var t:Bitmap = new Bitmap( new BitmapData( 2, 2, false, Std.int( Math.random() * ( 0xffFFFFFF - 0xff000000) ) ) );
 				t.x = ballX;
 				t.y = ballY;
 				addChild( t );
@@ -229,8 +213,6 @@ class GnopPlaystate extends BunState
 			
 			ballX += _ball.velocity.x;
 		}
-		
-		//Log.trace( "Predicted Y: " + ballY + ", Current Y: " + _ball.y + ", Velocity Y: " + _ball.velocity.y );
 		
 		return ballY + ( _ball.height / 2 );
 	}
@@ -272,8 +254,26 @@ class GnopPlaystate extends BunState
 	private function onCompleteExplosion( ?e:Event ):Void
 	{
 		e.target.removeEventListener( Event.COMPLETE, onCompleteExplosion );
-		_computer.y = GnopPaddle.SPAWN_Y;
-		_ball.reset();
+		
+		if ( _scorePlayer.score == _scoreToWin.score - 1 && _playerServing ) {
+			_matchPoint.play();
+		} else if ( _scoreComputer.score == _scoreToWin.score - 1 && !_playerServing ) {
+			_matchPoint.play();
+		}
+		
+		if ( _scorePlayer.score >= _scoreToWin.score ) {
+			endGame( END_WIN );
+		} else if ( _scoreComputer.score >= _scoreToWin.score ) {
+			endGame( END_LOSE );
+		}
+		
+		if ( _computer != null ) {
+			_computer.y = GnopPaddle.SPAWN_Y;
+		}
+		
+		if ( _ball != null ) {
+			_ball.reset();
+		}
 	}
 	
 	private function endGame( type:Int ):Void
