@@ -2,7 +2,6 @@
 bin/
 bin-debug/
 bin-release/
-Export/
 
 # Other files and folders
 .settings/
@@ -53,4 +52,8 @@ Thumbs.db
 # Custom Settings #
 ###################
 etc/
-export/
+export/flash/haxe/
+export/html5/
+export/windows/
+export/mac/
+export/linux/
