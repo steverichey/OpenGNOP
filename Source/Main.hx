@@ -1,5 +1,7 @@
 package;
 
+import flash.display.StageQuality;
+import flash.geom.Rectangle;
 import flash.Lib;
 import flash.events.Event;
 import flash.display.Sprite;
@@ -43,5 +45,7 @@ class Main extends Sprite
 	{
 		Lib.current.stage.align = StageAlign.TOP;
 		Lib.current.stage.scaleMode = StageScaleMode.SHOW_ALL;
+		//Lib.current.stage.quality = StageQuality.LOW;
+		Lib.current.stage.fullScreenSourceRect = new Rectangle( 0, 0, 640, 480 );
 	}
 }
