@@ -20,35 +20,36 @@ class BunMenuItem extends Sprite
 	public var position:Point;
 	public var inverted:Bool;
 	
-	public static var TOP_MENU:String = "topmenu";
-	public static var DROP_MENU:String = "dropmenu";
-	public static var TAB_PADDING:Int = 8;
-	public static var LEFT_PADDING_DROP:Int = 14;
-	public static var RIGHT_PADDING_DROP:Int = 10;
-	public static var LEFT_PADDING_TOP:Int = 9;
-	public static var RIGHT_PADDING_TOP:Int = 9;
-	public static var DROP_ITEM_HEIGHT:Int = 16;
-	public static var TOP_ITEM_HEIGHT:Int = 18;
+	public static inline var TOP_MENU:Int = 0;
+	public static inline var DROP_MENU:Int = 1;
 	
-	private static var COLOR_GREY:Int = 0xff888888;
+	public static inline var TAB_PADDING:Int = 8;
+	public static inline var LEFT_PADDING_DROP:Int = 14;
+	public static inline var RIGHT_PADDING_DROP:Int = 10;
+	public static inline var LEFT_PADDING_TOP:Int = 9;
+	public static inline var RIGHT_PADDING_TOP:Int = 9;
+	public static inline var DROP_ITEM_HEIGHT:Int = 16;
+	public static inline var TOP_ITEM_HEIGHT:Int = 18;
+	
+	private static inline var COLOR_GREY:Int = 0xff888888;
 	
 	/**
 	 * Constants which are parsed to create items that are not simple text.
 	 */
-	public static var SEPTAGON:String = "SEPTAGON";
-	public static var LINE:String = "LINE";
-	public static var GREY:String = "GREY_";
-	public static var TAB:String = "TAB_";
+	public static inline var SEPTAGON:String = "SEPTAGON";
+	public static inline var LINE:String = "LINE";
+	public static inline var GREY:String = "GREY_";
+	public static inline var TAB:String = "TAB_";
 	
 	/**
 	 * Functions to prepend GREY_ or TAB_ to a string.
 	 */
-	public static function GREYED( S:String ):String
+	public static inline function GREYED( S:String ):String
 	{
 		return GREY + S;
 	}
 	
-	public static function TABBED( S:String ):String
+	public static inline function TABBED( S:String ):String
 	{
 		return TAB + S;
 	}
@@ -61,9 +62,14 @@ class BunMenuItem extends Sprite
 	 * @param	ItemType	Whether this is a top menu or drop menu item; use BunItemMenu.TOP_ITEM or BunItemMenu.DROP_ITEM.
 	 * @param	Position	A point describing this item's x,y position, with the septagon being 0,0
 	 */
-	public function new( Text:String, Width:Int, ItemType:String, Position:Point )
+	public function new( Text:String, Width:Int, ItemType:Int, Position:Point )
 	{
-		super();
+		super();/*
+		if ( stage != null ) {
+			init();
+		} else {
+			addEventListener( Event.ADDED_TO_STAGE, init );
+		}*/
 		
 		this.position = Position;
 		
@@ -136,6 +142,8 @@ class BunMenuItem extends Sprite
 			this.addEventListener( MouseEvent.MOUSE_OVER, onMouseOver, false, 0, true );
 			this.addEventListener( MouseEvent.MOUSE_OUT, onMouseOut, false, 0, true );
 		}
+		
+		//super();
 	}
 	
 	private function onMouseDown( m:MouseEvent ):Void

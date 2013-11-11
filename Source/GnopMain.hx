@@ -5,16 +5,7 @@ import flash.display.BitmapData;
 import flash.events.Event;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-
-#if desktop
-import flash.media.Sound;
-
-@:sound( "sounds/start.ogg" ) class Sound_Start extends Sound { }
-@:sound( "sounds/lose.ogg" ) class Sound_Lose extends Sound { }
-@:sound( "sounds/win.ogg" ) class Sound_Win extends Sound { }
-#else
 import openfl.Assets;
-#end
 
 class GnopMain extends BunState
 {

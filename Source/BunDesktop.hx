@@ -7,12 +7,13 @@ import flash.text.TextField;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.Lib;
+import openfl.Assets;
+import flash.geom.Point;
 
 class BunDesktop extends BunState
 {
 	private var icon:Sprite;
 	private var iconInverted:Bool;
-	private var fakeSeptagon:Bitmap;
 	private var dragging:Bool;
 	private var timeOfFirstClick:Int;
 	private var iconDiffX:Float;
@@ -20,6 +21,8 @@ class BunDesktop extends BunState
 	
 	private var _time:BunTime;
 	private var _game:GnopMain;
+	private var _defaultMenu:BunMenu;
+	private var _infoWindow:BunWindowExt;
 	
 	private static inline var DOUBLE_CLICK_TIME:Int = 500;
 	private static inline var NEGATIVE_DEFAULT_CLICK_TIME:Int = -2000;
@@ -40,21 +43,31 @@ class BunDesktop extends BunState
 		timeOfFirstClick = NEGATIVE_DEFAULT_CLICK_TIME;
 		
 		icon = new Sprite();
-		icon.addChild( new BunAsset( "icon" ) );
+		icon.addChild( new Bitmap( Assets.getBitmapData( "images/icon.png" ) ) );
 		icon.x = ( stage.stageWidth - icon.width ) / 2;
 		icon.y = ( stage.stageHeight - icon.height ) / 2;
 		addChild( icon );
 		
-		fakeSeptagon = new BunAsset( "septagon" );
-		fakeSeptagon.x = SEPTAGON_X;
-		fakeSeptagon.y = SEPTAGON_Y;
-		addChild( fakeSeptagon );
+		var sept:Bitmap = new Bitmap( Assets.getBitmapData( "images/septagon.png" ) );
+		sept.x = SEPTAGON_X;
+		sept.y = SEPTAGON_Y;
+		addChild( sept );
+		
+		//_defaultMenu = new BunMenu( [ [ BunMenuItem.SEPTAGON, "About OpenGnop..." ] ] );
+		//addChild( _defaultMenu );
 		
 		_time = new BunTime();
 		_time.x = TIME_X;
 		_time.y = TIME_Y;
 		addChild( _time );
-		
+		/*
+		_infoWindow = new BunWindowExt( 100, 100, BunWindow.BORDERED );
+		_infoWindow.addText( 6, 6, "Hi" );
+		_infoWindow.addOk( 20, 20 );
+		_infoWindow.addEventListener( Event.COMPLETE, onCloseInfo, false, 0, true );
+		_infoWindow.visible = false;
+		addChild( _infoWindow );
+		*/
 		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true  );
 	}
 	
@@ -72,6 +85,11 @@ class BunDesktop extends BunState
 		}
 		
 		_time.update();
+	}
+	
+	private function onCloseInfo( ?e:Event ):Void
+	{
+		_infoWindow.visible = false;
 	}
 	
 	override public function clickAway( ?m:MouseEvent ):Void
@@ -107,6 +125,11 @@ class BunDesktop extends BunState
 		iconDiffY = mouseY - icon.y;
 		
 		addEventListener( MouseEvent.MOUSE_UP, unclickIcon, false, 0, true );
+	}
+	
+	override public function menuSelect( Selection:Point ):Void
+	{
+		_infoWindow.visible = true;
 	}
 	
 	private function unclickIcon( m:MouseEvent ):Void

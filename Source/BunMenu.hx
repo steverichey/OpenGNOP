@@ -52,9 +52,9 @@ class BunMenu extends BunState
 	
 	public function new( MenuItems:Array<Array<String>> )
 	{
-		super();
-		
 		menuItems = MenuItems;
+		
+		super();
 	}
 	
 	/**
@@ -217,6 +217,7 @@ class BunMenu extends BunState
 	{
 		clickAway();
 		lockOut = false;
+		animTimer.reset();
 		cast( this.parent, BunState ).menuSelect( selectedItemPosition );
 	}
 	

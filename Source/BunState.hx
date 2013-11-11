@@ -8,11 +8,6 @@ import flash.events.MouseEvent;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.Lib;
-import haxe.Log;
-
-#if !desktop
-import openfl.Assets;
-#end
 
 class BunState extends Sprite
 {
@@ -58,11 +53,6 @@ class BunState extends Sprite
 		// handle clicks away from active state here, via override
 	}
 	
-	public function menuSelect( Selection:Point ):Void
-	{
-		// handle menu selections here
-	}
-	
 	public function getStageWidth():Int
 	{
 		return Lib.current.stage.stageWidth;
@@ -71,6 +61,11 @@ class BunState extends Sprite
 	public function getStageHeight():Int
 	{
 		return Lib.current.stage.stageHeight;
+	}
+	
+	public function menuSelect( Selection:Point ):Void
+	{
+		// handle menu selections here
 	}
 	
 	/**
@@ -106,9 +101,9 @@ class BunState extends Sprite
 		return VarToLimit;
 	}
 	
-	public function invert( sprite:Sprite )
+	public function invert( s:Sprite )
 	{
-		var temp:ColorTransform = sprite.transform.colorTransform;
+		var temp:ColorTransform = s.transform.colorTransform;
 		
 		temp.redMultiplier *= -1;
 		temp.greenMultiplier *= -1;
@@ -124,30 +119,6 @@ class BunState extends Sprite
 			temp.blueOffset = 0;
 		}
 		
-		sprite.transform.colorTransform = temp;
-	}
-	
-	/**
-	 * Platform-independent method to create images. For native targets, ensure that the required file is embedded via metadata tags. The design of this function prevents null errors, mostly.
-	 * 
-	 * @param	FileName	The name of the file to be loaded as a bitmap.
-	 * @param 	bitmapData	The file to be used on native targets.
-	 * @return	A bitmap with the desired image included.
-	 */
-	public function createImage( ?FileName:String, ?bitmapData:BitmapData ):Bitmap
-	{
-		var b:Bitmap;
-		
-		#if desktop
-		if ( File != null ) {
-			b = new Bitmap( bitmapData );
-		} else {
-			b = new Bitmap( new BitmapData( 5, 5, false, 0xff00ff00 ) );
-		}
-		#else
-		b = new Bitmap( Assets.getBitmapData( "images/" + FileName + ".png" ) );
-		#end
-		
-		return b;
+		s.transform.colorTransform = temp;
 	}
 }

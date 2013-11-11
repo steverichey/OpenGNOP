@@ -18,4 +18,8 @@
 	<assets path="assets/sounds" rename="sounds" exclude="*.mp3" if="desktop"/>
 	
 	<haxelib name="openfl" />
+	
+	<icon path="assets/gnop.svg" />
+	
+	<app preloader="BunPreloader" unless="desktop" />
 </project>

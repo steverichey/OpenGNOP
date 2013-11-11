@@ -5,17 +5,7 @@ import flash.display.BitmapData;
 import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.utils.Timer;
-
-#if desktop
-import flash.media.Sound;
-
-@:bitmap( "assets/images/paddle_explode.png" ) class Image_About extends BitmapData { }
-@:bitmap( "assets/images/paddle_ash.png" ) class Image_About extends BitmapData { }
-@:sound( "sounds/explode.ogg" ) class Sound_Explode extends Sound { }
-@:sound( "sounds/land.ogg" ) class Sound_Land extends Sound { }
-#else
 import openfl.Assets;
-#end
 
 class GnopPaddle extends Bitmap
 {

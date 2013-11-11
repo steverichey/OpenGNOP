@@ -4,10 +4,7 @@ import flash.events.Event;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
-
-#if !desktop
 import openfl.Assets;
-#end
 
 /**
  * Minimalist sound class for BunOS, mostly abstracts away SoundChannel stuff. Heavily influenced by FlxSound.
@@ -62,28 +59,11 @@ class BunSound extends flash.events.EventDispatcher
 	private inline static var EXT:String = ".mp3";
 	
 	/**
-	 * 	Example Usage:
-	 * 
-	 *	#if desktop
-	 *	_sound = new BunSound( new Sound_MySound() );
-	 *	#else
-	 *	_sound = new BunSound( "mysound" );
-	 *	#end
-	 *	
-	 *	add( _sound );
-	 * 	_sound.play();
-	 */
-	
-	/**
 	 * Instantiate a new BunSound object by setting variables and loading a sound file. Call play() to play sound.
 	 * 
 	 * @param	File  A sound file to load. On desktop, include sound class; on flash, include file name but NOT path or extension.
 	 */
-	#if desktop
-	public function new( File:Sound )
-	#else
 	public function new( File:String )
-	#end
 	{
 		super();
 		
@@ -93,11 +73,7 @@ class BunSound extends flash.events.EventDispatcher
 		this._position = 0.0;
 		
 		try {
-			#if desktop
-			this._sound = File;
-			#else
 			this._sound = Assets.getSound( PATH + File + EXT );
-			#end
 		} catch ( e:Dynamic ) {
 			#if debug
 			throw "BunSound New() Error: " + Std.string( e );

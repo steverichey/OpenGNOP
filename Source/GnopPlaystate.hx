@@ -11,15 +11,7 @@ import flash.Lib;
 import flash.ui.Mouse;
 import haxe.Log;
 import flash.events.KeyboardEvent;
-
-#if desktop
-import flash.media.Sound;
-
-@:sound( "sounds/bounce.ogg" ) class Sound_Bounce extends Sound { }
-@:sound( "sounds/matchpoint.ogg" ) class Sound_MatchPoint extends Sound { }
-#else
 import openfl.Assets;
-#end
 
 class GnopPlaystate extends BunState
 {
@@ -93,13 +85,8 @@ class GnopPlaystate extends BunState
 			_playerServing = false;
 		}
 		
-		#if desktop
-		_bounce = new BunSound( Sound_Bounce() );
-		_matchPoint = new BunSound( Sound_MatchPoint() );
-		#else
 		_bounce = new BunSound( "bounce" );
 		_matchPoint = new BunSound( "matchpoint" );
-		#end
 		
 		addChild( _bg );
 		addChild( _player );

@@ -46,6 +46,9 @@ class Main extends Sprite
 		Lib.current.stage.align = StageAlign.TOP;
 		Lib.current.stage.scaleMode = StageScaleMode.SHOW_ALL;
 		//Lib.current.stage.quality = StageQuality.LOW;
+		
+		#if flash
 		Lib.current.stage.fullScreenSourceRect = new Rectangle( 0, 0, 640, 480 );
+		#end
 	}
 }
