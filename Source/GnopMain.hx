@@ -56,6 +56,10 @@ class GnopMain extends BunState
 	private static inline var SET_TEXT_X:Int = 39;
 	private static inline var SET_TEXT_Y:Int = 32;
 	private static inline var SET_TEXT:String = "Set Ending Score";
+	private static inline var SET_INPUT_X:Int = 154;
+	private static inline var SET_INPUT_Y:Int = 30;
+	private static inline var SET_INPUT_WIDTH:Int = 35;
+	private static inline var SET_INPUT_HEIGHT:Int = 16;
 	
 	private static inline var INSTRUCTIONS_X:Int = 20;
 	private static inline var INSTRUCTIONS_Y:Int = 27;
@@ -76,10 +80,8 @@ class GnopMain extends BunState
 	private static inline var WARNING_OK_X:Int = 248;
 	private static inline var WARNING_OK_Y:Int = 29;
 	
-	// score warning image is 23,13 from top-left of white
-	//         TODO: simplify score warning to just use hand sign as image
-	// score set image is 35,22 from top-left of white
-	//         TODO: simplify this window, doesn't even need image
+	private static inline var SCORE_MIN:Int = 0;
+	private static inline var SCORE_MAX:Int = 100;
 	
 	public function new()
 	{
@@ -133,6 +135,7 @@ class GnopMain extends BunState
 		_endscore.addOk( SET_OK_X, SET_OK_Y );
 		_endscore.addText( SET_TEXT_X, SET_TEXT_Y, SET_TEXT );
 		_endscore.addCancel( SET_CANCEL_X, SET_CANCEL_Y );
+		_endscore.addInput( SET_INPUT_X, SET_INPUT_Y, SET_INPUT_WIDTH, SET_INPUT_HEIGHT, Std.string( endScore ) );
 		_endscore.visible = false;
 		addChild( _endscore );
 		
@@ -271,6 +274,8 @@ class GnopMain extends BunState
 		
 		if ( WindowType == SET_ENDING_SCORE ) {
 			_endscore.visible = true;
+			_endscore.acceptInput = true;
+			_endscore.addEventListener( Event.CANCEL, onCancelEndScore, false, 0, true );
 			_endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
 		}
 		
@@ -292,17 +297,38 @@ class GnopMain extends BunState
 		_instructions.visible = false;
 	}
 	
-	private function onCloseEndScore( ?e:Event ):Void
+	private function onCancelEndScore( ?e:Event ):Void
 	{
-		// todo add code here to check if the end score submitted is valid
+		_endscore.input = Std.string( endScore );
+		_endscore.acceptInput = false;
+		_endscore.removeEventListener( Event.CANCEL, onCancelEndScore );
 		_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
 		_endscore.visible = false;
+	}
+	
+	private function onCloseEndScore( ?e:Event ):Void
+	{
+		var newscore:Int = Std.parseInt( _endscore.input );
+		
+		if ( newscore > SCORE_MIN && newscore < SCORE_MAX ) {
+			endScore = newscore;
+			onCancelEndScore();
+		} else {
+			_endscore.acceptInput = false;
+			_endscore.removeEventListener( Event.CANCEL, onCancelEndScore );
+			_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
+			createWindow( SCORE_WARNING );
+		}
 	}
 	
 	private function onCloseWarning( ?e:Event ):Void
 	{
 		_scoreWarning.removeEventListener( Event.COMPLETE, onCloseWarning );
 		_scoreWarning.visible = false;
+		
+		_endscore.acceptInput = true;
+		_endscore.addEventListener( Event.CANCEL, onCancelEndScore, false, 0, true );
+		_endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
 	}
 	
 	public function setSplash( type:Int ):Void

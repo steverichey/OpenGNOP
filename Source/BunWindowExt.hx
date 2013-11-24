@@ -20,6 +20,7 @@ class BunWindowExt extends Sprite
 	private var _ok:BunButton;
 	private var _cancel:BunButton;
 	private var _text:BunText;
+	private var _input:BunTextInput;
 	
 	/**
 	 * Create an OS window that can contain buttons and text entry fields.
@@ -73,5 +74,41 @@ class BunWindowExt extends Sprite
 		_text.x = X;
 		_text.y = Y;
 		addChild( _text );
+	}
+	
+	public function addInput( X:Int, Y:Int, Width:Int, Height:Int, Text:String ):Void
+	{
+		_input = new BunTextInput( Text, Width, Height );
+		_input.x = X;
+		_input.y = Y;
+		addChild( _input );
+	}
+	
+	public var acceptInput(get, set):Bool;
+	
+	private function get_acceptInput():Bool
+	{
+		return _input.active;
+	}
+	
+	private function set_acceptInput( Value:Bool ):Bool
+	{
+		_input.active = Value;
+		
+		return _input.active;
+	}
+	
+	public var input(get, set):String;
+	
+	private function get_input():String
+	{
+		return _input.text;
+	}
+	
+	private function set_input( NewInput:String ):String
+	{
+		_input.text = NewInput;
+		
+		return _input.text;
 	}
 }

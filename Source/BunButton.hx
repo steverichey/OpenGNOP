@@ -4,6 +4,7 @@ import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.Lib;
 import openfl.Assets;
 
 class BunButton extends Sprite
@@ -46,7 +47,7 @@ class BunButton extends Sprite
 	{
 		invert();
 		addEventListener( MouseEvent.MOUSE_OUT, onMouseOut, false, 0, true );
-		addEventListener( MouseEvent.MOUSE_UP, onMouseUp, false, 0, true );
+		Lib.current.stage.addEventListener( MouseEvent.MOUSE_UP, onMouseUp, false, 0, true );
 	}
 	
 	private function onMouseOut( ?m:MouseEvent ):Void
@@ -59,9 +60,16 @@ class BunButton extends Sprite
 	private function onMouseUp( ?m:MouseEvent ):Void
 	{
 		removeEventListener( MouseEvent.MOUSE_OUT, onMouseOut );
-		removeEventListener( MouseEvent.MOUSE_UP, onMouseUp );
-		invert();
-		dispatchEvent( new Event( Event.COMPLETE ) );
+		Lib.current.stage.removeEventListener( MouseEvent.MOUSE_UP, onMouseUp );
+		
+		if ( hasEventListener( MouseEvent.MOUSE_OVER ) ) {
+			removeEventListener( MouseEvent.MOUSE_OVER, onMouseOver );
+		}
+		
+		if ( highlighted ) {
+			invert();
+			dispatchEvent( new Event( Event.COMPLETE ) );
+		}
 	}
 	
 	private function onMouseOver( ?m:MouseEvent ):Void
@@ -74,6 +82,12 @@ class BunButton extends Sprite
 	private function invert():Void
 	{
 		_inverted.visible = !_inverted.visible;
-		//_normal.visible = !_normal.visible;
+	}
+	
+	public var highlighted(get, null):Bool;
+	
+	private function get_highlighted():Bool
+	{
+		return _inverted.visible;
 	}
 }

@@ -5,17 +5,7 @@ import flash.display.BitmapData;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import haxe.Log;
-
-#if !desktop
 import openfl.Assets;
-#end
-
-#if desktop
-import flash.display.BitmapData;
-
-@:bitmap( "assets/images/font.png" ) class Image_Font extends BitmapData { }
-#end
 
 /**
  * Created for OpenGNOP, but HEAVILY based on FlxBitmapFont. I do not claim to have created this; just tried to make a simpler, Haxe version of that class.
@@ -93,7 +83,7 @@ class BunText extends Bitmap
 	private var _text:String;
 	
 	/**
-	 * Create a new BunText object.
+	 * Create a new BunText object.  TODO: MULTIPLE LINES NEED 3 MORE PIXELS OF SPACE BETWEEN THEM
 	 * 
 	 * @param	Text		Initial text of this object.
 	 */
@@ -103,11 +93,7 @@ class BunText extends Bitmap
 			var characterMap:Map<String,BitmapData> = new Map<String,BitmapData>();
 			
 			//	Take a copy of the font for internal use, we won't need it long.
-			#if desktop
-			var fontData:BitmapData = new Image_Font(0, 0);
-			#else
 			var fontData:BitmapData = Assets.getBitmapData( "images/font.png" );
-			#end
 			
 			//	Now generate our bitmapdata in the map for faster copyPixels later on
 			var currentX:Int = 0;
@@ -155,7 +141,11 @@ class BunText extends Bitmap
 				bitmapData = null;
 			}
 			
-			bitmapData = textToBitmap( _text );
+			if ( _text != "" ) {
+				bitmapData = textToBitmap( _text );
+			} else {
+				bitmapData = new BitmapData( 1, CHAR_HEIGHT, true, 0 );
+			}
 		}
 		
 		return _text;
@@ -163,6 +153,11 @@ class BunText extends Bitmap
 	
 	public var color(get, set):Int;
 	
+	/**
+	 * Literally just looks for a pixel with alpha != 0 and then returns its color.  No internal variable stores color.
+	 * 
+	 * @return	The color, as an integer.
+	 */
 	private function get_color():Int
 	{
 		var xp:Int = 0;
@@ -191,6 +186,12 @@ class BunText extends Bitmap
 		return col;
 	}
 	
+	/**
+	 * Perform a ColorTransform on this object's BitmapData to change the color of the text. Might have wierd color effects after multiple color changes.
+	 * 
+	 * @param	NewColor	The color to set this object to.
+	 * @return	The color, of course.
+	 */
 	private function set_color( NewColor:Int ):Int
 	{
 		var r:Int = NewColor & 255;
@@ -313,5 +314,25 @@ class BunText extends Bitmap
 		}
 		
 		return i;
+	}
+	
+	/**
+	 * Predict the width of a string.
+	 * 
+	 * @param	Text	The string of which to predict the width.
+	 * @return	The width of the string, in pixels.
+	 */
+	public static inline function predictWidth( Text:String ):Int
+	{
+		var wid:Int = 0;
+		
+		for ( i in 0...Text.length ) {
+			var c:String = Text.charAt( i );
+			if ( TEXT_SET_WIDTH().exists( c ) ) {
+				wid += TEXT_SET_WIDTH().get( c );
+			}
+		}
+		
+		return wid;
 	}
 }
