@@ -9,7 +9,6 @@ import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.Lib;
 import flash.ui.Mouse;
-import haxe.Log;
 import flash.events.KeyboardEvent;
 import openfl.Assets;
 
@@ -223,7 +222,7 @@ class GnopPlaystate extends BunState
 		}
 		
 		#if debug
-		Log.trace( "Key Pressed: " + k.keyCode );
+		//haxe.Log.trace( "Key Pressed: " + k.keyCode );
 		#end
 	}
 	

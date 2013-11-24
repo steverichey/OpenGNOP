@@ -81,6 +81,8 @@ class BunWindowExt extends Sprite
 		_input = new BunTextInput( Text, Width, Height );
 		_input.x = X;
 		_input.y = Y;
+		_input.addEventListener( Event.SELECT, onReturnInputDown, false, 0, true );
+		_input.addEventListener( Event.COMPLETE, onReturnInputUp, false, 0, true );
 		addChild( _input );
 	}
 	
@@ -110,5 +112,25 @@ class BunWindowExt extends Sprite
 		_input.text = NewInput;
 		
 		return _input.text;
+	}
+	
+	private function onReturnInputDown( ?e:Event ):Void
+	{
+		if ( _ok != null ) {
+			if ( !_ok.highlighted ) {
+				_ok.highlight();
+			}
+		}
+	}
+	
+	private function onReturnInputUp( ?e:Event ):Void
+	{
+		if ( _ok != null ) {
+			if ( _ok.highlighted ) {
+				_ok.highlight();
+			}
+		}
+		
+		dispatchEvent( new Event( Event.COMPLETE ) );
 	}
 }

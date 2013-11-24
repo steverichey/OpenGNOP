@@ -73,6 +73,11 @@ class BunText extends Bitmap
 	private static inline var CHAR_HEIGHT:Int = 13;
 	
 	/**
+	 * Number of pixels in between lines.
+	 */
+	private static inline var LINE_SPACING:Int = 3;
+	
+	/**
 	 * Static storage of the character map, once created.
 	 */
 	private static var _storedMap:Map<String,BitmapData>;
@@ -249,7 +254,7 @@ class BunText extends Bitmap
 			pasteLine( l, temp, cx, cy );
 			
 			// update y position for next line
-			cy += CHAR_HEIGHT;
+			cy += CHAR_HEIGHT + LINE_SPACING;
 		}
 		
 		return temp;

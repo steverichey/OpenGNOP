@@ -90,4 +90,9 @@ class BunButton extends Sprite
 	{
 		return _inverted.visible;
 	}
+	
+	public function highlight():Void
+	{
+		invert();
+	}
 }

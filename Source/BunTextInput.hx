@@ -3,6 +3,7 @@ package;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
+import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.Lib;
 import flash.utils.Timer;
@@ -17,6 +18,13 @@ class BunTextInput extends Sprite
 	private var _blinkTimer:Timer;
 	private var _blinker:Bitmap;
 	
+	/**
+	 * Create a new OS-themed input field. The background is white, there's a black blinking cursor, and it's disabled initially.
+	 * 
+	 * @param	DefaultText		The text for the input field to display initially.
+	 * @param	Width			The width of the input field. The field will not accept input that exceeds this width.
+	 * @param	Height			The height of the input field.
+	 */
 	public function new( DefaultText:String, Width:Int, Height:Int )
 	{
 		super();
@@ -38,6 +46,7 @@ class BunTextInput extends Sprite
 		addChild( _blinker );
 		
 		Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true );
+		Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp, false, 0, true );
 		_blinkTimer.start();
 	}
 	
@@ -50,6 +59,8 @@ class BunTextInput extends Sprite
 				} else if ( _text.text.length == 1 ) {
 					_text.text = "";
 				}
+			} else if ( k.keyCode == 13 ) {
+				dispatchEvent( new Event( Event.SELECT ) );
 			} else {
 				var temp:String = _text.text + String.fromCharCode( k.charCode );
 				
@@ -61,8 +72,17 @@ class BunTextInput extends Sprite
 			_blinker.x = _text.width;
 			
 			#if debug
-			haxe.Log.trace( "Key Pressed: " + k.keyCode );
+			haxe.Log.trace( "Key: " + k.keyCode );
 			#end
+		}
+	}
+	
+	private function onKeyUp( ?k:KeyboardEvent ):Void
+	{
+		if ( active ) {
+			if ( k.keyCode == 13 ) {
+				dispatchEvent( new Event( Event.COMPLETE ) );
+			}
 		}
 	}
 	
@@ -71,6 +91,9 @@ class BunTextInput extends Sprite
 		_blinker.visible = !_blinker.visible;
 	}
 	
+	/**
+	 * The text currently held by this input box. Can use to set the text to an arbitrary value; will trim the string down to fit the input box.
+	 */
 	public var text(get, set):String;
 	
 	private function get_text():String

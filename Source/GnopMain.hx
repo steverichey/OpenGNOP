@@ -68,6 +68,9 @@ class GnopMain extends BunState
 	private static inline var INSTRUCTIONS_OK_X:Int = 180;
 	private static inline var INSTRUCTIONS_OK_Y:Int = 269;
 	
+	private static inline var SCORE_MIN:Int = 0;
+	private static inline var SCORE_MAX:Int = 100;
+	
 	private static inline var WARNING_X:Int = 33;
 	private static inline var WARNING_Y:Int = 58;
 	private static inline var WARNING_WIDTH:Int = 350;
@@ -76,12 +79,9 @@ class GnopMain extends BunState
 	private static inline var WARNING_HAND_Y:Int = 18;
 	private static inline var WARNING_TEXT_X:Int = 71;
 	private static inline var WARNING_TEXT_Y:Int = 25;
-	private static inline var WARNING_TEXT:String = "Ending score must be/between 0 and 100.";
+	private static inline var WARNING_TEXT:String = "Ending score must be/between " + SCORE_MIN + " and " + SCORE_MAX + ".";
 	private static inline var WARNING_OK_X:Int = 248;
 	private static inline var WARNING_OK_Y:Int = 29;
-	
-	private static inline var SCORE_MIN:Int = 0;
-	private static inline var SCORE_MAX:Int = 100;
 	
 	public function new()
 	{
