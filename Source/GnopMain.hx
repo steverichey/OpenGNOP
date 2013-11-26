@@ -287,6 +287,8 @@ class GnopMain extends BunState
 			_scoreWarning.active = true;
 			_scoreWarning.addEventListener( Event.COMPLETE, onCloseWarning, false, 0, true );
 		}
+		
+		BunMenu.lockOut = true;
 	}
 	
 	private function onCloseAbout( ?e:Event ):Void
@@ -294,6 +296,7 @@ class GnopMain extends BunState
 		_about.removeEventListener( Event.COMPLETE, onCloseAbout );
 		_about.active = false;
 		_about.visible = false;
+		BunMenu.lockOut = false;
 	}
 	
 	private function onCloseInstructions( ?e:Event ):Void
@@ -301,6 +304,7 @@ class GnopMain extends BunState
 		_instructions.removeEventListener( Event.COMPLETE, onCloseInstructions );
 		_instructions.active = false;
 		_instructions.visible = false;
+		BunMenu.lockOut = false;
 	}
 	
 	private function onCancelEndScore( ?e:Event ):Void
@@ -311,6 +315,7 @@ class GnopMain extends BunState
 		_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
 		_endscore.active = false;
 		_endscore.visible = false;
+		BunMenu.lockOut = false;
 	}
 	
 	private function onCloseEndScore( ?e:Event ):Void

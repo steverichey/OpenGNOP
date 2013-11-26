@@ -8,7 +8,6 @@ import flash.events.MouseEvent;
 import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.utils.Timer;
-import haxe.Log;
 
 /**
  * Class to create an OS-styled top menu, given an array of string arrays to convert to a menu.
@@ -48,7 +47,10 @@ class BunMenu extends BunState
 	/**
 	 * Variable that indicates whether or not the menu should be inactive (used during flicker animation).
 	 */
-	private static var lockOut:Bool;
+	public static var lockOut:Bool;
+	
+	private static inline var FLICKER_FREQ:Int = 50;
+	private static inline var FLICKER_TIMES:Int = 11;
 	
 	public function new( MenuItems:Array<Array<String>> )
 	{
@@ -70,7 +72,7 @@ class BunMenu extends BunState
 		dropMenus = [];
 		selectedItemPosition = new Point(0, 0);
 		
-		animTimer = new Timer( 100, 10 );
+		animTimer = new Timer( FLICKER_FREQ, FLICKER_TIMES );
 		animTimer.addEventListener( TimerEvent.TIMER, flickerTimer, false, 0, true );
 		animTimer.addEventListener( TimerEvent.TIMER_COMPLETE, endFlickerTimer, false, 0, true );
 		
@@ -119,17 +121,19 @@ class BunMenu extends BunState
 	 */
 	private function showMenu( ?m:MouseEvent ):Void
 	{
-		if ( !m.target.inverted ) {
-			clearMenus();
-			
-			for ( i in topMenu ) {
-				i.removeEventListener( MouseEvent.MOUSE_OVER, moveMenu );
-			}
-		} else {
-			showOneMenu( m.target.position.x );
-			
-			for ( i in topMenu ) {
-				i.addEventListener( MouseEvent.MOUSE_OVER, moveMenu, false, 0, true );
+		if ( !lockOut ) {
+			if ( !m.target.inverted ) {
+				clearMenus();
+				
+				for ( i in topMenu ) {
+					i.removeEventListener( MouseEvent.MOUSE_OVER, moveMenu );
+				}
+			} else {
+				showOneMenu( m.target.position.x );
+				
+				for ( i in topMenu ) {
+					i.addEventListener( MouseEvent.MOUSE_OVER, moveMenu, false, 0, true );
+				}
 			}
 		}
 	}
@@ -200,12 +204,14 @@ class BunMenu extends BunState
 	
 	private function clickDropItem( ?m:MouseEvent ):Void
 	{
-		selectedItemPosition = m.target.position;
-		selectedItem = m.target;
-		
-		lockOut = true;
-		
-		animTimer.start();
+		if ( !BunMenu.lockOut ) {
+			selectedItemPosition = m.target.position;
+			selectedItem = m.target;
+			
+			lockOut = true;
+			
+			animTimer.start();
+		}
 	}
 	
 	private function flickerTimer( ?t:TimerEvent ):Void
@@ -223,7 +229,7 @@ class BunMenu extends BunState
 	
 	public function updateCheckmarks():Void
 	{
-		Log.trace( "Updating checkmarks..." );
+		haxe.Log.trace( "Updating checkmarks..." );
 	}
 	
 	/**
@@ -298,7 +304,9 @@ class BunMenu extends BunState
 			var btf:BunMenuItem = new BunMenuItem( i, longest, BunMenuItem.DROP_MENU, new Point( XPosition, posY ) );
 			btf.y = currentY;
 			s.addChild( btf );
-			btf.addEventListener( MouseEvent.MOUSE_UP, clickDropItem, false, 0, true );
+			if ( i.substring(0, 5) != BunMenuItem.GREY && i != BunMenuItem.LINE ) {
+				btf.addEventListener( MouseEvent.MOUSE_UP, clickDropItem, false, 0, true );
+			}
 			currentY += Std.int( btf.height );
 			posY++;
 		}

@@ -7,7 +7,6 @@ import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
-import haxe.Log;
 import openfl.Assets;
 
 class BunMenuItem extends Sprite
@@ -64,12 +63,7 @@ class BunMenuItem extends Sprite
 	 */
 	public function new( Text:String, Width:Int, ItemType:Int, Position:Point )
 	{
-		super();/*
-		if ( stage != null ) {
-			init();
-		} else {
-			addEventListener( Event.ADDED_TO_STAGE, init );
-		}*/
+		super();
 		
 		this.position = Position;
 		
@@ -142,23 +136,27 @@ class BunMenuItem extends Sprite
 			this.addEventListener( MouseEvent.MOUSE_OVER, onMouseOver, false, 0, true );
 			this.addEventListener( MouseEvent.MOUSE_OUT, onMouseOut, false, 0, true );
 		}
-		
-		//super();
 	}
 	
 	private function onMouseDown( m:MouseEvent ):Void
 	{
-		setInverted( !inverted );
+		if ( !BunMenu.lockOut ) {
+			setInverted( !inverted );
+		}
 	}
 	
 	private function onMouseOver( m:MouseEvent ):Void
 	{
-		setInverted( true );
+		if ( !BunMenu.lockOut ) {
+			setInverted( true );
+		}
 	}
 	
 	private function onMouseOut( m:MouseEvent ):Void
 	{
-		setInverted( false );
+		if ( !BunMenu.lockOut ) {
+			setInverted( false );
+		}
 	}
 	
 	public function setInverted( NewInverted:Bool ):Void
