@@ -43,7 +43,7 @@ class BunDesktop extends BunState
 		timeOfFirstClick = NEGATIVE_DEFAULT_CLICK_TIME;
 		
 		icon = new Sprite();
-		icon.addChild( new Bitmap( Assets.getBitmapData( "images/icon.png" ) ) );
+		icon.addChild( new Bitmap( GnopMain.getIcon() ) );
 		icon.x = ( stage.stageWidth - icon.width ) / 2;
 		icon.y = ( stage.stageHeight - icon.height ) / 2;
 		addChild( icon );

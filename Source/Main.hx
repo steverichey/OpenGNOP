@@ -37,8 +37,8 @@ class Main extends Sprite
 		
 		initialize();
 		
-		var game:Sprite = new GameClass();
-		addChild( game );
+		var bunOS:Sprite = new BunOS();
+		addChild( bunOS );
 	}
 	
 	private function initialize():Void 

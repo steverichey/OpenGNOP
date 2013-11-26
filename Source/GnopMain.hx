@@ -1,11 +1,11 @@
 package;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.events.Event;
+import openfl.Assets;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import openfl.Assets;
+import flash.events.Event;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 
 class GnopMain extends BunState
 {
@@ -352,6 +352,11 @@ class GnopMain extends BunState
 		} else {
 			_splash.updateContent(  Assets.getBitmapData( "images/win.png" ), 104, 62 );
 		}
+	}
+	
+	public static function getIcon():BitmapData
+	{
+		return Assets.getBitmapData( "images/icon.png" );
 	}
 	
 	private function getMenuItems():Array<Array<String>>

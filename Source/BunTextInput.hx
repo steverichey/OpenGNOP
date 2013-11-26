@@ -1,12 +1,12 @@
 package;
 
+import flash.Lib;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
+import flash.utils.Timer;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
-import flash.Lib;
-import flash.utils.Timer;
 import flash.events.TimerEvent;
 
 class BunTextInput extends Sprite
@@ -69,7 +69,7 @@ class BunTextInput extends Sprite
 			_blinker.x = _text.width;
 			
 			#if debug
-			haxe.Log.trace( "Key: " + k.keyCode );
+			//haxe.Log.trace( "Key: " + k.keyCode );
 			#end
 		}
 	}
