@@ -5,10 +5,12 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Sprite;
+import flash.events.KeyboardEvent;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+import flash.Lib;
 import openfl.Assets;
 
 /**
@@ -21,6 +23,7 @@ class BunWindowExt extends Sprite
 	private var _cancel:BunButton;
 	private var _text:BunText;
 	private var _input:BunTextInput;
+	public var active:Bool;
 	
 	/**
 	 * Create an OS window that can contain buttons and text entry fields.
@@ -37,6 +40,8 @@ class BunWindowExt extends Sprite
 		_bitmap = new BunWindow( Width, Height, type, Content, ContentX, ContentY );
 		addChild( _bitmap );
 		
+		active = false;
+		
 		super();
 	}
 	
@@ -46,7 +51,32 @@ class BunWindowExt extends Sprite
 		_ok.x = X;
 		_ok.y = Y;
 		_ok.addEventListener( Event.COMPLETE, onClickOk, false, 0, true );
+		Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true );
+		Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp, false, 0, true );
 		addChild( _ok );
+	}
+	
+	private function onKeyDown( k:KeyboardEvent ):Void
+	{
+		if ( active && k.keyCode == 13 ) {
+			if ( _ok != null ) {
+				if ( !_ok.highlighted ) {
+					_ok.highlight();
+				}
+			}
+		}
+	}
+	
+	private function onKeyUp( ?k:KeyboardEvent ):Void
+	{
+		if ( active && k.keyCode == 13 ) {
+			if ( _ok != null ) {
+				if ( _ok.highlighted ) {
+					_ok.highlight();
+					dispatchEvent( new Event( Event.COMPLETE ) );
+				}
+			}
+		}
 	}
 	
 	private function onClickOk( ?e:Event ):Void
@@ -81,8 +111,6 @@ class BunWindowExt extends Sprite
 		_input = new BunTextInput( Text, Width, Height );
 		_input.x = X;
 		_input.y = Y;
-		_input.addEventListener( Event.SELECT, onReturnInputDown, false, 0, true );
-		_input.addEventListener( Event.COMPLETE, onReturnInputUp, false, 0, true );
 		addChild( _input );
 	}
 	
@@ -112,25 +140,5 @@ class BunWindowExt extends Sprite
 		_input.text = NewInput;
 		
 		return _input.text;
-	}
-	
-	private function onReturnInputDown( ?e:Event ):Void
-	{
-		if ( _ok != null ) {
-			if ( !_ok.highlighted ) {
-				_ok.highlight();
-			}
-		}
-	}
-	
-	private function onReturnInputUp( ?e:Event ):Void
-	{
-		if ( _ok != null ) {
-			if ( _ok.highlighted ) {
-				_ok.highlight();
-			}
-		}
-		
-		dispatchEvent( new Event( Event.COMPLETE ) );
 	}
 }

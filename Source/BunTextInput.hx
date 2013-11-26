@@ -46,7 +46,6 @@ class BunTextInput extends Sprite
 		addChild( _blinker );
 		
 		Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true );
-		Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp, false, 0, true );
 		_blinkTimer.start();
 	}
 	
@@ -59,8 +58,6 @@ class BunTextInput extends Sprite
 				} else if ( _text.text.length == 1 ) {
 					_text.text = "";
 				}
-			} else if ( k.keyCode == 13 ) {
-				dispatchEvent( new Event( Event.SELECT ) );
 			} else {
 				var temp:String = _text.text + String.fromCharCode( k.charCode );
 				
@@ -74,15 +71,6 @@ class BunTextInput extends Sprite
 			#if debug
 			haxe.Log.trace( "Key: " + k.keyCode );
 			#end
-		}
-	}
-	
-	private function onKeyUp( ?k:KeyboardEvent ):Void
-	{
-		if ( active ) {
-			if ( k.keyCode == 13 ) {
-				dispatchEvent( new Event( Event.COMPLETE ) );
-			}
 		}
 	}
 	

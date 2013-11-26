@@ -264,23 +264,27 @@ class GnopMain extends BunState
 	{
 		if ( WindowType == ABOUT_GNOP ) {
 			_about.visible = true;
+			_about.active = true;
 			_about.addEventListener( Event.COMPLETE, onCloseAbout, false, 0, true );
 		}
 		
 		if ( WindowType == INSTRUCTIONS ) {
 			_instructions.visible = true;
+			_instructions.active = true;
 			_instructions.addEventListener( Event.COMPLETE, onCloseInstructions, false, 0, true );
 		}
 		
 		if ( WindowType == SET_ENDING_SCORE ) {
 			_endscore.visible = true;
 			_endscore.acceptInput = true;
+			_endscore.active = true;
 			_endscore.addEventListener( Event.CANCEL, onCancelEndScore, false, 0, true );
 			_endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
 		}
 		
 		if ( WindowType == SCORE_WARNING ) {
 			_scoreWarning.visible = true;
+			_scoreWarning.active = true;
 			_scoreWarning.addEventListener( Event.COMPLETE, onCloseWarning, false, 0, true );
 		}
 	}
@@ -288,12 +292,14 @@ class GnopMain extends BunState
 	private function onCloseAbout( ?e:Event ):Void
 	{
 		_about.removeEventListener( Event.COMPLETE, onCloseAbout );
+		_about.active = false;
 		_about.visible = false;
 	}
 	
 	private function onCloseInstructions( ?e:Event ):Void
 	{
 		_instructions.removeEventListener( Event.COMPLETE, onCloseInstructions );
+		_instructions.active = false;
 		_instructions.visible = false;
 	}
 	
@@ -303,6 +309,7 @@ class GnopMain extends BunState
 		_endscore.acceptInput = false;
 		_endscore.removeEventListener( Event.CANCEL, onCancelEndScore );
 		_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
+		_endscore.active = false;
 		_endscore.visible = false;
 	}
 	
@@ -315,6 +322,7 @@ class GnopMain extends BunState
 			onCancelEndScore();
 		} else {
 			_endscore.acceptInput = false;
+			_endscore.active = false;
 			_endscore.removeEventListener( Event.CANCEL, onCancelEndScore );
 			_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
 			createWindow( SCORE_WARNING );
@@ -325,8 +333,10 @@ class GnopMain extends BunState
 	{
 		_scoreWarning.removeEventListener( Event.COMPLETE, onCloseWarning );
 		_scoreWarning.visible = false;
+		_scoreWarning.active = false;
 		
 		_endscore.acceptInput = true;
+		_endscore.active = true;
 		_endscore.addEventListener( Event.CANCEL, onCancelEndScore, false, 0, true );
 		_endscore.addEventListener( Event.COMPLETE, onCloseEndScore, false, 0, true );
 	}
