@@ -7,6 +7,7 @@ import flash.text.TextField;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.Lib;
+import haxe.Log;
 import openfl.Assets;
 import flash.geom.Point;
 
@@ -18,9 +19,9 @@ class BunDesktop extends BunState
 	private var timeOfFirstClick:Int;
 	private var iconDiffX:Float;
 	private var iconDiffY:Float;
+	private var gameOpened:Bool;
 	
 	private var _time:BunTime;
-	private var _game:GnopMain;
 	private var _defaultMenu:BunMenu;
 	private var _infoWindow:BunWindowExt;
 	
@@ -30,6 +31,11 @@ class BunDesktop extends BunState
 	private static inline var SEPTAGON_Y:Int = 2;
 	private static inline var TIME_X:Int = 571;
 	private static inline var TIME_Y:Int = 5;
+	
+	/**
+	 * Defines the location of the game class. This MUST be changed for games other than GNOP!
+	 */
+	private var _game:GnopMain;
 	
 	public function new()
 	{
@@ -42,8 +48,9 @@ class BunDesktop extends BunState
 		
 		timeOfFirstClick = NEGATIVE_DEFAULT_CLICK_TIME;
 		
+		_game = new GnopMain
 		icon = new Sprite();
-		icon.addChild( new Bitmap( GnopMain.getIcon() ) );
+		icon.addChild( new Bitmap( temp.getIcon() ) );
 		icon.x = ( stage.stageWidth - icon.width ) / 2;
 		icon.y = ( stage.stageHeight - icon.height ) / 2;
 		addChild( icon );
@@ -75,7 +82,7 @@ class BunDesktop extends BunState
 	{
 		super.update();
 		
-		if ( _game == null ) {
+		if ( !gameOpened ) {
 			if ( dragging && icon.visible ) {
 				icon.x = limit( mouseX - iconDiffX, 0, getStageWidth() - icon.width );
 				icon.y = limit( mouseY - iconDiffY, 20, getStageHeight() - icon.height );
@@ -143,16 +150,13 @@ class BunDesktop extends BunState
 	private function openFile():Void
 	{
 		dragging = false;
+		Log.trace( Type.typeof( _game ) );
+		//_game = new Type.typeof
+		//addChild( _game );
 		
-		// Change this file for other games.
-		// For example, if you wanted to use the Bun files to run OpenODS, you
-		// could change _game = new Gnop(); to _game = new ODS(); and then put
-		// the necessary game logic in a new file called ODS.hx with class ODS.
+		gameOpened = true;
 		
-		_game = new GnopMain();
-		addChild( _game );
-		
-		_game.addEventListener( Event.COMPLETE, onCloseGame, false, 0, true );
+		//_game.addEventListener( Event.COMPLETE, onCloseGame, false, 0, true );
 	}
 	
 	private function onCloseGame( e:Event ):Void
@@ -160,6 +164,8 @@ class BunDesktop extends BunState
 		_game.removeEventListener( Event.COMPLETE, onCloseGame );
 		removeChild( _game );
 		_game = null;
+		
+		gameOpened = false;
 		
 		icon.addEventListener( MouseEvent.MOUSE_DOWN, clickIcon, false, 0, true );
 	}

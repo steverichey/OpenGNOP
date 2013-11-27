@@ -92,7 +92,7 @@ class BunText extends Bitmap
 	 * 
 	 * @param	Text		Initial text of this object.
 	 */
-	public function new( Text:String )
+	public function new( ?Text:String )
 	{
 		if ( _storedMap == null ) {
 			var characterMap:Map<String,BitmapData> = new Map<String,BitmapData>();
@@ -117,11 +117,15 @@ class BunText extends Bitmap
 			fontData = null;
 		}
 		
-		// Clean the input string, set the internal variable, and update the bitmapdata.
-		
-		Text = cleanString( Text );
-		_text = Text;
-		super( textToBitmap( _text ) );
+		if ( Text != null ) {
+			// Clean the input string, set the internal variable, and update the bitmapdata.
+			
+			Text = cleanString( Text );
+			_text = Text;
+			super( textToBitmap( _text ) );
+		} else {
+			super( new BitmapData( 1, 1, true, 0 ) );
+		}
 	}
 	
 	/**

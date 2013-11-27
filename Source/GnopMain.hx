@@ -7,7 +7,7 @@ import flash.events.Event;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 
-class GnopMain extends BunState
+class GnopMain extends BunGame
 {
 	private var _splash:BunWindow;
 	private var _menu:BunMenu;
@@ -359,12 +359,14 @@ class GnopMain extends BunState
 		}
 	}
 	
-	public static function getIcon():BitmapData
+	//public static var getIcon:BitmapData = new BitmapData( 5, 5, true, 0xff00ff00 );
+	
+	public static function ffjjf():BitmapData
 	{
 		return Assets.getBitmapData( "images/icon.png" );
 	}
 	
-	private function getMenuItems():Array<Array<String>>
+	override private function getMenuItems():Array<Array<String>>
 	{
 		var a:Array<Array<String>> = [
 			[ BunMenuItem.SEPTAGON, "About Gnop..." ],
@@ -377,4 +379,6 @@ class GnopMain extends BunState
 		
 		return a;
 	}
+	
+	//public function 
 }
