@@ -1,7 +1,15 @@
-OpenGNOP
-========
+# OpenGNOP!
+______________________________________________________
 
-An open-source remake of Bungie's GNOP!
+An open-source remake of Bungie's GNOP! written in [Haxe](http://haxe.org/) using the [OpenFL](http://www.openfl.org) library.
+
+Much of the code is based on [GNOP! Flash](https://github.com/steverichey/gnopflash), but the engine has been completely re-written.  Most importantly, the generic GUI elements have largely been split into Bun- classes, while the GNOP! specific logic is in Gnop- classes. This way, future remakes can use the same base classes.
+
+In addition, the code has been simplified, streamlined, and improved wherever possible.  Large assets were removed entirely and are now created dynamically, and all text is now created from a sprite sheet font to more accurately recreate the appearance of the original OS.
+
+OpenGNOP! is intended to emulate Bungie Software’s original [GNOP! 1.0](http://en.wikipedia.org/wiki/Gnop!), programmed by [Alexander Seropian](http://en.wikipedia.org/wiki/Alex_Seropian) in Think C in 1990 for the Macintosh. GNOP! was the first game released by Bungie Software (now just [Bungie](http://www.bungie.net)), although it wasn’t until the 1992 release of [Minotaur: The Labyrinths of Crete](http://en.wikipedia.org/wiki/Minotaur:_The_Labyrinths_of_Crete) that Bungie was a fully-fledged company comprised of Seropian and fellow classmate [Jason Jones](http://en.wikipedia.org/wiki/Jason_Jones_(programmer)).
+
+______________________________________________________
 
 This file is part of OpenGNOP. OpenGNOP was created by Steve Richey and is a remake of the original GNOP!, released in 1990, which was created by Alexander Seropian. The existence of this program should in no way be construed as approval by Alexander Seropian or Bungie. OpenGNOP is based on GNOP! Flash, with added support for HTML5 and native targets.
 

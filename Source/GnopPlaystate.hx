@@ -5,11 +5,13 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.events.TimerEvent;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.Lib;
 import flash.ui.Mouse;
 import flash.events.KeyboardEvent;
+import flash.utils.Timer;
 import openfl.Assets;
 
 class GnopPlaystate extends BunState
@@ -30,6 +32,8 @@ class GnopPlaystate extends BunState
 	private var _serving:Bool;
 	private var _playerServing:Bool;
 	
+	private var _tick:Timer;
+	
 	private static inline var BG_X:Int = 62;
 	private static inline var BG_Y:Int = 87;
 	private static inline var BG_WIDTH:Int = 516;
@@ -39,6 +43,10 @@ class GnopPlaystate extends BunState
 	public static inline var Y_MAX:Int = 405;
 	private static inline var X_MIN:Int = 83;
 	private static inline var X_MAX:Int = 557;
+	
+	private static inline var TICK_SLOW:Int = 54;
+	private static inline var TICK_NORMAL:Int = 27;
+	private static inline var TICK_FAST:Int = 18;
 	
 	// Game end types
 	
@@ -97,12 +105,26 @@ class GnopPlaystate extends BunState
 		
 		Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp, false, 0, true );
 		Lib.current.stage.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true );
+		
+		// Since the tick frequency varies, we can't use the generic update timer (based on frames).
+		
+		var tickfreq:Int = 0;
+		
+		if ( GnopMain.ballSpeed == 0 ) {
+			tickfreq = TICK_SLOW;
+		} else if ( GnopMain.ballSpeed == 1 ) {
+			tickfreq = TICK_NORMAL;
+		} else {
+			tickfreq = TICK_FAST;
+		}
+		
+		_tick = new Timer( tickfreq );
+		_tick.addEventListener( TimerEvent.TIMER, onTick, false, 0, true );
+		_tick.start();
 	}
 	
-	override public function update( ?e:Event ):Void
+	public function onTick( ?t:TimerEvent ):Void
 	{
-		super.update( e );
-		
 		if ( _paused || _player.animating || _computer.animating ) {
 			return;
 		}
