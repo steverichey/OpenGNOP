@@ -27,7 +27,7 @@ class BunMenu extends BunState
 	/**
 	 * Reference to the drop menu items.
 	 */
-	private var dropMenus:Array<Sprite>;
+	private var dropMenus:Array<BunMenuDrop>;
 	
 	/**
 	 * Storage for the selected item position.
@@ -156,7 +156,6 @@ class BunMenu extends BunState
 				topMenu[i].setInverted( false );
 			} else {
 				topMenu[i].setInverted( true );
-				//setChildIndex( topMenu[i], 1 );
 			}
 			
 			i++;
@@ -194,7 +193,7 @@ class BunMenu extends BunState
 	}
 	
 	/**
-	 * Hide a drop menu.
+	 * Hide one drop menu.
 	 * 
 	 * @param	m	A MouseEvent.
 	 */
@@ -204,9 +203,9 @@ class BunMenu extends BunState
 		dropMenus[ m.target.position.x ].visible = false;
 	}
 	
-	private function clickDropItem( ?m:MouseEvent ):Void
+	public function clickDropItem( ?m:MouseEvent ):Void
 	{
-		if ( !BunMenu.lockOut ) {
+		if ( !lockOut ) {
 			selectedItemPosition = m.target.position;
 			selectedItem = m.target;
 			
@@ -240,7 +239,7 @@ class BunMenu extends BunState
 		
 		while ( xpos < a.length ) {
 			while ( ypos < a[xpos].length ) {
-				cast( dropMenus[xpos].getChildAt( ypos + 1 ), BunMenuItem ).setCheck( a[xpos][ypos] );
+				dropMenus[xpos].members[ypos].setCheck( a[xpos][ypos] );
 				ypos++;
 			}
 			ypos = 0;
@@ -279,57 +278,10 @@ class BunMenu extends BunState
 		
 		Arr.shift();
 		
-		var s:Sprite = new Sprite();
-		s.x = X;
-		s.y = 19;
+		var dm:BunMenuDrop = new BunMenuDrop( Arr, XPosition );
+		dm.x = X;
+		dm.visible = false;
 		
-		var longest:Int = 0;
-		
-		for ( i in Arr ) {
-			var temp:String = i;
-			
-			if ( temp.substring(0, 5) == BunMenuItem.GREY ) {
-				temp = temp.substring( 5, temp.length );
-			} else if ( temp.substring( 0, 4 ) == BunMenuItem.TAB ) {
-				temp = temp.substring( 4, temp.length );
-			}
-			
-			var bt:BunText = new BunText( temp );
-			var w:Int = Std.int( bt.width );
-			
-			// Tabbed items are an additional 8px wide.
-			
-			if ( i.substring( 0, 4 ) == BunMenuItem.TAB ) {
-				w += BunMenuItem.TAB_PADDING;
-			}
-			
-			if ( w > longest ) {
-				longest = w;
-			}
-		}
-		
-		longest += BunMenuItem.LEFT_PADDING_DROP + BunMenuItem.RIGHT_PADDING_DROP;
-		
-		var w:BunWindow = new BunWindow( longest + 3, Arr.length * BunMenuItem.DROP_ITEM_HEIGHT + 3, BunWindow.SHADOWED_MENU );
-		s.addChildAt( w, 0 );
-		
-		var currentY:Int = 1;
-		var posY:Int = 0;
-		
-		for ( i in Arr ) {
-			var btf:BunMenuItem = new BunMenuItem( i, longest, BunMenuItem.DROP_MENU, new Point( XPosition, posY ) );
-			btf.y = currentY;
-			s.addChildAt( btf, posY + 1 );
-			
-			if ( i.substring(0, 5) != BunMenuItem.GREY && i != BunMenuItem.LINE ) {
-				btf.addEventListener( MouseEvent.MOUSE_UP, clickDropItem, false, 0, true );
-			}
-			
-			currentY += Std.int( btf.height );
-			posY++;
-		}
-		
-		s.visible = false;
-		dropMenus.push( s );
+		dropMenus.push( dm );
 	}
 }
