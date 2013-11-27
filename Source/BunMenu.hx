@@ -95,6 +95,8 @@ class BunMenu extends BunState
 		for ( i in dropMenus ) {
 			addChild( i );
 		}
+		
+		updateCheckmarks();
 	}
 	
 	/**
@@ -227,9 +229,23 @@ class BunMenu extends BunState
 		cast( this.parent, BunState ).menuSelect( selectedItemPosition );
 	}
 	
+	/**
+	 * Cycles through each drop menu and sets the check marks per the parent BunState's getCheckmarkUpdates() function.
+	 */
 	public function updateCheckmarks():Void
 	{
-		haxe.Log.trace( "Updating checkmarks..." );
+		var xpos:Int = 0;
+		var ypos:Int = 0;
+		var a:Array<Array<Bool>> = cast( this.parent, BunState ).getCheckmarkUpdates();
+		
+		while ( xpos < a.length ) {
+			while ( ypos < a[xpos].length ) {
+				cast( dropMenus[xpos].getChildAt( ypos + 1 ), BunMenuItem ).setCheck( a[xpos][ypos] );
+				ypos++;
+			}
+			ypos = 0;
+			xpos++;
+		}
 	}
 	
 	/**
@@ -295,7 +311,7 @@ class BunMenu extends BunState
 		longest += BunMenuItem.LEFT_PADDING_DROP + BunMenuItem.RIGHT_PADDING_DROP;
 		
 		var w:BunWindow = new BunWindow( longest + 3, Arr.length * BunMenuItem.DROP_ITEM_HEIGHT + 3, BunWindow.SHADOWED_MENU );
-		s.addChild( w );
+		s.addChildAt( w, 0 );
 		
 		var currentY:Int = 1;
 		var posY:Int = 0;
@@ -303,10 +319,12 @@ class BunMenu extends BunState
 		for ( i in Arr ) {
 			var btf:BunMenuItem = new BunMenuItem( i, longest, BunMenuItem.DROP_MENU, new Point( XPosition, posY ) );
 			btf.y = currentY;
-			s.addChild( btf );
+			s.addChildAt( btf, posY + 1 );
+			
 			if ( i.substring(0, 5) != BunMenuItem.GREY && i != BunMenuItem.LINE ) {
 				btf.addEventListener( MouseEvent.MOUSE_UP, clickDropItem, false, 0, true );
 			}
+			
 			currentY += Std.int( btf.height );
 			posY++;
 		}

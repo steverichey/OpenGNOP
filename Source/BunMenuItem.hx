@@ -14,6 +14,7 @@ class BunMenuItem extends Sprite
 	private var _tf:BunText;
 	private var _bm:Bitmap;
 	private var _bg:Bitmap;
+	private var _cm:Bitmap;
 	private var _inverted:Bool;
 	
 	public var position:Point;
@@ -31,6 +32,8 @@ class BunMenuItem extends Sprite
 	public static inline var TOP_ITEM_HEIGHT:Int = 18;
 	
 	private static inline var COLOR_GREY:Int = 0xff888888;
+	private static inline var CHECK_PADDING_LEFT:Int = 3;
+	private static inline var CHECK_PADDING_TOP:Int = 3;
 	
 	/**
 	 * Constants which are parsed to create items that are not simple text.
@@ -130,6 +133,14 @@ class BunMenuItem extends Sprite
 			addChild( _bm );
 		}
 		
+		if ( ItemType == DROP_MENU && !inactive ) {
+			_cm = new Bitmap( Assets.getBitmapData( "images/checkmark.png" ) );
+			_cm.x = CHECK_PADDING_LEFT;
+			_cm.y = CHECK_PADDING_TOP;
+			_cm.visible = false;
+			addChild( _cm );
+		}
+		
 		if ( ItemType == TOP_MENU ) {
 			this.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true );
 		} else if ( !inactive ) {
@@ -168,7 +179,18 @@ class BunMenuItem extends Sprite
 				invert( _tf );
 			}
 			
+			if ( _cm != null ) {
+				invert( _cm );
+			}
+			
 			inverted = NewInverted;
+		}
+	}
+	
+	public function setCheck( CheckVisibility:Bool ):Void
+	{
+		if ( _cm != null ) {
+			_cm.visible = CheckVisibility;
 		}
 	}
 	

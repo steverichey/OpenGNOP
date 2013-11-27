@@ -48,9 +48,9 @@ class BunDesktop extends BunState
 		
 		timeOfFirstClick = NEGATIVE_DEFAULT_CLICK_TIME;
 		
-		_game = new GnopMain
+		//_game = new GnopMain
 		icon = new Sprite();
-		icon.addChild( new Bitmap( temp.getIcon() ) );
+		icon.addChild( new Bitmap( GnopMain.getIcon() ) );
 		icon.x = ( stage.stageWidth - icon.width ) / 2;
 		icon.y = ( stage.stageHeight - icon.height ) / 2;
 		addChild( icon );
@@ -150,13 +150,12 @@ class BunDesktop extends BunState
 	private function openFile():Void
 	{
 		dragging = false;
-		Log.trace( Type.typeof( _game ) );
-		//_game = new Type.typeof
-		//addChild( _game );
+		_game = new GnopMain();
+		addChild( _game );
 		
 		gameOpened = true;
 		
-		//_game.addEventListener( Event.COMPLETE, onCloseGame, false, 0, true );
+		_game.addEventListener( Event.COMPLETE, onCloseGame, false, 0, true );
 	}
 	
 	private function onCloseGame( e:Event ):Void

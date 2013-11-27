@@ -164,7 +164,11 @@ class GnopMain extends BunGame
 	
 	private function startNewGame():Void
 	{
-		_start.play();
+		if ( sound ) {
+			_start.play();
+		} else {
+			beginGame();
+		}
 	}
 	
 	private function beginGame( ?e:Event ):Void
@@ -248,16 +252,17 @@ class GnopMain extends BunGame
 			case { x:4, y:4 }:
 				createWindow( SET_ENDING_SCORE );
 			case { x:4, y:6 }:
-				// computer serves first
+				playerServesFirst = false;
+				_menu.updateCheckmarks();
 			case { x:4, y:7 }:
-				// you serve first
+				playerServesFirst = true;
+				_menu.updateCheckmarks();
 			case { x:4, y:9 }:
-				// sound
+				sound = !sound;
+				_menu.updateCheckmarks();
 			case { x:5, y:0 } :
 				createWindow( INSTRUCTIONS );
 		}
-		
-		//Log.trace( selectedItemPosition );
 	}
 	
 	private function createWindow( WindowType:Int ):Void
@@ -359,9 +364,7 @@ class GnopMain extends BunGame
 		}
 	}
 	
-	//public static var getIcon:BitmapData = new BitmapData( 5, 5, true, 0xff00ff00 );
-	
-	public static function ffjjf():BitmapData
+	public static function getIcon():BitmapData
 	{
 		return Assets.getBitmapData( "images/icon.png" );
 	}
@@ -380,5 +383,17 @@ class GnopMain extends BunGame
 		return a;
 	}
 	
-	//public function 
+	override public function getCheckmarkUpdates():Array<Array<Bool>>
+	{
+		var a:Array<Array<Bool>> = [
+			[ false ],
+			[ false, false, false ],
+			[ false, ( playerPaddleSize == 0 ), ( playerPaddleSize == 1 ), ( playerPaddleSize == 2 ), false, false, ( computerPaddleSize == 0 ), ( computerPaddleSize == 1 ), ( computerPaddleSize == 2 ) ],
+			[ ( ballSize == 0 ), ( ballSize == 1 ), ( ballSize == 2 ), false, ( ballSpeed == 0 ), ( ballSpeed == 1 ), ( ballSpeed == 2 ) ],
+			[ ( difficulty == 0 ), ( difficulty == 1 ), ( difficulty == 2 ), false, false, false, !playerServesFirst, playerServesFirst, false, sound ],
+			[ false ]
+		];
+		
+		return a;
+	}
 }

@@ -23,7 +23,7 @@ class BunGame extends BunState
 	{
 		super.update(e);
 	}
-	
+	/*
 	public function getIcon():BitmapData
 	{
 		var defaultText:BunText = new BunText( "NO/ICON" );
@@ -31,7 +31,7 @@ class BunGame extends BunState
 		defaultData.draw( defaultText, new Matrix() );
 		
 		return defaultData;
-	}
+	}*/
 	
 	private function getMenuItems():Array<Array<String>>
 	{

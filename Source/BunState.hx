@@ -101,6 +101,11 @@ class BunState extends Sprite
 		return VarToLimit;
 	}
 	
+	public function getCheckmarkUpdates():Array<Array<Bool>>
+	{
+		return [ [] ];
+	}
+	
 	public function invert( s:Sprite )
 	{
 		var temp:ColorTransform = s.transform.colorTransform;
