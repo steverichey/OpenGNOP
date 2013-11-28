@@ -7,6 +7,7 @@ import flash.events.Event;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
+import open7.OSMain;
 
 /**
  * @author Joshua Granick
@@ -37,7 +38,7 @@ class Main extends Sprite
 		
 		initialize();
 		
-		var bunOS:Sprite = new BunOS();
+		var bunOS:Sprite = new OSMain();
 		addChild( bunOS );
 	}
 	

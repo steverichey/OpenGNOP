@@ -1,5 +1,13 @@
 package;
 
+import open7.OSGame;
+import open7.OSState;
+import open7.sys.OSSound;
+import open7.ui.OSMenu;
+import open7.ui.OSMenuItem;
+import open7.ui.OSWindow;
+import open7.ui.OSWindowExt;
+import open7.utils.OSLocalize;
 import openfl.Assets;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -7,19 +15,19 @@ import flash.events.Event;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 
-class GnopMain extends BunGame
+class GnopMain extends OSGame
 {
-	private var _splash:BunWindow;
-	private var _menu:BunMenu;
+	private var _splash:OSWindow;
+	private var _menu:OSMenu;
 	private var _tinyicon:Bitmap;
-	private var _about:BunWindowExt;
-	private var _endscore:BunWindowExt;
-	private var _instructions:BunWindowExt;
-	private var _scoreWarning:BunWindowExt;
+	private var _about:OSWindowExt;
+	private var _endscore:OSWindowExt;
+	private var _instructions:OSWindowExt;
+	private var _scoreWarning:OSWindowExt;
 	private var _playstate:GnopPlaystate;
-	private var _start:BunSound;
-	private var _lose:BunSound;
-	private var _win:BunSound;
+	private var _start:OSSound;
+	private var _lose:OSSound;
+	private var _win:OSSound;
 	private var _endType:Int;
 	
 	public static var playerPaddleSize:Int = 1;
@@ -94,14 +102,14 @@ class GnopMain extends BunGame
 		
 		// Add the initial splash screen.
 		
-		_splash = new BunWindow( 502, 312, BunWindow.SHADOWED, Assets.getBitmapData( "images/splash.png" ), 57, 49 );
+		_splash = new OSWindow( 502, 312, OSWindow.SHADOWED, Assets.getBitmapData( "images/splash.png" ), 57, 49 );
 		_splash.x = 69;
 		_splash.y = 94;
 		addChild( _splash );
 		
 		// Add the top menu.
 		
-		_menu = new BunMenu( getMenuItems() );
+		_menu = new OSMenu( getMenuItems() );
 		addChild( _menu );
 		
 		// Add the "tiny icon" in the top menu.
@@ -113,14 +121,14 @@ class GnopMain extends BunGame
 		
 		// setup child windows
 		
-		_about = new BunWindowExt( ABOUT_WIDTH, ABOUT_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/about.png" ), ABOUT_IMG_X, ABOUT_IMG_Y );
+		_about = new OSWindowExt( ABOUT_WIDTH, ABOUT_HEIGHT, OSWindow.BORDERED, Assets.getBitmapData( "images/about.png" ), ABOUT_IMG_X, ABOUT_IMG_Y );
 		_about.x = ABOUT_X;
 		_about.y = ABOUT_Y;
 		_about.addOk( ABOUT_OK_X, ABOUT_OK_Y );
 		_about.visible = false;
 		addChild( _about );
 		
-		_instructions = new BunWindowExt( INSTRUCTIONS_WIDTH, INSTRUCTIONS_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/instructions.png" ), 27, 12 );
+		_instructions = new OSWindowExt( INSTRUCTIONS_WIDTH, INSTRUCTIONS_HEIGHT, OSWindow.BORDERED, Assets.getBitmapData( "images/instructions.png" ), 27, 12 );
 		_instructions.x = INSTRUCTIONS_X;
 		_instructions.y = INSTRUCTIONS_Y;
 		_instructions.addOk( INSTRUCTIONS_OK_X, INSTRUCTIONS_OK_Y );
@@ -129,7 +137,7 @@ class GnopMain extends BunGame
 		
 		var temp:BitmapData = new BitmapData( 41, 27, false, 0xff000000 );
 		temp.fillRect( new Rectangle( 1, 1, temp.width - 2, temp.height - 2 ), 0xffFFFFFF );
-		_endscore = new BunWindowExt( SET_WIDTH, SET_HEIGHT, BunWindow.BORDERED, temp, 151, 27 );
+		_endscore = new OSWindowExt( SET_WIDTH, SET_HEIGHT, OSWindow.BORDERED, temp, 151, 27 );
 		_endscore.x = SET_X;
 		_endscore.y = SET_Y;
 		_endscore.addOk( SET_OK_X, SET_OK_Y );
@@ -139,7 +147,7 @@ class GnopMain extends BunGame
 		_endscore.visible = false;
 		addChild( _endscore );
 		
-		_scoreWarning = new BunWindowExt( WARNING_WIDTH, WARNING_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/warn.png" ), WARNING_HAND_X, WARNING_HAND_Y );
+		_scoreWarning = new OSWindowExt( WARNING_WIDTH, WARNING_HEIGHT, OSWindow.BORDERED, Assets.getBitmapData( "images/warn.png" ), WARNING_HAND_X, WARNING_HAND_Y );
 		_scoreWarning.x = WARNING_X;
 		_scoreWarning.y = WARNING_Y;
 		_scoreWarning.addText( WARNING_TEXT_X, WARNING_TEXT_Y, WARNING_TEXT );
@@ -147,10 +155,10 @@ class GnopMain extends BunGame
 		_scoreWarning.visible = false;
 		addChild( _scoreWarning );
 		
-		_start = new BunSound( "start" );
+		_start = new OSSound( "start" );
 		_start.addEventListener( Event.SOUND_COMPLETE, beginGame, false, 0, true );
-		_win = new BunSound( "win" );
-		_lose = new BunSound( "lose" );
+		_win = new OSSound( "win" );
+		_lose = new OSSound( "lose" );
 	}
 	
 	override public function update( ?e:Event ):Void
@@ -293,7 +301,7 @@ class GnopMain extends BunGame
 			_scoreWarning.addEventListener( Event.COMPLETE, onCloseWarning, false, 0, true );
 		}
 		
-		BunMenu.lockOut = true;
+		OSMenu.lockOut = true;
 	}
 	
 	private function onCloseAbout( ?e:Event ):Void
@@ -301,7 +309,7 @@ class GnopMain extends BunGame
 		_about.removeEventListener( Event.COMPLETE, onCloseAbout );
 		_about.active = false;
 		_about.visible = false;
-		BunMenu.lockOut = false;
+		OSMenu.lockOut = false;
 	}
 	
 	private function onCloseInstructions( ?e:Event ):Void
@@ -309,7 +317,7 @@ class GnopMain extends BunGame
 		_instructions.removeEventListener( Event.COMPLETE, onCloseInstructions );
 		_instructions.active = false;
 		_instructions.visible = false;
-		BunMenu.lockOut = false;
+		OSMenu.lockOut = false;
 	}
 	
 	private function onCancelEndScore( ?e:Event ):Void
@@ -320,7 +328,7 @@ class GnopMain extends BunGame
 		_endscore.removeEventListener( Event.COMPLETE, onCloseEndScore );
 		_endscore.active = false;
 		_endscore.visible = false;
-		BunMenu.lockOut = false;
+		OSMenu.lockOut = false;
 	}
 	
 	private function onCloseEndScore( ?e:Event ):Void
@@ -371,14 +379,25 @@ class GnopMain extends BunGame
 	
 	override private function getMenuItems():Array<Array<String>>
 	{
+		#if EN
 		var a:Array<Array<String>> = [
-			[ BunMenuItem.SEPTAGON, "About Gnop..." ],
-			[ "File", "New Game", BunMenuItem.LINE, "Quit" ],
-			[ "Paddles", BunMenuItem.GREYED("Player"), BunMenuItem.TABBED("Small"), BunMenuItem.TABBED("Normal"), BunMenuItem.TABBED("Large"), BunMenuItem.LINE, BunMenuItem.GREYED("Computer"), BunMenuItem.TABBED("Small"), BunMenuItem.TABBED("Normal"), BunMenuItem.TABBED("Large") ],
-			[ "Ball", "Small", "Normal", "Large", BunMenuItem.LINE, "Slow", "Normal", "Fast" ],
-			[ "Options", "Novice", "Intermediate", "Expert", BunMenuItem.LINE, "Set Ending Score...", BunMenuItem.LINE, "Computer Serves First", "You Serve First", BunMenuItem.LINE, "Sound" ],
+			[ OSMenuItem.SEPTAGON, "About Gnop..." ],
+			[ "File", "New Game", OSMenuItem.LINE, "Quit" ],
+			[ "Paddles", OSMenuItem.GREYED("Player"), OSMenuItem.TABBED("Small"), OSMenuItem.TABBED("Normal"), OSMenuItem.TABBED("Large"), OSMenuItem.LINE, OSMenuItem.GREYED("Computer"), OSMenuItem.TABBED("Small"), OSMenuItem.TABBED("Normal"), OSMenuItem.TABBED("Large") ],
+			[ "Ball", "Small", "Normal", "Large", OSMenuItem.LINE, "Slow", "Normal", "Fast" ],
+			[ "Options", "Novice", "Intermediate", "Expert", OSMenuItem.LINE, "Set Ending Score...", OSMenuItem.LINE, "Computer Serves First", "You Serve First", OSMenuItem.LINE, "Sound" ],
 			[ "Help", "Instructions..." ]
 			];
+		#else
+		var a:Array<Array<String>> = [
+			[ OSMenuItem.SEPTAGON, OSLocalize.ABOUT + " Gnop..." ],
+			[ OSLocalize.FILE, OSLocalize.NEW_GAME, OSMenuItem.LINE, OSLocalize.QUIT ],
+			[ OSLocalize.PADDLES, OSMenuItem.GREYED( OSLocalize.PLAYER ), OSMenuItem.TABBED( OSLocalize.SMALL ), OSMenuItem.TABBED( OSLocalize.NORMAL ), OSMenuItem.TABBED( OSLocalize.LARGE ), OSMenuItem.LINE, OSMenuItem.GREYED( OSLocalize.COMPUTER ), OSMenuItem.TABBED( OSLocalize.SMALL ), OSMenuItem.TABBED( OSLocalize.NORMAL ), OSMenuItem.TABBED( OSLocalize.LARGE ) ],
+			[ OSLocalize.BALL, OSLocalize.SMALL, OSLocalize.NORMAL, OSLocalize.LARGE, OSMenuItem.LINE, OSLocalize.SMALL, OSLocalize.NORMAL, OSLocalize.FAST ],
+			[ OSLocalize.OPTIONS, OSLocalize.NOVICE, OSLocalize.NOVICE, OSLocalize.EXPERT, OSMenuItem.LINE, OSLocalize.SET_ENDING_SCORE + "...", OSMenuItem.LINE, OSLocalize.COMPUTER + " " + OSLocalize.SERVES_FIRST, OSLocalize.PLAYER + " " + OSLocalize.SERVES_FIRST, OSMenuItem.LINE, OSLocalize.SOUND ],
+			[ OSLocalize.HELP, OSLocalize.INSTRUCTIONS + "..." ]
+			];
+		#end
 		
 		return a;
 	}

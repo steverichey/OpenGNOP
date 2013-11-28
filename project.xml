@@ -9,6 +9,7 @@
 	<set name="BUILD_DIR" value="export" />
 	
 	<classpath name="source" />
+	<classpath name="../Open7/Source" />
 	
 	<!--You can use rename="newName" to shorten the paths to the individual subdirectories!-->
 	<assets path="assets/images" rename="images" />
@@ -17,7 +18,12 @@
 	
 	<haxelib name="openfl" />
 	
+	<haxedef name="EN" />
+	<!-- <haxedef name="SP" /> -->
+	<!-- <haxedef name="FR" /> -->
+	<!-- <haxedef name="GE" /> -->
+	
 	<icon path="assets/gnop.svg" />
 	
-	<app preloader="BunPreloader" unless="desktop" />
+	<app preloader="open7.utils.OSPreloader" unless="desktop" />
 </project>

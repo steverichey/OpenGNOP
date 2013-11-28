@@ -6,6 +6,7 @@ import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 import openfl.Assets;
+import open7.sys.OSSound;
 
 class GnopPaddle extends Bitmap
 {
@@ -13,8 +14,8 @@ class GnopPaddle extends Bitmap
 	public var predictedY:Float;
 	
 	private var _height:Int;
-	private var _explode:BunSound;
-	private var _land:BunSound;
+	private var _explode:OSSound;
+	private var _land:OSSound;
 	private var _explodeTimer:Timer;
 	private var _ashen:Bool;
 	private var _playedLand:Bool;
@@ -58,8 +59,8 @@ class GnopPaddle extends Bitmap
 		_explodeTimer.addEventListener( TimerEvent.TIMER, onExplodeTimer );
 		_explodeTimer.addEventListener( TimerEvent.TIMER_COMPLETE, restore );
 		
-		_explode = new BunSound( "explode" );
-		_land = new BunSound( "land" );
+		_explode = new OSSound( "explode" );
+		_land = new OSSound( "land" );
 		
 		super( new BitmapData( WIDTH, HEIGHT_MULTIPLIER * ( Height + 1 ), false, 0xff000000 ) );
 	}

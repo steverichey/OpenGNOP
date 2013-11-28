@@ -1,6 +1,8 @@
 package;
 
-class GnopScore extends BunText
+import open7.ui.OSText;
+
+class GnopScore extends OSText
 {
 	private var _score:Int;
 	

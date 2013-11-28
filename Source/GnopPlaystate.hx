@@ -12,11 +12,14 @@ import flash.Lib;
 import flash.ui.Mouse;
 import flash.events.KeyboardEvent;
 import flash.utils.Timer;
+import open7.OSState;
+import open7.sys.OSSound;
+import open7.ui.OSWindow;
 import openfl.Assets;
 
-class GnopPlaystate extends BunState
+class GnopPlaystate extends OSState
 {
-	private var _bg:BunWindow;
+	private var _bg:OSWindow;
 	private var _player:GnopPaddle;
 	private var _computer:GnopPaddle;
 	private var _ball:GnopBall;
@@ -24,8 +27,8 @@ class GnopPlaystate extends BunState
 	private var _scoreToWin:GnopScore;
 	private var _scoreComputer:GnopScore;
 	
-	private var _bounce:BunSound;
-	private var _matchPoint:BunSound;
+	private var _bounce:OSSound;
+	private var _matchPoint:OSSound;
 	
 	private var _paused:Bool;
 	private var _animating:Bool;
@@ -71,7 +74,7 @@ class GnopPlaystate extends BunState
 		
 		Mouse.hide();
 		
-		_bg = new BunWindow( BG_WIDTH, BG_HEIGHT, BunWindow.BORDERED, Assets.getBitmapData( "images/scoreboard.png" ), 8, 9 );
+		_bg = new OSWindow( BG_WIDTH, BG_HEIGHT, OSWindow.BORDERED, Assets.getBitmapData( "images/scoreboard.png" ), 8, 9 );
 		_bg.x = BG_X;
 		_bg.y = BG_Y;
 		
@@ -92,8 +95,8 @@ class GnopPlaystate extends BunState
 			_playerServing = false;
 		}
 		
-		_bounce = new BunSound( "bounce" );
-		_matchPoint = new BunSound( "matchpoint" );
+		_bounce = new OSSound( "bounce" );
+		_matchPoint = new OSSound( "matchpoint" );
 		
 		addChild( _bg );
 		addChild( _player );
@@ -156,7 +159,7 @@ class GnopPlaystate extends BunState
 		var paddleMinY:Float;
 		var paddleMaxY:Float;
 		
-		if ( type == BunState.MINIMUM ) {
+		if ( type == OSState.MINIMUM ) {
 			paddleMinY = _computer.y;
 			paddleMaxY = _computer.y + _computer.height;
 		} else {
@@ -168,7 +171,7 @@ class GnopPlaystate extends BunState
 			_ball.reverse( GnopBall.X_AXIS );
 			_bounce.play( true );
 			
-			if ( type == BunState.MAXIMUM ) {
+			if ( type == OSState.MAXIMUM ) {
 				_ball.calculateY( _player.y, _player.height );
 				_computer.predictedY = predictBallDestination();
 			} else {
@@ -178,7 +181,7 @@ class GnopPlaystate extends BunState
 			_serving = true;
 			_ball.visible = false;
 			
-			if ( type == BunState.MAXIMUM ) {
+			if ( type == OSState.MAXIMUM ) {
 				_scoreComputer.score ++;
 				
 				_player.addEventListener( Event.COMPLETE, onCompleteExplosion, false, 0, true );
