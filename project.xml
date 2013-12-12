@@ -9,7 +9,6 @@
 	<set name="BUILD_DIR" value="export" />
 	
 	<classpath name="source" />
-	<classpath name="../Open7/Source" />
 	
 	<!--You can use rename="newName" to shorten the paths to the individual subdirectories!-->
 	<assets path="assets/images" rename="images" />
@@ -17,6 +16,7 @@
 	<assets path="assets/sounds" rename="sounds" exclude="*.mp3" if="desktop"/>
 	
 	<haxelib name="openfl" />
+	<haxelib name="open7" />
 	
 	<haxedef name="EN" />
 	<!-- <haxedef name="SP" /> -->

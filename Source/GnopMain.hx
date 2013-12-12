@@ -2,6 +2,7 @@ package;
 
 import open7.OSGame;
 import open7.OSState;
+import open7.sys.OSAssets;
 import open7.sys.OSSound;
 import open7.ui.OSMenu;
 import open7.ui.OSMenuItem;
@@ -147,7 +148,7 @@ class GnopMain extends OSGame
 		_endscore.visible = false;
 		addChild( _endscore );
 		
-		_scoreWarning = new OSWindowExt( WARNING_WIDTH, WARNING_HEIGHT, OSWindow.BORDERED, Assets.getBitmapData( "images/warn.png" ), WARNING_HAND_X, WARNING_HAND_Y );
+		_scoreWarning = new OSWindowExt( WARNING_WIDTH, WARNING_HEIGHT, OSWindow.BORDERED, OSAssets.getImage( OSAssets.WARNING ), WARNING_HAND_X, WARNING_HAND_Y );
 		_scoreWarning.x = WARNING_X;
 		_scoreWarning.y = WARNING_Y;
 		_scoreWarning.addText( WARNING_TEXT_X, WARNING_TEXT_Y, WARNING_TEXT );
