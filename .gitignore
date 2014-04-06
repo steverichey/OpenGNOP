@@ -51,8 +51,3 @@ Thumbs.db
 # Custom Settings #
 ###################
 etc/
-export/flash/haxe/
-export/html5/
-export/windows/
-export/mac/
-export/linux/
