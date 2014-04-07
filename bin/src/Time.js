@@ -9,21 +9,22 @@ var ampm;
 var date;
 var xpos = 571;
 
-Time.constructor = Time;
-Time.prototype = Object.create(Text.prototype);
-
 function Time()
 {
     ampm = "AM";
-    Text.call(this, "0:0 AM", xpos, 5);
+    Text.call(this, "", xpos, 5);
     date = new Date();
     var self = this;
     self.updateTime();
     window.setInterval( function(){self.updateTime();}, 1000);
 }
 
+Time.constructor = Time;
+Time.prototype = Object.create(Text.prototype);
+
 Time.prototype.updateTime = function()
 {
+    date = new Date();
     hour = date.getHours();
     minute = date.getMinutes();
     

@@ -1,16 +1,35 @@
 /*global PIXI*/
 /*global Text*/
 /*global Time*/
+/*global Icon*/
+/*global console*/
 
 var time;
+var icons = [];
+var stage;
 
 function Desktop(stage)
 {
-    var bg = new PIXI.Sprite.fromImage("./images/bg.png");
-    stage.addChild( bg );
-    
+	PIXI.Sprite.call( this, PIXI.Texture.fromImage("./images/bg.png") );
+	stage.addChild( this );
+	
+	this.setInteractive(true);
+	this.stage = stage;
+	
     time = new Time();
     stage.addChild( time );
+	
+	var self = this;
+    
+	this.addIcon( "./images/icon_settings.png", 580, 420 );
+	
+	this.mousedown = this.touchstart = function()
+	{
+		for ( var i = 0; i < icons.length; i++ )
+		{
+			icons[i].setInverted(false);
+		}
+	};
 }
 
 Desktop.constructor = Desktop;
@@ -18,5 +37,12 @@ Desktop.prototype = Object.create(PIXI.Sprite.prototype);
 
 Desktop.prototype.update = function()
 {
-    //time.update();
+	// do stuff
+};
+
+Desktop.prototype.addIcon = function( iconImage, x, y )
+{
+	var newicon = new Icon( iconImage, x, y );
+	icons.push( newicon );
+	stage.addChild( newicon );
 };
