@@ -45,7 +45,7 @@ Desktop.prototype.update = function()
 
 Desktop.prototype.addIcon = function( iconImage, x, y )
 {
-	var newicon = new Icon( iconImage, x, y, new Settings( 60, 60, 600, 400, this.stage ) );
+	var newicon = new Icon( iconImage, x, y, new Settings( 70, 95, 500, 310, this.stage ) );
 	icons.push( newicon );
 	stage.addChild( newicon );
 };
