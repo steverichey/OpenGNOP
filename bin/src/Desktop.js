@@ -3,6 +3,8 @@
 /*global Time*/
 /*global Icon*/
 /*global console*/
+/*global Window*/
+/*global Settings*/
 
 var time;
 var icons = [];
@@ -21,6 +23,7 @@ function Desktop(stage)
 	
 	var self = this;
     
+	//this.addIcon( "./images/icon_settings.png", 580, 420, new Settings() );
 	this.addIcon( "./images/icon_settings.png", 580, 420 );
 	
 	this.mousedown = this.touchstart = function()
@@ -42,7 +45,7 @@ Desktop.prototype.update = function()
 
 Desktop.prototype.addIcon = function( iconImage, x, y )
 {
-	var newicon = new Icon( iconImage, x, y );
+	var newicon = new Icon( iconImage, x, y, new Settings( 60, 60, 600, 400, this.stage ) );
 	icons.push( newicon );
 	stage.addChild( newicon );
 };

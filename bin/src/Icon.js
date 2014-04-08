@@ -8,9 +8,11 @@ var offsetX = 0;
 var offsetY = 0;
 var inverted = false;
 var dragging = false;
-var stage;
+var windowClass;
+var clickTime = -2000;
+var MIN_CLICK_TIME = 500;
 
-function Icon( iconImage, x, y, stage )
+function Icon( iconImage, x, y, windowClass )
 {
     normalTexture = PIXI.Texture.fromImage( iconImage );
 	invertFilter = new PIXI.InvertFilter();
@@ -19,7 +21,7 @@ function Icon( iconImage, x, y, stage )
     PIXI.Sprite.call( this, normalTexture );
     this.position.x = x;
     this.position.y = y;
-	this.stage = stage;
+	this.windowClass = windowClass;
     
     this.setInteractive(true);
 	
@@ -65,6 +67,16 @@ function Icon( iconImage, x, y, stage )
 		if ( this.dragging )
 		{
 			this.dragging = false;
+			var rightnow = new Date().getTime();
+			
+			if ( rightnow - clickTime < MIN_CLICK_TIME )
+			{
+				windowClass.create();
+			}
+			else
+			{
+				clickTime = rightnow;
+			}
 		}
 	};
 }
