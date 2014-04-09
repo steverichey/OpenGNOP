@@ -1,4 +1,6 @@
-# OpenGNOP!
+# [![GNOP! Icon](assets/icon.png)] OpenGNOP!
+
+[![GNOP! Screenshot](assets/screenshot.png)]
 
 An open-source remake of Bungie's GNOP! written in JavaScript using the [Pixi.js](http://www.pixijs.com/) library.
 
