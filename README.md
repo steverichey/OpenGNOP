@@ -4,7 +4,7 @@
 <img src="assets/screenshot.png" alt="GNOP! Screenshot"/>
 </p>
 
-An open-source remake of Bungie's GNOP! written in JavaScript using the [Pixi.js](http://www.pixijs.com/) library.
+An open-source remake of Bungie's GNOP! by [Steve Richey](https://github.com/steverichey) written in JavaScript using the [Pixi.js](http://www.pixijs.com/) library.
 
 Much of the code is based on [GNOP! Flash](https://github.com/steverichey/gnopflash), but the engine has been completely re-written.
 
