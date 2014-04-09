@@ -1,33 +1,21 @@
 {
-    "name": "OpenOS7",
-    "version": "1.0",
-    "description": "OpenOS7 is a pure JavaScript recreation of the old System 7 OS.",
-	"private": "true",
-
-    "author": "Steve Richey",
-
-    "homepage": "http://steverichey.com/OpenGNOP",
-    "license": "MIT",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/steverichey/opengnop.git"
-    },
-
-    "main": "bin/OpenOS7.js",
-
-    "scripts": {
-        "test": "grunt travis --verbose"
-    },
-
-    "dependencies": {},
-	
-    "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-jshint": "~0.8",
-        "grunt-contrib-uglify": "~0.2",
-    },
-	
-	"engine": "node 0.4.1"
+  "name": "OpenGNOP",
+  "version": "0.0.0",
+  "description": "An open source recreation of Bungie's GNOP! in JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steverichey/OpenGNOP.git"
+  },
+  "author": "Steve Richey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steverichey/OpenGNOP/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4"
+  }
 }

@@ -17,6 +17,20 @@ In addition, the code has been simplified, streamlined, and improved wherever po
 * Standalone executable via [NodeJS](http://nodejs.org/)
 * Automation and continuous integration via [TravisCI](https://travis-ci.org/) and [Grunt](http://gruntjs.com/)
 
+# Setup
+
+If you want to compile OpenGNOP! yourself, you'll need to install [NodeJS](http://nodejs.org/) and set it up with the following commands:
+
+````
+npm install -g grunt-cli
+npm install grunt
+grunt build
+````
+
+Note: This section is incomplete, once there's a release candidate, this section will be updated.
+
+---
+
 Contributions to OpenGNOP! and OpenOS7 are highly welcome. Furthermore, if you wanted to spearhead another Bungie remake such as OpenODS, OpenMinotaur, or OpenPID, I'd be happy to help!
 
 OpenGNOP! is intended to emulate Bungie Software’s original [GNOP! 1.0](http://en.wikipedia.org/wiki/Gnop!), programmed by [Alexander Seropian](http://en.wikipedia.org/wiki/Alex_Seropian) in Think C in 1990 for the Macintosh. GNOP! was the first game released by Bungie Software (now just [Bungie](http://www.bungie.net)), although it wasn’t until the 1992 release of [Minotaur: The Labyrinths of Crete](http://en.wikipedia.org/wiki/Minotaur:_The_Labyrinths_of_Crete) that Bungie was a fully-fledged company comprised of Seropian and fellow classmate [Jason Jones](http://en.wikipedia.org/wiki/Jason_Jones_(programmer)).
