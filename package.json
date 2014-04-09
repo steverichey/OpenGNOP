@@ -1,0 +1,30 @@
+{
+    "name": "OpenOS7",
+    "version": "1.0",
+    "description": "OpenOS7 is a pure JavaScript recreation of the old System 7 OS.",
+
+    "author": "Steve Richey"
+    "logo": "none",
+
+    "homepage": "http://steverichey.com/OpenGNOP",
+    "license": "MIT",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/steverichey/OpenGNOP.git"
+    },
+
+    "main": "Main.js",
+
+    "scripts": {
+        "test": "grunt travis --verbose"
+    },
+
+    "dependencies": {},
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-jshint": "~0.8",
+        "grunt-contrib-uglify": "~0.2",
+    }
+}
