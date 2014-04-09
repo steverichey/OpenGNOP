@@ -1,4 +1,4 @@
-# ![GNOP! Icon](assets/icon.png) OpenGNOP!
+# ![GNOP! Icon](assets/icon-readme.png) OpenGNOP!
 
 <p align="center">
 <img src="assets/screenshot.png" alt="GNOP! Screenshot"/>
@@ -25,7 +25,4 @@ OpenGNOP!, and OpenOS7 (the backbone that contains the core OS functionality) ar
 
 ---
 
-[![Analytics](https://ga-beacon.appspot.com/UA-47369324-5/OpenGNOP/readme)](https://github.com/igrigorik/ga-beacon) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/steverichey/OpenGNOP.png)](https://travis-ci.org/steverichey/OpenGNOP) [![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop)
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/steverichey/opengnop/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+[![Analytics](https://ga-beacon.appspot.com/UA-47369324-5/OpenGNOP/readme)](https://github.com/igrigorik/ga-beacon) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/steverichey/OpenGNOP.png)](https://travis-ci.org/steverichey/OpenGNOP) [![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/steverichey/opengnop/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
