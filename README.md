@@ -1,4 +1,3 @@
-[![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop)
 # OpenGNOP!
 
 An open-source remake of Bungie's GNOP! written in JavaScript using the [Pixi.js](http://www.pixijs.com/) library.
@@ -22,4 +21,4 @@ OpenGNOP!, and OpenOS7 (the backbone that contains the core OS functionality) ar
 
 ---
 
-[![Analytics](https://ga-beacon.appspot.com/UA-47369324-5/OpenGNOP/readme)](https://github.com/igrigorik/ga-beacon) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/steverichey/OpenGNOP.png)](https://travis-ci.org/steverichey/OpenGNOP)
+[![Analytics](https://ga-beacon.appspot.com/UA-47369324-5/OpenGNOP/readme)](https://github.com/igrigorik/ga-beacon) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/steverichey/OpenGNOP.png)](https://travis-ci.org/steverichey/OpenGNOP) [![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop)
