@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop)
 # OpenGNOP!
 
 An open-source remake of Bungie's GNOP! written in JavaScript using the [Pixi.js](http://www.pixijs.com/) library.
