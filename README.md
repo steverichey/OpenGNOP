@@ -6,9 +6,7 @@
 
 An open-source remake of Bungie's GNOP! by [Steve Richey](https://github.com/steverichey) written in JavaScript using the [Pixi.js](http://www.pixijs.com/) library.
 
-Much of the code is based on [GNOP! Flash](https://github.com/steverichey/gnopflash), but the engine has been completely re-written.
-
-In addition, the code has been simplified, streamlined, and improved wherever possible.  Large assets were removed entirely and are now created dynamically.
+Much of the code is based on [GNOP! Flash](https://github.com/steverichey/gnopflash), but the engine has been completely re-written.  In addition, the code has been simplified, streamlined, and improved wherever possible.  Large assets were removed entirely and are now created dynamically.
 
 ## Project goals:
 * Extensible interface that can be used for other System 7 projects (OpenOS7)
@@ -22,15 +20,13 @@ In addition, the code has been simplified, streamlined, and improved wherever po
 
 # Setup
 
-If you want to compile OpenGNOP! yourself, you'll need to install [NodeJS](http://nodejs.org/) and set it up with the following commands:
+If you want to compile OpenGNOP! yourself, you'll need to install [NodeJS](http://nodejs.org/) and [Grunt](http://gruntjs.com/) then run:
 
 ````
-npm install -g grunt-cli
-npm install grunt
 grunt build
 ````
 
-Creating the standalone executable requires the [Chromium Embedded Framework](https://code.google.com/p/chromiumembedded/). Download the version for your target platform and follow these steps:
+This will create the OpenOS7 code in the `bin` directory, in both uglified and regular versions. Creating the standalone executable requires the [Chromium Embedded Framework](https://code.google.com/p/chromiumembedded/). Download the version for your target platform and follow these steps:
 
 ````
 Coming soon!
@@ -48,6 +44,6 @@ OpenGNOP!, and OpenOS7 (the backbone that contains the core OS functionality) ar
 
 ---
 
-[![Testling CI](https://ci.testling.com/steverichey/OpenGNOP.png)
-](https://ci.testling.com/steverichey/OpenGNOP "OpenGNOP! Continuous Integration via Testling")  [![Travis CI](https://travis-ci.org/steverichey/OpenGNOP.png)](https://travis-ci.org/steverichey/OpenGNOP "OpenGNOP! Continuous Integration via TravisCI")  [![Analytics](https://ga-beacon.appspot.com/UA-47369324-5/OpenGNOP/readme)](https://github.com/igrigorik/ga-beacon "OpenGNOP! Analytics via GA-Beacon")  [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/steverichey/opengnop/trend.png)](https://bitdeli.com/free "OpenGNOP! Analytics via Bitdeli")  [![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop "OpenGNOP! Issue Tracking via Waffle.io")  [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/ "OpenGNOP! is built with GruntJS")
+[![Testling CI](https://ci.testling.com/steverichey/OpenGNOP.png)](https://ci.testling.com/steverichey/OpenGNOP "OpenGNOP! Continuous Integration via Testling")
+[![Travis CI](https://travis-ci.org/steverichey/OpenGNOP.png)](https://travis-ci.org/steverichey/OpenGNOP "OpenGNOP! Continuous Integration via TravisCI")  [![Analytics](https://ga-beacon.appspot.com/UA-47369324-5/OpenGNOP/readme)](https://github.com/igrigorik/ga-beacon "OpenGNOP! Analytics via GA-Beacon")  [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/steverichey/opengnop/trend.png)](https://bitdeli.com/free "OpenGNOP! Analytics via Bitdeli")  [![Stories in Ready](https://badge.waffle.io/steverichey/opengnop.png?label=ready&title=Ready)](https://waffle.io/steverichey/opengnop "OpenGNOP! Issue Tracking via Waffle.io")  [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/ "OpenGNOP! is built with GruntJS")
 [![Gittip donate button](http://img.shields.io/gittip/steverichey.png)](https://www.gittip.com/steverichey/ "Support the development of OpenGNOP! via Gittip")  [![PayPal Badge](http://img.shields.io/paypal/donate.png?color=yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=stevenpatrickrichey%40gmail.com&item_name=Open%20source%20donation%20to%20Steve%20Richey&currency_code=USD&bn=PP-DonationsBF%3abtn_donate_SM%2egif%3aNonHosted "Support the development of OpenGNOP! via Paypal") [![Flattr Badge](http://img.shields.io/badge/flattr-donate-orange.svg)](https://flattr.com/submit/auto?user_id=steverichey&url=https://github.com/steverichey/opengnop&title=opengnop&language=&tags=github&category=software)

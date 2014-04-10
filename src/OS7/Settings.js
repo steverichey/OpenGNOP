@@ -1,5 +1,13 @@
 /*global Window*/
 
+/**
+ * @author Steve Richey http://www.steverichey.com @stvr_tweets
+ */
+
+/**
+ * Creates a generic Settings window for configuring global settings.
+ */
+
 function Settings(x, y, width, height, stage)
 {
     Window.call(this, x, y, width, height, stage);

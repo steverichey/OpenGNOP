@@ -1,4 +1,4 @@
-var maxBy = require('../');
+var pixi = require('lib/Pixi');
 var test = require('tape');
 
 test('simple comparisons', function (t) {

@@ -1,5 +1,12 @@
 /*global PIXI*/
 
+/**
+ * @author Steve Richey http://www.steverichey.com @stvr_tweets
+ */
+
+/**
+ * Just a checkbox object, for settings.
+ */
 function Checkbox(x, y)
 {
     PIXI.Graphics.call(this);

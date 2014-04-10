@@ -1,6 +1,6 @@
 {
-	"name": "OpenGNOP",
-	"version": "0.0.0",
+	"name": "OpenGNOP!",
+	"version": "0.1.0",
 	"description": "An open source recreation of Bungie's GNOP! in JavaScript.",
 	"main": "index.js",
 	"scripts": {
@@ -11,6 +11,7 @@
 		"url": "https://github.com/steverichey/OpenGNOP.git"
 	},
 	"author": "Steve Richey",
+	"copyright": "Copyright (c) 2014",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/steverichey/OpenGNOP/issues"
