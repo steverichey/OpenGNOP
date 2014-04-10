@@ -40,3 +40,4 @@ Thumbs.db
 etc/
 node_modules/
 libs/
+bin/

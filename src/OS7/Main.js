@@ -87,6 +87,3 @@ OS7.Main.onResize = function()
 		}
 	}
 };
-
-window.onload = OS7.Main.preload;
-window.onresize = OS7.Main.onResize;

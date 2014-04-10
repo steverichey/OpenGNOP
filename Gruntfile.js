@@ -1,8 +1,10 @@
 /*global module*/
 
 module.exports = function(grunt) {
+	grunt.loadNpmTasks('grunt-concat-sourcemap');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	
 	var srcFiles = [
 		'<%= dirs.src %>/Header.js',
@@ -16,7 +18,7 @@ module.exports = function(grunt) {
 		'<%= dirs.src %>/Settings.js',
 		'<%= dirs.src %>/Colors.js',
 		'<%= dirs.src %>/Checkbox.js',
-		'<%= dirs.src %>/Footer.js',
+		'<%= dirs.src %>/Footer.js'
 	];
 	
 	var banner = [
@@ -30,6 +32,8 @@ module.exports = function(grunt) {
 		' * <%= pkg.licenseUrl %>',
 		' */'
 	].join('\n');
+	
+	var assets = 'assets';
 	
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -50,6 +54,16 @@ module.exports = function(grunt) {
 				dest: '<%= files.build %>'
 			}
         },
+		concat_sourcemap: {
+            dev: {
+                files: {
+                    '<%= files.build %>': srcFiles
+                },
+                options: {
+                    sourceRoot: '../'
+                }
+            }
+        },
 		uglify: {
             options: {
                 banner: banner
@@ -58,9 +72,21 @@ module.exports = function(grunt) {
                 src: '<%= files.build %>',
                 dest: '<%= files.buildMin %>'
             }
-        }
+        },
+		copy: {
+			main: {
+				files: [
+					{expand: true, src: [assets+'/images/*'], dest: '<%= dirs.build %>/'},
+					{expand: true, src: [assets+'/sounds/*'], dest: '<%= dirs.build %>/'},
+					{expand: true, flatten: true, src: ['src/index.html'], dest: '<%= dirs.build %>/'},
+					{expand: true, flatten: true, src: ['libs/pixi/pixi.js'], dest: '<%= dirs.build %>/'},
+					{expand: true, flatten: true, src: ['src/Gnop.js'], dest: '<%= dirs.build %>/'}
+				]
+			}
+		}
 	});
 	
 	// Default task(s).
-	grunt.registerTask('build', ['concat', 'uglify']);
+	grunt.registerTask('build', ['concat_sourcemap', 'copy']);
+	grunt.registerTask('build-release', ['concat', 'uglify', 'copy']);
 };
