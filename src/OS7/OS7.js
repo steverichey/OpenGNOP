@@ -23,7 +23,15 @@ var OS7 = OS7 || {};
 OS7.VERSION_NUMBER = "0.1.0";
 OS7.SCREEN_WIDTH = 640;
 OS7.SCREEN_HEIGHT = 480;
-OS7.BG_COLOR = 0xFFFFFF;
+OS7.BG_COLOR = 0x000000;
+
+OS7.Colors = {};
+OS7.Colors.BLACK = 0x000000;
+OS7.Colors.BLUE_LIGHT = 0xCCCCFF;
+OS7.Colors.GREY = 0xBBBBBB;
+OS7.Colors.BLUE_DARK = 0x666699;
+OS7.Colors.WHITE = 0xFFFFFF;
+
 OS7.forceScaling = false;
 OS7.allowScaling = true;
 OS7.forceCanvas = false;

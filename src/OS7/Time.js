@@ -1,6 +1,4 @@
-/*global PIXI*/
 /*global OS7*/
-/*global Text*/
 /*global window*/
 
 /**
@@ -9,18 +7,19 @@
 
 OS7.Time = function()
 {
-	Text.call(this, "", 571, 5);
+	OS7.Text.call(this, "00:00 AM", 571, 5);
+	this.position.x = 571 - this.textWidth;
 	
-    this.updateTime();
+	this.updateTime();
     window.setInterval(this.updateTime, 1000);
 };
 
-OS7.Time.constructor = OS7.Time;
-OS7.Time.prototype = Object.create(OS7.Text.prototype);
+OS7.Time.prototype = Object.create( OS7.Text.prototype );
+OS7.Time.prototype.constructor = OS7.Time;
 
 OS7.Time.prototype.updateTime = function()
 {
-    this.date = new Date();
+	this.date = new Date();
     this.hour = this.date.getHours();
     this.minute = this.date.getMinutes();
 	this.zero = "";
@@ -44,5 +43,5 @@ OS7.Time.prototype.updateTime = function()
     
     this.setText( this.hour + ":" + this.zero + this.minute + " " + this.ampm );
     this.updateText();
-    this.position.x = OS7.Time.X_POSITION - this.textWidth;
+    this.position.x = 571 - this.textWidth;
 };

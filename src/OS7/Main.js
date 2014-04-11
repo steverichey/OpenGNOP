@@ -8,77 +8,86 @@
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
 
-OS7.Main = function()
-{
-	
-};
+OS7.Main = function() { };
+OS7.Main.loader = {};
+OS7.Main.stage = {};
+OS7.Main.renderer = {};
+OS7.Main.desktop = {};
+OS7.Main.desktop = {};
 
 OS7.Main.preload = function()
 {
-	this.loader = new PIXI.AssetLoader(["assets/images/chicago.xml"]);
-	this.loader.onAssetLoaded = OS7.Main.init;
-	this.loader.load();
+	OS7.Main.loader = new PIXI.AssetLoader(["assets/images/chicago.xml"]);
+	OS7.Main.loader.onAssetLoaded = OS7.Main.init;
+	OS7.Main.loader.load();
 };
 
 OS7.Main.init = function()
 {
-    this.stage = new PIXI.Stage(OS7.BG_COLOR, true);
-	this.stage.interactive = true;
+    OS7.Main.stage = new PIXI.Stage(OS7.BG_COLOR, true);
+	OS7.Main.stage.interactive = true;
     
 	if ( OS7.forceCanvas )
 	{
-		this.renderer = new PIXI.CanvasRenderer(OS7.SCREEN_WIDTH, OS7.SCREEN_HEIGHT);
+		OS7.Main.renderer = new PIXI.CanvasRenderer(OS7.SCREEN_WIDTH, OS7.SCREEN_HEIGHT);
 	}
 	else
 	{
-		this.renderer = new PIXI.autoDetectRenderer(OS7.SCREEN_WIDTH, OS7.SCREEN_HEIGHT);
+		OS7.Main.renderer = new PIXI.autoDetectRenderer(OS7.SCREEN_WIDTH, OS7.SCREEN_HEIGHT);
 	}
 	
-	this.renderer.view.style.position = "fixed";
-	this.renderer.view.style.width = OS7.SCREEN_WIDTH + "px";
-	this.renderer.view.style.height = OS7.SCREEN_HEIGHT + "px";
-	this.renderer.view.style.display = "block";
+	OS7.Main.renderer.view.style.position = "fixed";
+	OS7.Main.renderer.view.style.width = OS7.SCREEN_WIDTH + "px";
+	OS7.Main.renderer.view.style.height = OS7.SCREEN_HEIGHT + "px";
+	OS7.Main.renderer.view.style.display = "block";
 	window.onresize();
 	
-	document.body.appendChild(this.renderer.view);
+	document.body.appendChild(OS7.Main.renderer.view);
     
-    this.desktop = new OS7.Desktop(this.stage);
-	this.stage.addChild(this.desktop);
+    OS7.Main.desktop = new OS7.Desktop();
+	OS7.Main.stage.addChild(OS7.Main.desktop);
     
 	window.requestAnimFrame(OS7.Main.update);
 };
 
 OS7.Main.update = function()
 {
-    this.desktop.update();
-    this.renderer.render(this.stage);
-    window.requestAnimFrame(this.update);
+	//if (OS7.Main.desktop)
+		//OS7.Main.desktop.update();
+	
+	if (OS7.Main.renderer)
+		OS7.Main.renderer.render(OS7.Main.stage);
+	
+    window.requestAnimFrame(OS7.Main.update);
 };
 
 OS7.Main.onResize = function()
 {
-	if (this.renderer)
+	if (OS7.Main.renderer)
 	{
 		if ( ( window.innerWidth < OS7.SCREEN_WIDTH || OS7.forceScaling ) && OS7.allowScaling )
 		{
-			this.renderer.view.style.width = window.innerWidth + "px";
-			this.renderer.view.style.left = "0px";
+			OS7.Main.renderer.view.style.width = window.innerWidth + "px";
+			OS7.Main.renderer.view.style.left = "0px";
 		}
 		else
 		{
-			this.renderer.view.style.width = OS7.SCREEN_WIDTH + "px";
-			this.renderer.view.style.left = ( (  window.innerWidth - OS7.SCREEN_WIDTH ) / 2 ) + "px";
+			OS7.Main.renderer.view.style.width = OS7.SCREEN_WIDTH + "px";
+			OS7.Main.renderer.view.style.left = ( (  window.innerWidth - OS7.SCREEN_WIDTH ) / 2 ) + "px";
 		}
 		
 		if ( ( window.innerHeight < OS7.SCREEN_HEIGHT || OS7.forceScaling ) && OS7.allowScaling )
 		{
-			this.renderer.view.style.height = window.innerHeight + "px";
-			this.renderer.view.style.top = "0px";
+			OS7.Main.renderer.view.style.height = window.innerHeight + "px";
+			OS7.Main.renderer.view.style.top = "0px";
 		}
 		else
 		{
-			this.renderer.view.style.height = OS7.SCREEN_HEIGHT + "px";
-			this.renderer.view.style.top = ( ( window.innerHeight - OS7.SCREEN_HEIGHT ) / 2 ) + "px";
+			OS7.Main.renderer.view.style.height = OS7.SCREEN_HEIGHT + "px";
+			OS7.Main.renderer.view.style.top = ( ( window.innerHeight - OS7.SCREEN_HEIGHT ) / 2 ) + "px";
 		}
 	}
 };
+
+window.onload = OS7.Main.preload;
+window.onresize = OS7.Main.onResize;
