@@ -5,12 +5,9 @@
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
 
-OS7.Desktop.width = 0;
-OS7.Desktop.height = 0;
-
 OS7.Desktop = function(stage)
 {
-	PIXI.Sprite.call(this, PIXI.Texture.fromImage("./images/bg.png"));
+	PIXI.Sprite.call(this, PIXI.Texture.fromImage("./assets/images/bg.png"));
 	
 	this.icons = [];
 	this.interactive = true;
@@ -22,7 +19,7 @@ OS7.Desktop = function(stage)
 	OS7.Desktop.width = this.stage.width;
 	OS7.Desktop.height = this.stage.height;
 	
-	this.addIcon("./images/icon_settings.png", 580, 420);
+	this.addIcon("./assets/images/icon_settings.png", 580, 420);
 	
 	this.mousedown = this.touchstart = this.clickAway;
 };

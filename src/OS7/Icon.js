@@ -6,8 +6,6 @@
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
 
-OS7.Icon.MIN_CLICK_TIME = 750;
-
 OS7.Icon = function(iconImage, x, y, windowClass)
 {
     PIXI.Sprite.call( this, PIXI.Texture.fromImage(iconImage) );
@@ -30,6 +28,8 @@ OS7.Icon = function(iconImage, x, y, windowClass)
 	this.mousemove = this.touchmove = this.onMove;
 	this.mouseup = this.touchend = this.mouseupoutside = this.touchendoutside = this.onRelease;
 };
+
+OS7.Icon.MIN_CLICK_TIME = 750;
 
 OS7.Icon.prototype = Object.create(PIXI.Sprite.prototype);
 OS7.Icon.constructor = OS7.Icon;

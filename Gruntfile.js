@@ -5,20 +5,19 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	
 	var srcFiles = [
-		'<%= dirs.src %>/Header.js',
-		'<%= dirs.src %>/OpenOS7.js',
+		'<%= dirs.src %>/OS7.js',
 		'<%= dirs.src %>/Main.js',
-		'<%= dirs.src %>/Desktop.js',
-		'<%= dirs.src %>/Window.js',
 		'<%= dirs.src %>/Text.js',
 		'<%= dirs.src %>/Time.js',
-		'<%= dirs.src %>/Icon.js',
+		'<%= dirs.src %>/Desktop.js',
+		'<%= dirs.src %>/Window.js',
 		'<%= dirs.src %>/Settings.js',
+		'<%= dirs.src %>/Icon.js',
 		'<%= dirs.src %>/Colors.js',
-		'<%= dirs.src %>/Checkbox.js',
-		'<%= dirs.src %>/Footer.js'
+		'<%= dirs.src %>/Checkbox.js'
 	];
 	
 	var banner = [
@@ -79,14 +78,16 @@ module.exports = function(grunt) {
 					{expand: true, src: [assets+'/images/*'], dest: '<%= dirs.build %>/'},
 					{expand: true, src: [assets+'/sounds/*'], dest: '<%= dirs.build %>/'},
 					{expand: true, flatten: true, src: ['src/index.html'], dest: '<%= dirs.build %>/'},
-					{expand: true, flatten: true, src: ['libs/pixi/pixi.js'], dest: '<%= dirs.build %>/'},
+					{expand: true, flatten: true, src: ['libs/pixi/pixi.dev.js'], dest: '<%= dirs.build %>/'},
 					{expand: true, flatten: true, src: ['src/Gnop.js'], dest: '<%= dirs.build %>/'}
 				]
 			}
-		}
+		},
+		clean: ['bin']
 	});
 	
 	// Default task(s).
-	grunt.registerTask('build', ['concat_sourcemap', 'copy']);
+	grunt.registerTask('build', ['concat', 'copy']);
 	grunt.registerTask('build-release', ['concat', 'uglify', 'copy']);
+	grunt.registerTask('clean', ['clean'])
 };

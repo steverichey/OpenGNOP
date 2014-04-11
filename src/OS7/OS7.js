@@ -20,8 +20,10 @@ var OS7 = OS7 || {};
 /**
  * @class Consts
  */
-OS7.FORCE_SCALING_ON = 0;
-OS7.FORCE_SCALING_OFF = 1;
-OS7.ALLOW_SCALING_ON = 2;
-OS7.ALLOW_SCALING_OFF = 3;
-OS7.VERSION_NUMBER = "1.0";
+OS7.VERSION_NUMBER = "0.1.0";
+OS7.SCREEN_WIDTH = 640;
+OS7.SCREEN_HEIGHT = 480;
+OS7.BG_COLOR = 0xFFFFFF;
+OS7.forceScaling = false;
+OS7.allowScaling = true;
+OS7.forceCanvas = false;

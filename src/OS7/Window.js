@@ -66,7 +66,7 @@ OS7.Window.prototype.createWindow = function()
 
 OS7.Window.prototype.addText = function(string, x, y)
 {
-	var text = new Text(string, x, y);
+	var text = new OS7.Text(string, x, y);
 	this.texts.push(text);
 	this.stage.addChild( text );
 	
@@ -76,7 +76,7 @@ OS7.Window.prototype.addText = function(string, x, y)
 OS7.Window.prototype.addCheckbox = function(string, x, y)
 {
 	var text = this.addText(string, x, y);
-	var checkbox = new Checkbox(text.x+text.textWidth+8, text.y);
+	var checkbox = new OS7.Checkbox(text.x+text.textWidth+8, text.y);
 	this.checkboxes.push(checkbox);
 	this.stage.addChild(checkbox);
 };

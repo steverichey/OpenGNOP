@@ -7,12 +7,9 @@
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
 
-OS7.Time.X_POSITION = 571;
-OS7.Time.Y_POSITION = 5;
-
 OS7.Time = function()
 {
-	Text.call(this, "", OS7.Time.X_POSITION, OS7.Time.Y_POSITION);
+	Text.call(this, "", 571, 5);
 	
     this.updateTime();
     window.setInterval(this.updateTime, 1000);
