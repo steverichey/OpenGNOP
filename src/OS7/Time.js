@@ -7,18 +7,17 @@
 
 OS7.Time = function()
 {
-	OS7.Text.call(this, "00:00 AM", 571, 5);
-	this.position.x = 571 - this.textWidth;
-	
+	OS7.Text.call(this, "", 571, 5);
 	this.updateTime();
-    window.setInterval(this.updateTime, 1000);
+    window.setInterval(this.updateTime.bind(this), 1000);
 };
 
-OS7.Time.prototype = Object.create( OS7.Text.prototype );
+OS7.Time.prototype = Object.create(OS7.Text.prototype);
 OS7.Time.prototype.constructor = OS7.Time;
 
 OS7.Time.prototype.updateTime = function()
 {
+	this.prevText = this.text;
 	this.date = new Date();
     this.hour = this.date.getHours();
     this.minute = this.date.getMinutes();
@@ -42,6 +41,10 @@ OS7.Time.prototype.updateTime = function()
     }
     
     this.setText( this.hour + ":" + this.zero + this.minute + " " + this.ampm );
-    this.updateText();
-    this.position.x = 571 - this.textWidth;
+	
+	if ( this.prevText !== this.text )
+	{
+		this.updateText();
+		this.position.x = 571 - this.textWidth;
+	}
 };

@@ -26,7 +26,8 @@
     "grunt-contrib-copy": "~0.5.0",
     "testling": "~1.6.1",
     "browserify": "~3.40.0",
-    "grunt-contrib-clean": "~0.5.0"
+    "grunt-contrib-clean": "~0.5.0",
+    "watchify": "~0.6.4"
   },
   "testling": {
     "files": "bin/Gnop.js",
@@ -44,6 +45,9 @@
   "window": {
     "toolbar": false,
     "width": 640,
-    "height": 480
+    "height": 480,
+    "position": "center",
+    "resizable": false,
+    "frame": false
   }
 }

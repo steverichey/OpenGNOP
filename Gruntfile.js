@@ -12,7 +12,9 @@ module.exports = function(grunt) {
 		'<%= dirs.src %>/Main.js',
 		'<%= dirs.src %>/Desktop.js',
 		'<%= dirs.src %>/Text.js',
-		'<%= dirs.src %>/Time.js'
+		'<%= dirs.src %>/Time.js',
+		'<%= dirs.src %>/Icon.js',
+		'<%= dirs.src %>/Window.js'
 	];
 	
 	var banner = [
