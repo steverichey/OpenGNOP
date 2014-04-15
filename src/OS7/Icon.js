@@ -7,10 +7,8 @@
 
 OS7.Icon = function(textureString, x, y, windowClass)
 {
-	PIXI.Sprite.call(this, PIXI.Texture.fromImage(textureString));
-	this.position.x = x;
-	this.position.y = y;
-	this.interactive = true;
+	OS7.Basic.call(this, x, y);
+	this.texture = PIXI.Texture.fromImage(textureString);
 	
 	this.dragging = false;
 	this.offset = new PIXI.Point();
@@ -20,13 +18,9 @@ OS7.Icon = function(textureString, x, y, windowClass)
 	this.clickTime = -OS7.Icon.MIN_CLICK_TIME;
 	this.invertFilter = new PIXI.InvertFilter();
 	this.windowClass = windowClass;
-	
-	this.mousedown = this.touchstart = this.onClick.bind(this);
-	this.mousemove = this.touchmove = this.onMove.bind(this);
-	this.mouseup = this.touchend = this.mouseupoutside = this.touchendoutside = this.onRelease.bind(this);
 };
 
-OS7.Icon.prototype = Object.create(PIXI.Sprite.prototype);
+OS7.Icon.prototype = Object.create(OS7.Basic.prototype);
 OS7.Icon.prototype.constructor = OS7.Icon;
 
 OS7.Icon.MIN_CLICK_TIME = 750;

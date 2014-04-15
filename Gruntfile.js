@@ -10,11 +10,14 @@ module.exports = function(grunt) {
 	var srcFiles = [
 		'<%= dirs.src %>/OS7.js',
 		'<%= dirs.src %>/Main.js',
+		'<%= dirs.src %>/Basic.js',
 		'<%= dirs.src %>/Desktop.js',
 		'<%= dirs.src %>/Text.js',
 		'<%= dirs.src %>/Time.js',
 		'<%= dirs.src %>/Icon.js',
-		'<%= dirs.src %>/Window.js'
+		'<%= dirs.src %>/Window.js',
+		'<%= dirs.src %>/MenuItem.js',
+		'<%= dirs.src %>/DropMenu.js'
 	];
 	
 	var banner = [

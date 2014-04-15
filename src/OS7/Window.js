@@ -7,9 +7,8 @@
  
 OS7.Window = function(x, y, width, height)
 {
-	PIXI.Sprite.call(this, new PIXI.Texture.fromImage(""));
-	this.position.x = x;
-	this.position.y = y;
+	OS7.Basic.call(this, x, y);
+	
 	this.windowWidth = width;
 	this.windowHeight = height;
 	this.texts = [];
@@ -19,7 +18,7 @@ OS7.Window = function(x, y, width, height)
 	this.addSprite.bind(this);
 };
 
-OS7.Window.prototype = Object.create(PIXI.Sprite.prototype);
+OS7.Window.prototype = Object.create(OS7.Basic.prototype);
 OS7.Window.prototype.constructor = OS7.Window;
 
 OS7.Window.prototype.create = function() {};

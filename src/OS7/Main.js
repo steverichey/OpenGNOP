@@ -52,9 +52,6 @@ OS7.Main.init = function()
 
 OS7.Main.update = function()
 {
-	//if (OS7.Main.desktop)
-		//OS7.Main.desktop.update();
-	
 	if (OS7.Main.renderer)
 		OS7.Main.renderer.render(OS7.Main.stage);
 	
