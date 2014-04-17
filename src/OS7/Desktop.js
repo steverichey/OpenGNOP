@@ -81,7 +81,6 @@ OS7.Desktop.prototype.update = function()
 		{
 			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.icons[i]))
 			{
-				console.log("clicked an icon");
 				this.icons[i].onClick();
 				this.clearFlag = false;
 			}
@@ -91,7 +90,6 @@ OS7.Desktop.prototype.update = function()
 		{
 			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.headerMenus[i]))
 			{
-				console.log("clicked a header");
 				this.headerMenus[i].onClick();
 				this.clearFlag = false;
 			}
@@ -101,7 +99,6 @@ OS7.Desktop.prototype.update = function()
 		{
 			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.dropMenus[i]))
 			{
-				console.log("clicked a drop menu");
 				this.dropMenus[i].onClick();
 				this.clearFlag = false;
 			}
@@ -109,8 +106,6 @@ OS7.Desktop.prototype.update = function()
 		
 		if (this.clearFlag)
 		{
-			console.log("clicked nothing");
-			
 			if (OS7.mouse.y > 20)
 			{
 				for (i = 0; i < this.icons.length; i++)
