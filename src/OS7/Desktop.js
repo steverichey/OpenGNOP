@@ -110,7 +110,6 @@ OS7.Desktop.prototype.update = function()
 		if (this.clearFlag)
 		{
 			console.log("clicked nothing");
-			console.log(this.toString());
 			
 			if (OS7.mouse.y > 20)
 			{
@@ -231,22 +230,12 @@ OS7.Desktop.prototype.toString = function()
 	
 	for (i = 0; i < this.headerMenus.length; i++)
 	{
-		if (i != 0)
-		{
-			returnString += ", ";
-		}
-		
-		returnString += this.headerMenus[i].toString();
+		returnString += ", " + this.headerMenus[i].toString();
 	}
 	
 	for (i = 0; i < this.dropMenus.length; i++)
 	{
-		if (i != 0)
-		{
-			returnString += ", ";
-		}
-		
-		returnString += this.dropMenus[i].toString();
+		returnString += ", " + this.dropMenus[i].toString();
 	}
 	
 	return "[OS7 Desktop containing " + returnString + "]";

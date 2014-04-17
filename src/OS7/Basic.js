@@ -18,6 +18,7 @@ OS7.Basic = function(x, y, width, height)
 	this.height = height || 0;
 	this.interactive = false; // not needed as desktop sends click/release events
 	this.showHitArea = false;
+	this.worldPoint = new PIXI.Point(0,0);
 	this.updateHitArea.bind(this);
 	this.updateHitArea();
 	
@@ -82,3 +83,11 @@ OS7.Basic.prototype.toString = function()
 {
 	return "[OS7 Basic]";
 };
+
+Object.defineProperty(OS7.Basic.prototype, 'global', {
+	get: function() {
+		this.worldPoint.x = this.worldTransform.tx;
+		this.worldPoint.y = this.worldTransform.ty;
+		return this.worldPoint;
+	}
+});

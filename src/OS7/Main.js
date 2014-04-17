@@ -97,13 +97,15 @@ OS7.collide = function(pointX, pointY, basic)
 {
 	if(basic.visible)
 	{
-		if (basic.x && basic.width && pointX < basic.x + basic.width)
+		console.log(pointX + ', ' + pointY  + ', ' + basic.global.x + ', ' + basic.global.y);
+		
+		if (basic.global.x && basic.width && pointX < basic.global.x + basic.width)
 		{
-			if (basic.y && basic.height && pointY < basic.y + basic.height)
+			if (basic.global.y && basic.height && pointY < basic.global.y + basic.height)
 			{
-				if (pointX > basic.x)
+				if (pointX > basic.global.x)
 				{
-					if (pointY > basic.y)
+					if (pointY > basic.global.y)
 					{
 						return true;
 					}

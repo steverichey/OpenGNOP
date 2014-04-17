@@ -18,7 +18,6 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		this.dropMenu.position.x = this.position.x;
 		this.dropMenu.position.y = 19;
 		this.dropMenu.visible = false;
-		OS7.MainDesktop.addDropMenu(this.dropMenu);
 		
 		this.height = 18;
 	}
