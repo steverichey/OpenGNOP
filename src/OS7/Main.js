@@ -24,6 +24,11 @@ OS7.Main.preload = function()
 
 OS7.Main.init = function()
 {
+	if (typeof process !== "undefined")
+	{
+		OS7.isWebkit = true;
+	}
+	
     OS7.Main.stage = new PIXI.Stage(OS7.BG_COLOR, true);
 	OS7.Main.stage.interactive = true;
     
@@ -91,28 +96,6 @@ OS7.Main.onResize = function()
 			OS7.Main.renderer.view.style.top = ( ( window.innerHeight - OS7.SCREEN_HEIGHT ) / 2 ) + "px";
 		}
 	}
-};
-
-OS7.collide = function(pointX, pointY, basic)
-{
-	if(basic.visible)
-	{
-		if (basic.global.x && basic.width && pointX < basic.global.x + basic.width)
-		{
-			if (basic.global.y && basic.height && pointY < basic.global.y + basic.height)
-			{
-				if (pointX > basic.global.x)
-				{
-					if (pointY > basic.global.y)
-					{
-						return true;
-					}
-				}
-			}
-		}
-	}
-	
-	return false;
 };
 
 window.onload = OS7.Main.preload;

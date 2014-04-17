@@ -40,8 +40,31 @@ OS7.forceScaling = false;
 OS7.allowScaling = true;
 OS7.forceCanvas = false;
 OS7.showHitBoxes = false;
+OS7.isWebkit = false;
 
 OS7.mouse = new PIXI.Point(0,0);
 OS7.mouse.justPressed = false;
 OS7.mouse.justReleased = false;
 OS7.mouse.pressed = false;
+
+OS7.collide = function(pointX, pointY, basic)
+{
+	if(basic.visible)
+	{
+		if (basic.global.x && basic.width && pointX < basic.global.x + basic.width)
+		{
+			if (basic.global.y && basic.height && pointY < basic.global.y + basic.height)
+			{
+				if (pointX > basic.global.x)
+				{
+					if (pointY > basic.global.y)
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	
+	return false;
+};

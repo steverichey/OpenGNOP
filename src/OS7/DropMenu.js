@@ -52,6 +52,23 @@ OS7.DropMenu.prototype.onClick = function()
 	}
 };
 
+OS7.DropMenu.prototype.onRelease = function()
+{
+	for (var i = 0; i < this.menuItems.length; i++)
+	{
+		if(OS7.collide(OS7.mouse.x, OS7.mouse.y, this.menuItems[i]))
+		{
+			this.menuItems[i].onRelease();
+			
+			if (this.dropFunctions && this.dropFunctions[i])
+			{
+				console.log("calling function");
+				this.dropFunctions[i]();
+			}
+		}
+	}
+};
+
 OS7.DropMenu.prototype.toString = function()
 {
 	var returnString = "";

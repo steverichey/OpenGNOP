@@ -10,7 +10,7 @@ OS7.Text = function(string, x, y)
 	PIXI.BitmapText.call(this, string, {font:"12px Chicago", tint:OS7.Colors.ALMOST_BLACK});
 	this.position.x = x || 0;
 	this.position.y = y || 0;
-	this.interactive = true;
+	this.interactive = false;
 };
 
 OS7.Text.prototype = Object.create(PIXI.BitmapText.prototype);

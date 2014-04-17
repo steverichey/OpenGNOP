@@ -15,6 +15,7 @@ OS7.Desktop = function()
 	this.windows = [];
 	this.headerMenus = [];
 	this.dropMenus = [];
+	this.allObjects = [];
 	this.clearFlag = false;
 	
 	this.addChild(this.createBackground());
@@ -30,7 +31,7 @@ OS7.Desktop = function()
 	};
 	//clickListener.mousemove = clickListener.touchm
 	
-	clickListener.mouseup = clickListener.touchend = function(data)
+	clickListener.mouseup = function(data)//clickListener.touchend = function(data)
 	{
 		OS7.mouse.x = data.global.x;
 		OS7.mouse.y = data.global.y;
@@ -56,11 +57,22 @@ OS7.Desktop = function()
 			//open settings window
 		},
 		function(){
-			window.close();
+			// open about window
 		}
 	];
 	
-	var optionsDrop = new OS7.DropMenu(["Settings...", "Quit"], optionsFunctions, 0, 0);
+	var optionsDrop;
+	
+	if (OS7.isWebkit)
+	{
+		optionsFunctions.push(function(){window.close();});
+		optionsDrop = new OS7.DropMenu(["Settings...", "About", "Quit"], optionsFunctions, 0, 0);
+	}
+	else
+	{
+		optionsDrop = new OS7.DropMenu(["Settings...", "About"], optionsFunctions, 0, 0)
+	}
+	
 	var optionsMenu = new OS7.MenuItem(OS7.MenuItem.SEPTAGON, 8, 1, optionsDrop);
 	this.addTopMenu(optionsMenu);
 };
@@ -75,54 +87,60 @@ OS7.Desktop.prototype.update = function()
 	if (OS7.mouse.justPressed)
 	{
 		this.clearFlag = true;
-		var i = 0;
 		
-		for (i = 0; i < this.icons.length; i++)
+		if (!i)
 		{
-			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.icons[i]))
+			var i = 0;
+		}
+		
+		for (i = 0; i < this.allObjects.length; i++)
+		{
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
 			{
-				this.icons[i].onClick();
+				if(this.allObjects[i].onClick)
+				{
+					this.allObjects[i].onClick();
+				}
+				
 				this.clearFlag = false;
+			}
+		}
+	}
+	else if (OS7.mouse.justReleased)
+	{
+		if (!i)
+		{
+			var i = 0;
+		}
+		
+		for (i = 0; i < this.allObjects.length; i++)
+		{
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
+			{
+				this.allObjects[i].onRelease();
+				this.clearFlag = false;
+			}
+		}
+	}
+	
+	if (this.clearFlag)
+	{
+		if (OS7.mouse.y > 20)
+		{
+			for (i = 0; i < this.icons.length; i++)
+			{
+				this.icons[i].setInverted(false);
 			}
 		}
 		
 		for (i = 0; i < this.headerMenus.length; i++)
 		{
-			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.headerMenus[i]))
-			{
-				this.headerMenus[i].onClick();
-				this.clearFlag = false;
-			}
+			this.headerMenus[i].invert(true);
 		}
 		
 		for (i = 0; i < this.dropMenus.length; i++)
 		{
-			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.dropMenus[i]))
-			{
-				this.dropMenus[i].onClick();
-				this.clearFlag = false;
-			}
-		}
-		
-		if (this.clearFlag)
-		{
-			if (OS7.mouse.y > 20)
-			{
-				for (i = 0; i < this.icons.length; i++)
-				{
-					this.icons[i].setInverted(false);
-				}
-			}
-			
-			for (i = 0; i < this.headerMenus.length; i++)
-			{
-				this.headerMenus[i].invert(true);
-			}
-			
-			for (i = 0; i < this.dropMenus.length; i++)
-			{
-				this.dropMenus[i].visible = false;
-			}
+			this.dropMenus[i].visible = false;
 		}
 	}
 	
@@ -134,18 +152,21 @@ OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 {
 	var newicon = new OS7.Icon(iconImage, x, y, windowClass);
 	this.icons.push(newicon);
+	this.allObjects.push(newicon);
 	this.addChild(newicon);
 };
 
 OS7.Desktop.prototype.addWindow = function(windowClass)
 {
 	this.windows.push(windowClass);
+	this.allObjects.push(windowClass);
 	this.addChild(windowClass);
 };
 
 OS7.Desktop.prototype.addTopMenu = function(menuItem)
 {
 	this.headerMenus.push(menuItem);
+	this.allObjects.push(menuItem);
 	this.addChild(menuItem);
 	
 	if(menuItem.dropMenu)
@@ -157,6 +178,7 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 {
 	this.dropMenus.push(dropMenu);
+	this.allObjects.push(dropMenu);
 	this.addChild(dropMenu);
 };
 
@@ -211,26 +233,15 @@ OS7.Desktop.prototype.createBackground = function()
 OS7.Desktop.prototype.toString = function()
 {
 	var returnString = "";
-	var i = 0;
 	
-	for (i = 0; i < this.icons.length; i++)
+	for (var i = 0; i < this.allObjects.length; i++)
 	{
 		if (i != 0)
 		{
 			returnString += ", ";
 		}
 		
-		returnString += this.icons[i].toString();
-	}		
-	
-	for (i = 0; i < this.headerMenus.length; i++)
-	{
-		returnString += ", " + this.headerMenus[i].toString();
-	}
-	
-	for (i = 0; i < this.dropMenus.length; i++)
-	{
-		returnString += ", " + this.dropMenus[i].toString();
+		returnString += this.allObjects[i].toString();
 	}
 	
 	return "[OS7 Desktop containing " + returnString + "]";
