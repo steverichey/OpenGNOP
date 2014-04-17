@@ -9,6 +9,7 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 {
 	this.width = width || 0;
 	this.type = content || "BLANK";
+	this.objectType = "menuitem";
 	
 	OS7.Basic.call(this, x, y, this.width, 16);
 	

@@ -16,6 +16,7 @@ module.exports = function(grunt) {
 		'<%= dirs.src %>/Time.js',
 		'<%= dirs.src %>/Icon.js',
 		'<%= dirs.src %>/Window.js',
+		'<%= dirs.src %>/SettingsWindow.js',
 		'<%= dirs.src %>/MenuItem.js',
 		'<%= dirs.src %>/DropMenu.js'
 	];
@@ -89,5 +90,5 @@ module.exports = function(grunt) {
 	// Default task(s).
 	grunt.registerTask('build', ['concat', 'copy']);
 	grunt.registerTask('build-release', ['concat', 'uglify', 'copy']);
-	grunt.registerTask('clean', ['clean'])
+	grunt.registerTask('clean', ['clean']);
 };

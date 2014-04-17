@@ -17,11 +17,13 @@ OS7.Desktop = function()
 	this.dropMenus = [];
 	this.allObjects = [];
 	this.clearFlag = false;
+	this.objectType = "desktop";
 	
 	this.addChild(this.createBackground());
 	
 	var clickListener = new OS7.Basic(0,0,640,480);
 	clickListener.interactive = true; // only this needs to be interactive
+	
 	clickListener.mousedown = clickListener.touchstart = function(data)
 	{
 		OS7.mouse.x = data.global.x;
@@ -29,9 +31,15 @@ OS7.Desktop = function()
 		OS7.mouse.justPressed = true;
 		OS7.mouse.pressed = true;
 	};
-	//clickListener.mousemove = clickListener.touchm
 	
-	clickListener.mouseup = function(data)//clickListener.touchend = function(data)
+	clickListener.mousemove = clickListener.touchmove = function(data)
+	{
+		OS7.mouse.x = data.global.x;
+		OS7.mouse.y = data.global.y;
+		OS7.mouse.justMoved = true;
+	};
+	
+	clickListener.mouseup = clickListener.mouseupoutside = clickListener.touchend = clickListener.touchendoutside = function(data)//clickListener.touchend = function(data)
 	{
 		OS7.mouse.x = data.global.x;
 		OS7.mouse.y = data.global.y;
@@ -52,12 +60,17 @@ OS7.Desktop = function()
 	this.addTopMenu.bind(this);
 	this.addDropMenu.bind(this);
 	
+	var aboutWindow = new OS7.Window(80, 60, 400, 170);
+	aboutWindow.addText("OpenOS7 is a pure JavaScript re-creation of the\nSystem 7 OS using PixiJS for rendering.\n\nOpenOS7 was created by Steve Richey (aka STVR) for\nOpenGNOP! but you can use it for other stuff too.\n\nOpenOS7 is licensed under the MIT license.\n\nCopyright (c) 2014 Steve Richey.", 20, 20);
+	
+	var settingsWindow = new OS7.SettingsWindow();
+	
 	var optionsFunctions = [
 		function(){
-			//open settings window
+			settingsWindow.create();
 		},
 		function(){
-			// open about window
+			aboutWindow.create();
 		}
 	];
 	
@@ -70,7 +83,7 @@ OS7.Desktop = function()
 	}
 	else
 	{
-		optionsDrop = new OS7.DropMenu(["Settings...", "About"], optionsFunctions, 0, 0)
+		optionsDrop = new OS7.DropMenu(["Settings...", "About"], optionsFunctions, 0, 0);
 	}
 	
 	var optionsMenu = new OS7.MenuItem(OS7.MenuItem.SEPTAGON, 8, 1, optionsDrop);
@@ -84,41 +97,66 @@ OS7.MainDesktop = {};
 
 OS7.Desktop.prototype.update = function()
 {
+	var i;
+	
 	if (OS7.mouse.justPressed)
 	{
 		this.clearFlag = true;
-		
-		if (!i)
-		{
-			var i = 0;
-		}
 		
 		for (i = 0; i < this.allObjects.length; i++)
 		{
 			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
 			{
-				if(this.allObjects[i].onClick)
+				if (this.allObjects[i].onClick)
 				{
 					this.allObjects[i].onClick();
 				}
-				
 				this.clearFlag = false;
 			}
 		}
 	}
 	else if (OS7.mouse.justReleased)
 	{
-		if (!i)
-		{
-			var i = 0;
-		}
-		
 		for (i = 0; i < this.allObjects.length; i++)
 		{
 			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
 			{
-				this.allObjects[i].onRelease();
-				this.clearFlag = false;
+				if (this.allObjects[i].onRelease)
+				{
+					this.allObjects[i].onRelease();
+				}
+				
+				if (this.allObjects[i] && this.allObjects[i].objectType && this.allObjects[i].objectType === "dropmenu")
+				{
+					this.clearFlag = true;
+				}
+				else
+				{
+					this.clearFlag = false;
+				}
+			}
+		}
+	}
+	
+	if (OS7.mouse.justMoved)
+	{
+		for (i = 0; i < this.allObjects.length; i++)
+		{
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
+			{
+				if (this.allObjects[i].onOver)
+				{
+					this.allObjects[i].mouseOver = true;
+					this.allObjects[i].onOver();
+				}
+			}
+			else if (this.allObjects[i].mouseOver)
+			{
+				if (this.allObjects[i].onOut)
+				{
+					this.allObjects[i].mouseOver = false;
+					this.allObjects[i].onOut();
+				}
 			}
 		}
 	}
@@ -145,6 +183,7 @@ OS7.Desktop.prototype.update = function()
 	}
 	
 	OS7.mouse.justPressed = false;
+	OS7.mouse.justMoved = false;
 	OS7.mouse.justReleased = false;
 };
 
@@ -161,10 +200,56 @@ OS7.Desktop.prototype.addWindow = function(windowClass)
 	this.windows.push(windowClass);
 	this.allObjects.push(windowClass);
 	this.addChild(windowClass);
+	
+	if(windowClass.topMenu)
+	{
+		this.addTopMenu(windowClass.topMenu);
+	}
+	else
+	{
+		var genericFunction = [function(){
+			OS7.MainDesktop.removeWindow(windowClass);
+		}];
+		var genericDropMenu = new OS7.DropMenu(["Exit"], genericFunction);
+		var genericTopMenu = new OS7.MenuItem("File", 0, 0, genericDropMenu);
+		windowClass.topMenu = genericTopMenu;
+		this.addTopMenu(genericTopMenu);
+	}
+};
+
+OS7.Desktop.prototype.removeWindow = function(windowClass)
+{
+	var windowPos = this.windows.indexOf(windowClass);
+	
+	if (windowPos !== -1)
+	{
+		this.windows.splice(windowPos, 1);
+		this.removeChild(windowClass);
+		this.allObjects.splice(this.allObjects.indexOf(windowClass),1);
+		
+		if (windowClass.topMenu)
+		{
+			this.removeTopMenu(windowClass.topMenu);
+		}
+	}
 };
 
 OS7.Desktop.prototype.addTopMenu = function(menuItem)
 {
+	var lastMenuPos = this.headerMenus.length-1;
+	
+	if (lastMenuPos >= 0)
+	{
+		var lastMenu = this.headerMenus[lastMenuPos];
+		menuItem.x = lastMenu.x + lastMenu.width;
+	}
+	else
+	{
+		menuItem.x = 8;
+	}
+	
+	menuItem.y = 1;
+	
 	this.headerMenus.push(menuItem);
 	this.allObjects.push(menuItem);
 	this.addChild(menuItem);
@@ -175,11 +260,46 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	}
 };
 
+OS7.Desktop.prototype.removeTopMenu = function(topMenu)
+{
+	var menuPos = this.headerMenus.indexOf(topMenu);
+	
+	if (menuPos !== -1)
+	{
+		this.headerMenus.splice(menuPos, 1);
+		this.removeChild(topMenu);
+		this.allObjects.splice(this.allObjects.indexOf(topMenu),1);
+		
+		if (topMenu.dropMenu)
+		{
+			this.removeDropMenu(topMenu.dropMenu);
+		}
+	}
+};
+
 OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 {
+	var lastMenuPos = this.headerMenus.length-1;
+	var lastMenu = this.headerMenus[lastMenuPos];
+	
+	dropMenu.x = lastMenu.x;
+	dropMenu.y = 19;
+	
 	this.dropMenus.push(dropMenu);
 	this.allObjects.push(dropMenu);
 	this.addChild(dropMenu);
+};
+
+OS7.Desktop.prototype.removeDropMenu = function(dropMenu)
+{
+	var menuPos = this.dropMenus.indexOf(dropMenu);
+	
+	if (menuPos !== -1)
+	{
+		this.dropMenus.splice(menuPos, 1);
+		this.removeChild(dropMenu);
+		this.allObjects.splice(this.allObjects.indexOf(dropMenu),1);
+	}
 };
 
 OS7.Desktop.prototype.createBackground = function()
@@ -236,7 +356,7 @@ OS7.Desktop.prototype.toString = function()
 	
 	for (var i = 0; i < this.allObjects.length; i++)
 	{
-		if (i != 0)
+		if (i !== 0)
 		{
 			returnString += ", ";
 		}

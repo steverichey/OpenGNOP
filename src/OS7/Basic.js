@@ -19,6 +19,7 @@ OS7.Basic = function(x, y, width, height)
 	this.interactive = false; // not needed as desktop sends click/release events
 	this.showHitArea = false;
 	this.worldPoint = new PIXI.Point(0,0);
+	this.objectType = "basic";
 	this.updateHitArea.bind(this);
 	this.updateHitArea();
 	
@@ -29,12 +30,14 @@ OS7.Basic = function(x, y, width, height)
 OS7.Basic.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 OS7.Basic.prototype.constructor = OS7.Basic;
 
+OS7.Basic.mouseOver = false;
+
 OS7.Basic.prototype.onClick = function(data)
 {
 	// override this!
 };
 
-OS7.Basic.prototype.onMove = function(data)
+OS7.Basic.prototype.onOver = function(data)
 {
 	// override this!
 };

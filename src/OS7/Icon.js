@@ -14,6 +14,7 @@ OS7.Icon = function(textureString, x, y, windowClass)
 	this.offset = new PIXI.Point();
 	this.offset.x = 0;
 	this.offset.y = 0;
+	this.objectType = "icon";
 	this.inverted = false;
 	this.clickTime = -OS7.Icon.MIN_CLICK_TIME;
 	this.invertFilter = new PIXI.InvertFilter();

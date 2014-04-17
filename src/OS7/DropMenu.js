@@ -12,6 +12,7 @@ OS7.DropMenu = function(dropItems, dropFunctions, x, y)
 	this.width = 0;
 	this.menuItems = [];
 	this.dropFunctions = dropFunctions;
+	this.objectType = "dropmenu";
 	
 	for (var i = 0; i < dropItems.length; i++)
 	{
@@ -62,7 +63,6 @@ OS7.DropMenu.prototype.onRelease = function()
 			
 			if (this.dropFunctions && this.dropFunctions[i])
 			{
-				console.log("calling function");
 				this.dropFunctions[i]();
 			}
 		}
@@ -75,7 +75,7 @@ OS7.DropMenu.prototype.toString = function()
 	
 	for (var i = 0; i < this.menuItems.length; i++)
 	{
-		if (i != 0)
+		if (i !== 0)
 		{
 			returnString += ", ";
 		}

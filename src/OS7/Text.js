@@ -11,6 +11,8 @@ OS7.Text = function(string, x, y)
 	this.position.x = x || 0;
 	this.position.y = y || 0;
 	this.interactive = false;
+	this.wordWrap = false; //TODO implement wordwrap
+	this.objectType = "text";
 };
 
 OS7.Text.prototype = Object.create(PIXI.BitmapText.prototype);
@@ -19,4 +21,4 @@ OS7.Text.prototype.constructor = OS7.Text;
 OS7.Text.prototype.toString = function()
 {
 	return "[OS7 Text " + this.text + "]";
-}
+};

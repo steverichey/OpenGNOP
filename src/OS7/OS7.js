@@ -44,6 +44,7 @@ OS7.isWebkit = false;
 
 OS7.mouse = new PIXI.Point(0,0);
 OS7.mouse.justPressed = false;
+OS7.mouse.justMoved = false;
 OS7.mouse.justReleased = false;
 OS7.mouse.pressed = false;
 
