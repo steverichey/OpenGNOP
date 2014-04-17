@@ -52,8 +52,15 @@ OS7.Main.init = function()
 
 OS7.Main.update = function()
 {
+	if (OS7.Main.desktop && OS7.Main.desktop.update)
+	{
+		OS7.Main.desktop.update();
+	}
+	
 	if (OS7.Main.renderer)
+	{
 		OS7.Main.renderer.render(OS7.Main.stage);
+	}
 	
     window.requestAnimFrame(OS7.Main.update);
 };
@@ -84,6 +91,28 @@ OS7.Main.onResize = function()
 			OS7.Main.renderer.view.style.top = ( ( window.innerHeight - OS7.SCREEN_HEIGHT ) / 2 ) + "px";
 		}
 	}
+};
+
+OS7.collide = function(pointX, pointY, basic)
+{
+	if(basic.visible)
+	{
+		if (basic.x && basic.width && pointX < basic.x + basic.width)
+		{
+			if (basic.y && basic.height && pointY < basic.y + basic.height)
+			{
+				if (pointX > basic.x)
+				{
+					if (pointY > basic.y)
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	
+	return false;
 };
 
 window.onload = OS7.Main.preload;

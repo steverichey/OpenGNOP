@@ -15,3 +15,8 @@ OS7.Text = function(string, x, y)
 
 OS7.Text.prototype = Object.create(PIXI.BitmapText.prototype);
 OS7.Text.prototype.constructor = OS7.Text;
+
+OS7.Text.prototype.toString = function()
+{
+	return "[OS7 Text " + this.text + "]";
+}

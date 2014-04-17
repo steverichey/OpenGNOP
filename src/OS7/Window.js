@@ -77,3 +77,8 @@ OS7.Window.prototype.addSprite = function(sprite, x, y)
 	this.addChild(sprite);
 	this.sprites.push(sprite);
 };
+
+OS7.Text.prototype.toString = function()
+{
+	return "[OS7 Window]";
+}

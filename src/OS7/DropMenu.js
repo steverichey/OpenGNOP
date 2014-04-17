@@ -40,3 +40,31 @@ OS7.DropMenu = function(dropItems, dropFunctions, x, y)
 
 OS7.DropMenu.prototype = Object.create(OS7.Basic.prototype);
 OS7.DropMenu.prototype.constructor = OS7.DropMenu;
+
+OS7.DropMenu.prototype.onClick = function()
+{
+	for (var i = 0; i < this.menuItems.length; i++)
+	{
+		if(OS7.collide(OS7.mouse.x, OS7.mouse.y, this.menuItems[i]))
+		{
+			this.menuItems[i].onClick();
+		}
+	}
+};
+
+OS7.DropMenu.prototype.toString = function()
+{
+	var returnString = "";
+	
+	for (var i = 0; i < this.menuItems.length; i++)
+	{
+		if (i != 0)
+		{
+			returnString += ", ";
+		}
+		
+		returnString += this.menuItems[i].toString();
+	}
+	
+	return "[OS7 DropMenu containing " + returnString + "]";
+};

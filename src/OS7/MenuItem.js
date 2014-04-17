@@ -7,8 +7,10 @@
  
 OS7.MenuItem = function(content, x, y, dropMenu, width)
 {
-	OS7.Basic.call(this, x, y);
 	this.width = width || 0;
+	this.type = content || "BLANK";
+	
+	OS7.Basic.call(this, x, y, this.width, 16);
 	
 	if (dropMenu)
 	{
@@ -66,9 +68,6 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 				this.width = this.text.position.x + this.text.textWidth + 10;
 			}
 		}
-		
-		
-		this.addChild(this.text);
 	}
 	
 	this.bg = new PIXI.Graphics();
@@ -97,9 +96,11 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 	{
 		this.invert.bind(this);
 	}
+	
+	this.updateHitArea();
 };
 
-OS7.MenuItem.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
+OS7.MenuItem.prototype = Object.create(OS7.Basic.prototype);
 OS7.MenuItem.prototype.constructor = OS7.MenuItem;
 
 OS7.MenuItem.SEPTAGON = "SEPTAGON";
@@ -148,4 +149,9 @@ OS7.MenuItem.prototype.invert = function(forceClear)
 		
 		this.text.dirty = true;
 	}
+};
+
+OS7.MenuItem.prototype.toString = function()
+{
+	return "[OS7 MenuItem " + this.type + "]";
 };

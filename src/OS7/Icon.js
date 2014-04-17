@@ -93,3 +93,8 @@ OS7.Icon.prototype.setInverted = function(status)
 		this.inverted = false;
 	}
 };
+
+OS7.Icon.prototype.toString = function()
+{
+	return "[OS7 Icon]";
+};

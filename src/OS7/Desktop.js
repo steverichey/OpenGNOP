@@ -8,31 +8,43 @@
 
 OS7.Desktop = function()
 {
-	OS7.Basic.call(this, 0, 0);
+	OS7.Basic.call(this, 0, 0, OS7.SCREEN_WIDTH, OS7.SCREEN_HEIGHT);
 	
 	OS7.MainDesktop = this;
 	this.icons = [];
 	this.windows = [];
 	this.headerMenus = [];
 	this.dropMenus = [];
-	this.interactive = true;
+	this.clearFlag = false;
 	
-	//this.bg = this.createBackground();
-	//this.bg.interactive = true;
-	//this.addChild(this.bg);
+	this.addChild(this.createBackground());
 	
-	this.bg = new OS7.Basic(0,0);
-	this.bg.addChild(this.createBackground());
-	this.addChild(this.bg);
-	this.bg.onClick = this.clickAway.bind(this);
+	var clickListener = new OS7.Basic(0,0,640,480);
+	clickListener.interactive = true; // only this needs to be interactive
+	clickListener.mousedown = clickListener.touchstart = function(data)
+	{
+		OS7.mouse.x = data.global.x;
+		OS7.mouse.y = data.global.y;
+		OS7.mouse.justPressed = true;
+		OS7.mouse.pressed = true;
+	};
+	//clickListener.mousemove = clickListener.touchm
+	
+	clickListener.mouseup = clickListener.touchend = function(data)
+	{
+		OS7.mouse.x = data.global.x;
+		OS7.mouse.y = data.global.y;
+		OS7.mouse.justReleased = true;
+		OS7.mouse.pressed = false;
+	};
+	this.addChild(clickListener);
 	
 	this.headerIcons = new PIXI.Sprite.fromImage("./assets/images/header_icons.png");
 	this.headerIcons.position.x = 580;
 	this.headerIcons.position.y = 2;
 	this.addChild(this.headerIcons);
 	
-	this.time = new OS7.Time();
-	this.addChild(this.time);
+	this.addChild(new OS7.Time());
 	
 	this.addIcon.bind(this);
 	this.addWindow.bind(this);
@@ -41,7 +53,7 @@ OS7.Desktop = function()
 	
 	var optionsFunctions = [
 		function(){
-			this.addWindow(settingsWindow);
+			//open settings window
 		},
 		function(){
 			window.close();
@@ -51,17 +63,78 @@ OS7.Desktop = function()
 	var optionsDrop = new OS7.DropMenu(["Settings...", "Quit"], optionsFunctions, 0, 0);
 	var optionsMenu = new OS7.MenuItem(OS7.MenuItem.SEPTAGON, 8, 1, optionsDrop);
 	this.addTopMenu(optionsMenu);
-	
-	this.bg.mousedown = function(data) {
-		console.log("super clickk");
-	};
-	//this.bg.mousedown = this.bg.touchstart = this.clickAway.bind(this);
-	//this.mousedown = this.touchstart = this.clickAway.bind(this);
 };
 
 OS7.Desktop.prototype = Object.create(OS7.Basic.prototype);
 OS7.Desktop.prototype.constructor = OS7.Desktop;
+
 OS7.MainDesktop = {};
+
+OS7.Desktop.prototype.update = function()
+{
+	if (OS7.mouse.justPressed)
+	{
+		this.clearFlag = true;
+		var i = 0;
+		
+		for (i = 0; i < this.icons.length; i++)
+		{
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.icons[i]))
+			{
+				console.log("clicked an icon");
+				this.icons[i].onClick();
+				this.clearFlag = false;
+			}
+		}
+		
+		for (i = 0; i < this.headerMenus.length; i++)
+		{
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.headerMenus[i]))
+			{
+				console.log("clicked a header");
+				this.headerMenus[i].onClick();
+				this.clearFlag = false;
+			}
+		}
+		
+		for (i = 0; i < this.dropMenus.length; i++)
+		{
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.dropMenus[i]))
+			{
+				console.log("clicked a drop menu");
+				this.dropMenus[i].onClick();
+				this.clearFlag = false;
+			}
+		}
+		
+		if (this.clearFlag)
+		{
+			console.log("clicked nothing");
+			console.log(this.toString());
+			
+			if (OS7.mouse.y > 20)
+			{
+				for (i = 0; i < this.icons.length; i++)
+				{
+					this.icons[i].setInverted(false);
+				}
+			}
+			
+			for (i = 0; i < this.headerMenus.length; i++)
+			{
+				this.headerMenus[i].invert(true);
+			}
+			
+			for (i = 0; i < this.dropMenus.length; i++)
+			{
+				this.dropMenus[i].visible = false;
+			}
+		}
+	}
+	
+	OS7.mouse.justPressed = false;
+	OS7.mouse.justReleased = false;
+};
 
 OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 {
@@ -91,26 +164,6 @@ OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 {
 	this.dropMenus.push(dropMenu);
 	this.addChild(dropMenu);
-};
-
-OS7.Desktop.prototype.clickAway = function()
-{
-	console.log("clicked away");
-	
-	for (var i = 0; i < this.icons.length; i++)
-	{
-		this.icons[i].setInverted(false);
-	}
-	
-	for (var o = 0; o < this.headerMenus.length; o++)
-	{
-		this.headerMenus[i].invert(true);
-	}
-	
-	for (var q = 0; q < this.dropMenus.length; q++)
-	{
-		this.dropMenus[q].visible = false;
-	}
 };
 
 OS7.Desktop.prototype.createBackground = function()
@@ -159,4 +212,42 @@ OS7.Desktop.prototype.createBackground = function()
 	bg.cacheAsBitmap = true;
 	
 	return bg;
+};
+
+OS7.Desktop.prototype.toString = function()
+{
+	var returnString = "";
+	var i = 0;
+	
+	for (i = 0; i < this.icons.length; i++)
+	{
+		if (i != 0)
+		{
+			returnString += ", ";
+		}
+		
+		returnString += this.icons[i].toString();
+	}		
+	
+	for (i = 0; i < this.headerMenus.length; i++)
+	{
+		if (i != 0)
+		{
+			returnString += ", ";
+		}
+		
+		returnString += this.headerMenus[i].toString();
+	}
+	
+	for (i = 0; i < this.dropMenus.length; i++)
+	{
+		if (i != 0)
+		{
+			returnString += ", ";
+		}
+		
+		returnString += this.dropMenus[i].toString();
+	}
+	
+	return "[OS7 Desktop containing " + returnString + "]";
 };
