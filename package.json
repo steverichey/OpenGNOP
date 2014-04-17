@@ -1,0 +1,53 @@
+{
+  "name": "OpenGNOP!",
+  "version": "0.1.0",
+  "description": "An open source recreation of Bungie's GNOP! in JavaScript.",
+  "main": "index.html",
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steverichey/OpenGNOP.git"
+  },
+  "author": "Steve Richey",
+  "copyright": "Copyright (c) 2014",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steverichey/OpenGNOP/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tape": "~2.12.3",
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.8",
+    "grunt-contrib-uglify": "~0.2",
+    "grunt-contrib-concat": "~0.3",
+    "grunt-contrib-copy": "~0.5.0",
+    "testling": "~1.6.1",
+    "browserify": "~3.40.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "watchify": "~0.6.4"
+  },
+  "testling": {
+    "files": "bin/Gnop.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
+  },
+  "window": {
+    "toolbar": false,
+    "width": 640,
+    "height": 480,
+    "position": "center",
+    "resizable": false,
+    "frame": false
+  }
+}
