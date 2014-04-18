@@ -5,27 +5,28 @@
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
  
-OS7.MenuItem = function(content, x, y, dropMenu, width)
+OS7.MenuItem = function(content, dropMenu, width, callFunction)
 {
 	this.width = width || 0;
 	this.type = content || "BLANK";
 	this.objectType = "menuitem";
 	
-	OS7.Basic.call(this, x, y, this.width, 16);
-	
 	if (dropMenu)
 	{
 		this.dropMenu = dropMenu;
-		this.dropMenu.position.x = this.position.x;
-		this.dropMenu.position.y = 19;
-		this.dropMenu.visible = false;
-		
 		this.height = 18;
 	}
 	else
 	{
 		this.height = 16;
+		
+		if (callFunction)
+		{
+			this.callFunction = callFunction;
+		}
 	}
+	
+	OS7.Basic.call(this, 0, 0, this.width, this.height);
 	
 	if (content === OS7.MenuItem.SEPTAGON)
 	{
@@ -43,16 +44,15 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		this.line.drawRect(0,8,this.width,1);
 		this.line.endFill();
 		this.addChild(this.line);
-		this.interactive = false;
 	}
 	else
 	{
 		this.text = new OS7.Text(content);
-		this.text.position.y = 2;
 		
 		if (this.dropMenu)
 		{
 			this.text.position.x = 9;
+			this.text.position.y = 3;
 			
 			if (this.width === 0)
 			{
@@ -62,6 +62,7 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		else
 		{
 			this.text.position.x = 14;
+			this.text.position.y = 2;
 			
 			if (this.width === 0)
 			{
@@ -74,7 +75,6 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 	this.bg.beginFill(OS7.Colors.WHITE);
 	this.bg.drawRect(0,0,this.width,this.height);
 	this.bg.endFill();
-	this.bg.interactive = true;
 	this.addChild(this.bg);
 	
 	if (this.logo)
@@ -92,11 +92,7 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		this.addChild(this.text);
 	}
 	
-	if (this.interactive)
-	{
-		this.invert.bind(this);
-	}
-	
+	this.invert.bind(this);
 	this.updateHitArea();
 };
 
@@ -112,9 +108,10 @@ OS7.MenuItem.prototype.onClick = function(data)
 	if (this.dropMenu)
 	{
 		this.dropMenu.visible = !this.dropMenu.visible;
+		OS7.MainDesktop.headerActive = !OS7.MainDesktop.headerActive;
+		OS7.MainDesktop.activeTopMenu = this;
+		this.invert();
 	}
-	
-	this.invert();
 };
 
 OS7.MenuItem.prototype.onOver = function(data)
@@ -122,6 +119,11 @@ OS7.MenuItem.prototype.onOver = function(data)
 	if (!this.dropMenu)
 	{
 		this.invert();
+	}
+	else if (OS7.MainDesktop.headerActive && OS7.MainDesktop.activeTopMenu !== this)
+	{
+		OS7.MainDesktop.clearTop();
+		this.onClick();
 	}
 };
 
@@ -135,32 +137,37 @@ OS7.MenuItem.prototype.onOut = function(data)
 
 OS7.MenuItem.prototype.onRelease = function(data)
 {
+	if (this.callFunction && typeof this.callFunction === "function")
+	{
+		this.callFunction();
+	}
+	
 	if (!this.dropMenu)
 	{
-		this.invert();
+		this.invert(true);
 	}
 };
 
 OS7.MenuItem.prototype.invert = function(forceClear)
 {
-	if (this.bg.tint === OS7.Colors.WHITE && !forceClear)
+	if (this.bg.tint === OS7.Colors.BLACK || forceClear)
 	{
-		this.bg.tint = OS7.Colors.ALMOST_BLACK;
+		this.bg.tint = OS7.Colors.WHITE;
 	}
 	else
 	{
-		this.bg.tint = OS7.Colors.WHITE;
+		this.bg.tint = OS7.Colors.BLACK;
 	}
 	
 	if (this.text)
 	{
-		if (this.text.tint === OS7.Colors.ALMOST_BLACK && !forceClear)
+		if (this.text.tint === OS7.Colors.WHITE || forceClear)
 		{
-			this.text.tint = OS7.Colors.WHITE;
+			this.text.tint = OS7.Colors.ALMOST_BLACK;
 		}
 		else
 		{
-			this.text.tint = OS7.Colors.ALMOST_BLACK;
+			this.text.tint = OS7.Colors.WHITE;
 		}
 		
 		this.text.dirty = true;

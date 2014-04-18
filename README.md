@@ -27,7 +27,7 @@ npm install
 grunt build
 ````
 
-This will create the OpenOS7 code in the `bin` directory, in both uglified and regular versions. The standalone executable provided was created using [node-webkit](https://github.com/rogerwang/node-webkit), if you archive the contents of the `bin` directory into a single `zip` file, that archive can be opened using the `node-webkit`
+This will create the OpenOS7 code in the `bin` directory, in both uglified and regular versions. The standalone executable provided was created using [node-webkit](https://github.com/rogerwang/node-webkit), if you archive the contents of the `bin` directory into a single `zip` file, that archive can be opened using the `node-webkit` executable file for your platform.
 
 ---
 

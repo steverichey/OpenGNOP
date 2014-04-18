@@ -20,10 +20,14 @@ OS7.Basic = function(x, y, width, height)
 	this.showHitArea = false;
 	this.worldPoint = new PIXI.Point(0,0);
 	this.objectType = "basic";
+	this.mouseOver = false;
+	this.isOS7Object = true; // just a really easy way to know
 	this.updateHitArea.bind(this);
 	this.updateHitArea();
 	
 	this.onClick.bind(this);
+	this.onOver.bind(this);
+	this.onOut.bind(this);
 	this.onRelease.bind(this);
 };
 
