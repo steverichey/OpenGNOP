@@ -117,6 +117,22 @@ OS7.MenuItem.prototype.onClick = function(data)
 	this.invert();
 };
 
+OS7.MenuItem.prototype.onOver = function(data)
+{
+	if (!this.dropMenu)
+	{
+		this.invert();
+	}
+};
+
+OS7.MenuItem.prototype.onOut = function(data)
+{
+	if (!this.dropMenu)
+	{
+		this.invert();
+	}
+};
+
 OS7.MenuItem.prototype.onRelease = function(data)
 {
 	if (!this.dropMenu)

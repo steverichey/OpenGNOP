@@ -23,16 +23,11 @@ Much of the code is based on [GNOP! Flash](https://github.com/steverichey/gnopfl
 If you want to compile OpenGNOP! yourself, you'll need to install [NodeJS](http://nodejs.org/) and [Grunt](http://gruntjs.com/) then run:
 
 ````
+npm install
 grunt build
 ````
 
-This will create the OpenOS7 code in the `bin` directory, in both uglified and regular versions. Creating the standalone executable requires the [Chromium Embedded Framework](https://code.google.com/p/chromiumembedded/). Download the version for your target platform and follow these steps:
-
-````
-Coming soon!
-````
-
-Note: This section is incomplete, once there's a release candidate, this section will be updated.
+This will create the OpenOS7 code in the `bin` directory, in both uglified and regular versions. The standalone executable provided was created using [node-webkit](https://github.com/rogerwang/node-webkit), if you archive the contents of the `bin` directory into a single `zip` file, that archive can be opened using the `node-webkit`
 
 ---
 
@@ -40,7 +35,9 @@ Contributions to OpenGNOP! and OpenOS7 are highly welcome. Furthermore, if you w
 
 OpenGNOP! is intended to emulate Bungie Software’s original [GNOP! 1.0](http://en.wikipedia.org/wiki/Gnop!), programmed by [Alexander Seropian](http://en.wikipedia.org/wiki/Alex_Seropian) in Think C in 1990 for the Macintosh. GNOP! was the first game released by Bungie Software (now just [Bungie](http://www.bungie.net)), although it wasn’t until the 1992 release of [Minotaur: The Labyrinths of Crete](http://en.wikipedia.org/wiki/Minotaur:_The_Labyrinths_of_Crete) that Bungie was a fully-fledged company comprised of Seropian and fellow classmate [Jason Jones](http://en.wikipedia.org/wiki/Jason_Jones_(programmer)).
 
-OpenGNOP!, and OpenOS7 (the backbone that contains the core OS functionality) are shared under an MIT license. 
+OpenGNOP!, and OpenOS7 (the backbone that contains the core OS functionality) are shared under an [MIT license](http://opensource.org/licenses/MIT). 
+
+Copyright (c) 2014 [Steve Richey](http://www.steverichey.com/contact)
 
 ---
 

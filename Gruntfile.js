@@ -80,7 +80,8 @@ module.exports = function(grunt) {
 					{expand: true, src: [assets+'/sounds/*'], dest: '<%= dirs.build %>/'},
 					{expand: true, flatten: true, src: ['src/index.html'], dest: '<%= dirs.build %>/'},
 					{expand: true, flatten: true, src: ['libs/pixi/pixi.dev.js'], dest: '<%= dirs.build %>/'},
-					{expand: true, flatten: true, src: ['src/Gnop.js'], dest: '<%= dirs.build %>/'}
+					{expand: true, flatten: true, src: ['src/Gnop.js'], dest: '<%= dirs.build %>/'},
+					{expand: true, src: ['package.json'], dest: '<%= dirs.build %>/'}
 				]
 			}
 		},
