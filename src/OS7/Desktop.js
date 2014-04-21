@@ -109,14 +109,11 @@ OS7.Desktop.prototype.update = function()
 			{
 				if (OS7.mouse.justPressed && this.children[i].onClick)
 				{
-					console.log("clicked " + this.children[i]);
 					this.children[i].onClick();
 					this.clearFlag = false;
 				}
 				else if (OS7.mouse.justReleased && this.children[i].onRelease)
 				{
-					console.log("released " + this.children[i]);
-					
 					// if we just clicked on a dropmenu menuitem, we'll need to clear dropmenus
 					
 					if (this.children[i].objectType === "menuitem" && !this.children[i].dropMenu)
@@ -130,7 +127,6 @@ OS7.Desktop.prototype.update = function()
 				{
 					if (this.children[i].onOver && !this.children[i].mouseOver)
 					{
-						console.log("over " + this.children[i]);
 						this.children[i].mouseOver = true;
 						this.children[i].onOver();
 					}
@@ -138,7 +134,6 @@ OS7.Desktop.prototype.update = function()
 			}
 			else if (this.children[i].onOut && this.children[i].mouseOver)
 			{
-				console.log("out " + this.children[i]);
 				this.children[i].mouseOver = false;
 				this.children[i].onOut();
 			}
@@ -147,8 +142,6 @@ OS7.Desktop.prototype.update = function()
 	
 	if (this.clearFlag)
 	{
-		console.log("clearing");
-		
 		if (OS7.mouse.y > 20)
 		{
 			for (i = 0; i < this.icons.length; i++)
@@ -160,12 +153,10 @@ OS7.Desktop.prototype.update = function()
 		for (i = 0; i < this.headerMenus.length; i++)
 		{
 			this.headerMenus[i].invert(true);
-			console.log(this.headerMenus[i]);
 		}
 		
 		for (i = 0; i < this.dropMenus.length; i++)
 		{
-			console.log(this.dropMenus[i]);
 			this.dropMenus[i].toggleVisibility(false);
 		}
 		
@@ -302,8 +293,6 @@ OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 
 OS7.Desktop.prototype.removeDropMenu = function(dropMenu)
 {
-	console.log("removing " + dropMenu);
-	
 	var menuPos = this.dropMenus.indexOf(dropMenu);
 	
 	if (menuPos !== -1)
@@ -314,11 +303,8 @@ OS7.Desktop.prototype.removeDropMenu = function(dropMenu)
 		
 		for (var i = dropMenu.menuItems.length - 1; i >= 0; i--)
 		{
-			console.log("removing " + dropMenu.menuItems[i]);
 			
 			itemPos = this.menuItems.indexOf(dropMenu.menuItems[i]);
-			
-			console.log("found at index " + itemPos);
 			
 			if (itemPos !== -1)
 			{
