@@ -18,7 +18,8 @@ module.exports = function(grunt) {
 		'<%= dirs.src %>/Window.js',
 		'<%= dirs.src %>/SettingsWindow.js',
 		'<%= dirs.src %>/MenuItem.js',
-		'<%= dirs.src %>/DropMenu.js'
+		'<%= dirs.src %>/DropMenu.js',
+		'<%= dirs.src %>/TopMenu.js'
 	];
 	
 	var banner = [

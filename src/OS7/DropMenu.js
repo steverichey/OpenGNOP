@@ -38,8 +38,10 @@ OS7.DropMenu = function(dropItems, dropFunctions)
 	
 	this.visible = false;
 	this.objectType = "dropmenu";
-	this.window = new OS7.Window(0, 0, this.width, this.height);
-	this.window.createWindow("menu");
+	this.window = new OS7.Window(0, 0, this.width, this.height, OS7.Window.MENU);
+	this.window.createWindow(OS7.Window.MENU);
+	this.window.windowGraphics.visible = true;
+	this.window.visible = true;
 	this.addChild(this.window);
 	this.toggleVisibility.bind(this);
 	

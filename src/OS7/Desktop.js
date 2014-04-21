@@ -13,14 +13,19 @@ OS7.Desktop = function()
 	OS7.MainDesktop = this;
 	this.icons = [];
 	this.windows = [];
-	this.topMenus = [];
 	this.dropMenus = [];
 	this.menuItems = [];
+	this.topMenuItems = [];
 	this.clearFlag = false;
 	this.objectType = "desktop";
 	this.headerActive = false;
 	this.activeTopMenu = null;
 	this.activeWindow = null;
+	
+	this.iconLayer = 1;
+	this.windowLayer = 2;
+	this.menuLayer = 3;
+	this.menuItemLayer = 4;
 	
 	this.addChild(this.createBackground());
 	
@@ -59,9 +64,18 @@ OS7.Desktop = function()
 	this.addChild(new OS7.Time());
 	
 	this.addIcon.bind(this);
+	this.removeIcon.bind(this);
+	
 	this.addWindow.bind(this);
-	this.addTopMenu.bind(this);
+	this.setActiveWindow.bind(this);
+	this.removeWindow.bind(this);
+	
+	this.setActiveTopMenu.bind(this);
+	this.addTopMenuItem.bind(this);
+	this.removeTopMenuItem.bind(this);
+	
 	this.addDropMenu.bind(this);
+	this.removeDropMenu.bind(this);
 	
 	var aboutWindow = new OS7.Window(80, 60, 400, 170);
 	aboutWindow.addText("OpenOS7 is a pure JavaScript re-creation of the\nSystem 7 OS using PixiJS for rendering.\n\nOpenOS7 was created by Steve Richey (aka STVR) for\nOpenGNOP! but you can use it for other stuff too.\n\nOpenOS7 is licensed under the MIT license.\n\nCopyright (c) 2014 Steve Richey.", 20, 20);
@@ -89,8 +103,8 @@ OS7.Desktop = function()
 		optionsDrop = new OS7.DropMenu(["Settings...", "About"], optionsFunctions);
 	}
 	
-	var optionsMenu = new OS7.MenuItem(OS7.MenuItem.SEPTAGON, optionsDrop);
-	this.addTopMenu(optionsMenu);
+	var defaultTopMenu = new OS7.TopMenu([new OS7.MenuItem(OS7.MenuItem.SEPTAGON, optionsDrop)]);
+	this.setActiveTopMenu(defaultTopMenu);
 };
 
 OS7.Desktop.prototype = Object.create(OS7.Basic.prototype);
@@ -157,9 +171,9 @@ OS7.Desktop.prototype.update = function()
 			}
 		}
 		
-		for (i = 0; i < this.topMenus.length; i++)
+		for (i = 0; i < this.topMenuItems.length; i++)
 		{
-			this.topMenus[i].invert(true);
+			this.topMenuItems[i].invert(true);
 		}
 		
 		for (i = 0; i < this.dropMenus.length; i++)
@@ -192,7 +206,7 @@ OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 {
 	var newicon = new OS7.Icon(iconImage, x, y, windowClass);
 	this.icons.push(newicon);
-	this.addChild(newicon);
+	this.addChildAt(newicon, this.iconLayer);
 };
 
 OS7.Desktop.prototype.removeIcon = function(iconClass)
@@ -211,7 +225,7 @@ OS7.Desktop.prototype.removeIcon = function(iconClass)
 	{
 		this.removeWindow(iconClass.windowClass);
 	}
-}
+};
 
 OS7.Desktop.prototype.addWindow = function(windowClass)
 {
@@ -224,12 +238,12 @@ OS7.Desktop.prototype.addWindow = function(windowClass)
 	}
 	
 	this.windows.push(windowClass);
-	this.addChild(windowClass);
+	this.addChildAt(windowClass, this.windowLayer);
 	this.setActiveWindow(windowClass);
 	
 	if(windowClass.topMenu)
 	{
-		this.addTopMenu(windowClass.topMenu);
+		this.setActiveTopMenu(windowClass.topMenu);
 	}
 	else
 	{
@@ -239,7 +253,7 @@ OS7.Desktop.prototype.addWindow = function(windowClass)
 		var genericDropMenu = new OS7.DropMenu(["Exit"], genericFunction);
 		var genericTopMenu = new OS7.MenuItem("File", genericDropMenu, 0, null, windowClass);
 		windowClass.topMenu = genericTopMenu;
-		this.addTopMenu(genericTopMenu);
+		this.setActiveTopMenu(genericTopMenu);
 	}
 };
 
@@ -282,13 +296,34 @@ OS7.Desktop.prototype.removeWindow = function(windowClass)
 	}
 };
 
-OS7.Desktop.prototype.addTopMenu = function(menuItem)
+OS7.Desktop.prototype.setActiveTopMenu = function(topMenu)
 {
-	var lastMenuPos = this.topMenus.length-1;
+	if (topMenu && topMenu.isOS7Object && topMenu.objectType === "topmenu")
+	{
+		if(this.activeTopMenu)
+		{
+			this.activeTopMenu.setActive(false);
+		}
+		
+		this.activeTopMenu = topMenu;
+		this.activeTopMenu.setActive(true);
+	}
+};
+
+OS7.Desktop.prototype.addTopMenuItem = function(menuItem)
+{
+	// only the active top menu can add items	
+	
+	if (this.activeTopMenu && this.activeTopMenu.menuItems.indexOf(menuItem) === -1)
+	{
+		return;
+	}
+	
+	var lastMenuPos = this.topMenuItems.length - 1;
 	
 	if (lastMenuPos >= 0)
 	{
-		var lastMenu = this.topMenus[lastMenuPos];
+		var lastMenu = this.topMenuItems[lastMenuPos];
 		menuItem.x = lastMenu.x + lastMenu.width;
 	}
 	else
@@ -298,8 +333,8 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	
 	menuItem.y = 1;
 	
-	this.topMenus.push(menuItem);
-	this.addChild(menuItem);
+	this.topMenuItems.push(menuItem);
+	this.addChildAt(menuItem, this.menuItemLayer);
 	
 	if(menuItem.dropMenu)
 	{
@@ -307,45 +342,37 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	}
 };
 
-OS7.Desktop.prototype.setActiveTopMenu = function(topMenu)
+OS7.Desktop.prototype.removeTopMenuItem = function(menuItem)
 {
-	if (this.topMenus)
-	{
-		// TODO
-	}
-};
-
-OS7.Desktop.prototype.removeTopMenu = function(topMenu)
-{
-	var menuPos = this.topMenus.indexOf(topMenu);
+	var menuPos = this.topMenuItems.indexOf(menuItem);
 	
 	if (menuPos !== -1)
 	{
-		this.topMenus.splice(menuPos, 1);
-		this.removeChild(topMenu);
+		this.topMenuItems.splice(menuPos, 1);
+		this.removeChild(menuItem);
 		
-		if (topMenu.dropMenu)
+		if (menuItem.dropMenu)
 		{
-			this.removeDropMenu(topMenu.dropMenu);
+			this.removeDropMenu(menuItem.dropMenu);
 		}
 	}
 };
 
 OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 {
-	var lastMenuPos = this.topMenus.length-1;
-	var lastMenu = this.topMenus[lastMenuPos];
+	var lastMenuPos = this.topMenuItems.length-1;
+	var lastMenu = this.topMenuItems[lastMenuPos];
 	
 	dropMenu.x = lastMenu.x;
 	dropMenu.y = 19;
 	
 	this.dropMenus.push(dropMenu);
-	this.addChild(dropMenu);
+	this.addChildAt(dropMenu, this.menuLayer);
 	
 	for (var i = 0; i < dropMenu.menuItems.length; i++)
 	{
 		this.menuItems.push(dropMenu.menuItems[i]);
-		this.addChild(dropMenu.menuItems[i]);
+		this.addChildAt(dropMenu.menuItems[i], this.menuItemLayer);
 	}
 };
 

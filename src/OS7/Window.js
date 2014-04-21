@@ -10,15 +10,23 @@ OS7.Window = function(x, y, width, height, windowType, topMenu)
 	OS7.Basic.call(this, x, y, width, height);
 	
 	this.windowObjects = [];
-	this.windowType = windowType || "bordered";
+	this.windowType = windowType || OS7.Window.BORDERED;
 	this.topMenu = topMenu;
 	this.objectType = "window";
 	this.createWindow.bind(this);
 	this.addText.bind(this);
+	this.addImage.bind(this);
+	this.windowGraphics = new PIXI.Graphics();
+	this.addChild(this.windowGraphics);
+	this.visible = false;
 };
 
 OS7.Window.prototype = Object.create(OS7.Basic.prototype);
 OS7.Window.prototype.constructor = OS7.Window;
+
+OS7.Window.BORDERED = "border";
+OS7.Window.SHADOWED = "shadow";
+OS7.Window.MENU = "menu";
 
 OS7.Window.prototype.onClick = function()
 {
@@ -32,10 +40,16 @@ OS7.Window.prototype.create = function()
 {
 	this.createWindow(this.windowType);
 	OS7.MainDesktop.addWindow(this);
+	this.visible = true;
 	
-	for (var i = 0; i < this.windowObjects.length; i++)
+	for (var i = 0; i < this.children.length; i++)
 	{
-		this.addChild(this.windowObjects[i]);
+		this.children[i].visible = true;
+	}
+	
+	if (this.topMenu)
+	{
+		OS7.MainDesktop.setActiveTopMenu(this.topMenu);
 	}
 };
 
@@ -43,15 +57,13 @@ OS7.Window.prototype.destroy = function() {};
 
 OS7.Window.prototype.createWindow = function(windowType)
 {
-	this.windowGraphics = new PIXI.Graphics();
-
-	if ( windowType === "shadow" )
+	if (windowType === OS7.Window.SHADOWED)
 	{
 		OS7.Window.fillRect(this.windowGraphics, 2, 2, this.width-2, this.height-2, OS7.Colors.BLACK);
 		OS7.Window.fillRect(this.windowGraphics, 0, 0, this.width-2, this.height-2, OS7.Colors.BLACK);
 		OS7.Window.fillRect(this.windowGraphics, 1, 1, this.width-4, this.height-4, OS7.Colors.WHITE);
 	}
-	else if ( windowType === "menu" )
+	else if (windowType === OS7.Window.MENU)
 	{
 		OS7.Window.fillRect(this.windowGraphics, 3, 3, this.width-3, this.height-3, OS7.Colors.BLACK);
 		OS7.Window.fillRect(this.windowGraphics, 0, 0, this.width-1, this.height-1, OS7.Colors.BLACK);
@@ -83,6 +95,7 @@ OS7.Window.fillRect = function(target, x, y, width, height, color)
 OS7.Window.prototype.addText = function(textString, x, y)
 {
 	var text = new OS7.Text(textString,x,y);
+	text.visible = this.visible;
 	
 	if (text.textWidth > this.width)
 	{
@@ -90,7 +103,17 @@ OS7.Window.prototype.addText = function(textString, x, y)
 		text.width = this.width;
 	}
 	
-	this.windowObjects.push(text);
+	this.addChild(text);
+};
+
+OS7.Window.prototype.addImage = function(imagePath, x, y)
+{
+	var image = new PIXI.Sprite.fromImage(imagePath);
+	image.x = x;
+	image.y = y;
+	image.visible = this.visible;
+	
+	this.addChild(image);
 };
 
 OS7.Window.prototype.toString = function()
