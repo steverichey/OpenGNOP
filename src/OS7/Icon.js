@@ -77,7 +77,10 @@ OS7.Icon.prototype.onRelease = function()
 		
 		if (rightnow - this.clickTime < OS7.Icon.MIN_CLICK_TIME)
 		{
-			this.windowClass.create();
+			if (this.windowClass)
+			{
+				this.windowClass.create();
+			}
 		}
 		else
 		{

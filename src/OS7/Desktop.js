@@ -13,7 +13,7 @@ OS7.Desktop = function()
 	OS7.MainDesktop = this;
 	this.icons = [];
 	this.windows = [];
-	this.headerMenus = [];
+	this.topMenus = [];
 	this.dropMenus = [];
 	this.menuItems = [];
 	this.clearFlag = false;
@@ -110,7 +110,6 @@ OS7.Desktop.prototype.update = function()
 			{
 				if (OS7.mouse.justPressed && this.children[i].onClick)
 				{
-					console.log("clicked " + this.children[i]);
 					this.children[i].onClick();
 					this.clearFlag = false;
 				}
@@ -158,9 +157,9 @@ OS7.Desktop.prototype.update = function()
 			}
 		}
 		
-		for (i = 0; i < this.headerMenus.length; i++)
+		for (i = 0; i < this.topMenus.length; i++)
 		{
-			this.headerMenus[i].invert(true);
+			this.topMenus[i].invert(true);
 		}
 		
 		for (i = 0; i < this.dropMenus.length; i++)
@@ -195,6 +194,24 @@ OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 	this.icons.push(newicon);
 	this.addChild(newicon);
 };
+
+OS7.Desktop.prototype.removeIcon = function(iconClass)
+{
+	var iconPos = this.icons.indexOf(iconClass);
+	
+	if (iconPos === -1)
+	{
+		return;
+	}
+	
+	this.removeChild(iconClass);
+	this.icons.splice(iconPos,1);
+	
+	if (iconClass.windowClass)
+	{
+		this.removeWindow(iconClass.windowClass);
+	}
+}
 
 OS7.Desktop.prototype.addWindow = function(windowClass)
 {
@@ -237,6 +254,11 @@ OS7.Desktop.prototype.setActiveWindow = function(windowClass)
 	
 	this.activeWindow = windowClass;
 	windowClass.index = 0;
+	
+	if (windowClass.topMenu)
+	{
+		this.setActiveTopMenu(windowClass.topMenu);
+	}
 };
 
 OS7.Desktop.prototype.removeWindow = function(windowClass)
@@ -262,11 +284,11 @@ OS7.Desktop.prototype.removeWindow = function(windowClass)
 
 OS7.Desktop.prototype.addTopMenu = function(menuItem)
 {
-	var lastMenuPos = this.headerMenus.length-1;
+	var lastMenuPos = this.topMenus.length-1;
 	
 	if (lastMenuPos >= 0)
 	{
-		var lastMenu = this.headerMenus[lastMenuPos];
+		var lastMenu = this.topMenus[lastMenuPos];
 		menuItem.x = lastMenu.x + lastMenu.width;
 	}
 	else
@@ -276,7 +298,7 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	
 	menuItem.y = 1;
 	
-	this.headerMenus.push(menuItem);
+	this.topMenus.push(menuItem);
 	this.addChild(menuItem);
 	
 	if(menuItem.dropMenu)
@@ -285,13 +307,21 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	}
 };
 
+OS7.Desktop.prototype.setActiveTopMenu = function(topMenu)
+{
+	if (this.topMenus)
+	{
+		// TODO
+	}
+};
+
 OS7.Desktop.prototype.removeTopMenu = function(topMenu)
 {
-	var menuPos = this.headerMenus.indexOf(topMenu);
+	var menuPos = this.topMenus.indexOf(topMenu);
 	
 	if (menuPos !== -1)
 	{
-		this.headerMenus.splice(menuPos, 1);
+		this.topMenus.splice(menuPos, 1);
 		this.removeChild(topMenu);
 		
 		if (topMenu.dropMenu)
@@ -303,8 +333,8 @@ OS7.Desktop.prototype.removeTopMenu = function(topMenu)
 
 OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 {
-	var lastMenuPos = this.headerMenus.length-1;
-	var lastMenu = this.headerMenus[lastMenuPos];
+	var lastMenuPos = this.topMenus.length-1;
+	var lastMenu = this.topMenus[lastMenuPos];
 	
 	dropMenu.x = lastMenu.x;
 	dropMenu.y = 19;

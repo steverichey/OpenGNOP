@@ -20,6 +20,14 @@ OS7.Window = function(x, y, width, height, windowType, topMenu)
 OS7.Window.prototype = Object.create(OS7.Basic.prototype);
 OS7.Window.prototype.constructor = OS7.Window;
 
+OS7.Window.prototype.onClick = function()
+{
+	if (OS7.MainDesktop.activeWindow !== this)
+	{
+		OS7.MainDesktop.setActiveWindow(this);
+	}
+};
+
 OS7.Window.prototype.create = function()
 {
 	this.createWindow(this.windowType);
@@ -85,7 +93,7 @@ OS7.Window.prototype.addText = function(textString, x, y)
 	this.windowObjects.push(text);
 };
 
-OS7.Text.prototype.toString = function()
+OS7.Window.prototype.toString = function()
 {
 	return "[OS7 Window]";
 };
