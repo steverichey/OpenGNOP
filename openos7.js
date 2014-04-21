@@ -2,7 +2,7 @@
  * OpenGNOP! - v0.1.0
  * Copyright (c) 2014, Steve Richey
  *
- * Compiled: 2014-04-17
+ * Compiled: 2014-04-21
  *
  * OpenGNOP! is licensed under the MIT License.
  * 
@@ -55,6 +55,10 @@ OS7.mouse.justPressed = false;
 OS7.mouse.justMoved = false;
 OS7.mouse.justReleased = false;
 OS7.mouse.pressed = false;
+
+// Override this to load your code
+
+OS7.onLoad = null;
 
 OS7.collide = function(pointX, pointY, basic)
 {
@@ -130,6 +134,11 @@ OS7.Main.init = function()
     
     OS7.Main.desktop = new OS7.Desktop();
 	OS7.Main.stage.addChild(OS7.Main.desktop);
+	
+	if (OS7.onLoad && typeof OS7.onLoad === "function")
+	{
+		OS7.onLoad();
+	}
     
 	window.requestAnimFrame(OS7.Main.update);
 };
@@ -201,10 +210,14 @@ OS7.Basic = function(x, y, width, height)
 	this.showHitArea = false;
 	this.worldPoint = new PIXI.Point(0,0);
 	this.objectType = "basic";
+	this.mouseOver = false;
+	this.isOS7Object = true; // just a really easy way to know
 	this.updateHitArea.bind(this);
 	this.updateHitArea();
 	
 	this.onClick.bind(this);
+	this.onOver.bind(this);
+	this.onOut.bind(this);
 	this.onRelease.bind(this);
 };
 
@@ -213,20 +226,11 @@ OS7.Basic.prototype.constructor = OS7.Basic;
 
 OS7.Basic.mouseOver = false;
 
-OS7.Basic.prototype.onClick = function(data)
-{
-	// override this!
-};
-
-OS7.Basic.prototype.onOver = function(data)
-{
-	// override this!
-};
-
-OS7.Basic.prototype.onRelease = function(data)
-{
-	// override this!
-};
+OS7.Basic.prototype.onClick = function(){};
+OS7.Basic.prototype.onOver = function(){};
+OS7.Basic.prototype.onMove = function(){};
+OS7.Basic.prototype.onOut = function(){};
+OS7.Basic.prototype.onRelease = function(){};
 
 OS7.Basic.prototype.updateHitArea = function()
 {
@@ -290,11 +294,14 @@ OS7.Desktop = function()
 	OS7.MainDesktop = this;
 	this.icons = [];
 	this.windows = [];
-	this.headerMenus = [];
+	this.topMenus = [];
 	this.dropMenus = [];
-	this.allObjects = [];
+	this.menuItems = [];
 	this.clearFlag = false;
 	this.objectType = "desktop";
+	this.headerActive = false;
+	this.activeTopMenu = null;
+	this.activeWindow = null;
 	
 	this.addChild(this.createBackground());
 	
@@ -316,7 +323,7 @@ OS7.Desktop = function()
 		OS7.mouse.justMoved = true;
 	};
 	
-	clickListener.mouseup = clickListener.mouseupoutside = clickListener.touchend = clickListener.touchendoutside = function(data)//clickListener.touchend = function(data)
+	clickListener.mouseup = clickListener.mouseupoutside = clickListener.touchend = clickListener.touchendoutside = function(data)
 	{
 		OS7.mouse.x = data.global.x;
 		OS7.mouse.y = data.global.y;
@@ -356,14 +363,14 @@ OS7.Desktop = function()
 	if (OS7.isWebkit)
 	{
 		optionsFunctions.push(function(){window.close();});
-		optionsDrop = new OS7.DropMenu(["Settings...", "About", "Quit"], optionsFunctions, 0, 0);
+		optionsDrop = new OS7.DropMenu(["Settings...", "About", "Quit"], optionsFunctions);
 	}
 	else
 	{
-		optionsDrop = new OS7.DropMenu(["Settings...", "About"], optionsFunctions, 0, 0);
+		optionsDrop = new OS7.DropMenu(["Settings...", "About"], optionsFunctions);
 	}
 	
-	var optionsMenu = new OS7.MenuItem(OS7.MenuItem.SEPTAGON, 8, 1, optionsDrop);
+	var optionsMenu = new OS7.MenuItem(OS7.MenuItem.SEPTAGON, optionsDrop);
 	this.addTopMenu(optionsMenu);
 };
 
@@ -374,69 +381,52 @@ OS7.MainDesktop = {};
 
 OS7.Desktop.prototype.update = function()
 {
-	var i;
+	this.clearFlag = OS7.mouse.justPressed;
 	
-	if (OS7.mouse.justPressed)
+	for (var i = 0; i < this.children.length; i++)
 	{
-		this.clearFlag = true;
-		
-		for (i = 0; i < this.allObjects.length; i++)
+		if (this.children[i].isOS7Object)
 		{
-			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
+			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.children[i]))
 			{
-				if (this.allObjects[i].onClick)
+				if (OS7.mouse.justPressed && this.children[i].onClick)
 				{
-					this.allObjects[i].onClick();
-				}
-				this.clearFlag = false;
-			}
-		}
-	}
-	else if (OS7.mouse.justReleased)
-	{
-		for (i = 0; i < this.allObjects.length; i++)
-		{
-			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
-			{
-				if (this.allObjects[i].onRelease)
-				{
-					this.allObjects[i].onRelease();
-				}
-				
-				if (this.allObjects[i] && this.allObjects[i].objectType && this.allObjects[i].objectType === "dropmenu")
-				{
-					this.clearFlag = true;
-				}
-				else
-				{
+					this.children[i].onClick();
 					this.clearFlag = false;
 				}
+				else if (OS7.mouse.justReleased && this.children[i].onRelease)
+				{
+					// if we just clicked on a dropmenu menuitem, we'll need to clear dropmenus
+					
+					if (this.children[i].objectType === "menuitem" && !this.children[i].dropMenu)
+					{
+						this.clearFlag = true;
+					}
+					
+					this.children[i].onRelease();
+				}
+				else if (OS7.mouse.justMoved)
+				{
+					if (this.children[i].onOver && !this.children[i].mouseOver)
+					{
+						this.children[i].mouseOver = true;
+						this.children[i].onOver();
+					}
+				}
+			}
+			else if (this.children[i].onMove && OS7.mouse.justMoved)
+			{
+				this.children[i].onMove();
+			}
+			else if (this.children[i].onOut && this.children[i].mouseOver)
+			{
+				this.children[i].mouseOver = false;
+				this.children[i].onOut();
 			}
 		}
 	}
 	
-	if (OS7.mouse.justMoved)
-	{
-		for (i = 0; i < this.allObjects.length; i++)
-		{
-			if (OS7.collide(OS7.mouse.x, OS7.mouse.y, this.allObjects[i]))
-			{
-				if (this.allObjects[i].onOver)
-				{
-					this.allObjects[i].mouseOver = true;
-					this.allObjects[i].onOver();
-				}
-			}
-			else if (this.allObjects[i].mouseOver)
-			{
-				if (this.allObjects[i].onOut)
-				{
-					this.allObjects[i].mouseOver = false;
-					this.allObjects[i].onOut();
-				}
-			}
-		}
-	}
+	// if the user clicked away, or selected a dropmenu menuitem, need to clear top and drop menus
 	
 	if (this.clearFlag)
 	{
@@ -448,16 +438,31 @@ OS7.Desktop.prototype.update = function()
 			}
 		}
 		
-		for (i = 0; i < this.headerMenus.length; i++)
+		for (i = 0; i < this.topMenus.length; i++)
 		{
-			this.headerMenus[i].invert(true);
+			this.topMenus[i].invert(true);
 		}
 		
 		for (i = 0; i < this.dropMenus.length; i++)
 		{
-			this.dropMenus[i].visible = false;
+			this.dropMenus[i].toggleVisibility(false);
+		}
+		
+		this.headerActive = false;
+		this.clearFlag = false;
+	}
+	
+	// call update on windows
+	
+	for (i = 0; i < this.windows.length; i++)
+	{
+		if (this.windows[i].update)
+		{
+			this.windows[i].update();
 		}
 	}
+	
+	// clear mouse flags for next frame
 	
 	OS7.mouse.justPressed = false;
 	OS7.mouse.justMoved = false;
@@ -468,15 +473,40 @@ OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 {
 	var newicon = new OS7.Icon(iconImage, x, y, windowClass);
 	this.icons.push(newicon);
-	this.allObjects.push(newicon);
 	this.addChild(newicon);
 };
 
+OS7.Desktop.prototype.removeIcon = function(iconClass)
+{
+	var iconPos = this.icons.indexOf(iconClass);
+	
+	if (iconPos === -1)
+	{
+		return;
+	}
+	
+	this.removeChild(iconClass);
+	this.icons.splice(iconPos,1);
+	
+	if (iconClass.windowClass)
+	{
+		this.removeWindow(iconClass.windowClass);
+	}
+}
+
 OS7.Desktop.prototype.addWindow = function(windowClass)
 {
+	// we don't need to add the window again if it's already active, just give it focus
+	
+	if (this.windows.indexOf(windowClass) !== -1)
+	{
+		this.setActiveWindow(windowClass);
+		return;
+	}
+	
 	this.windows.push(windowClass);
-	this.allObjects.push(windowClass);
 	this.addChild(windowClass);
+	this.setActiveWindow(windowClass);
 	
 	if(windowClass.topMenu)
 	{
@@ -484,13 +514,31 @@ OS7.Desktop.prototype.addWindow = function(windowClass)
 	}
 	else
 	{
-		var genericFunction = [function(){
-			OS7.MainDesktop.removeWindow(windowClass);
-		}];
+		// if the user didn't define a topmenu, just create a "File" -> "Exit" menu
+		
+		var genericFunction = [function(){ OS7.MainDesktop.removeWindow(windowClass); }];
 		var genericDropMenu = new OS7.DropMenu(["Exit"], genericFunction);
-		var genericTopMenu = new OS7.MenuItem("File", 0, 0, genericDropMenu);
+		var genericTopMenu = new OS7.MenuItem("File", genericDropMenu, 0, null, windowClass);
 		windowClass.topMenu = genericTopMenu;
 		this.addTopMenu(genericTopMenu);
+	}
+};
+
+OS7.Desktop.prototype.setActiveWindow = function(windowClass)
+{
+	// can't set a window to active if it's not on the desktop!
+	
+	if (this.windows.indexOf(windowClass) === -1)
+	{
+		return;
+	}
+	
+	this.activeWindow = windowClass;
+	windowClass.index = 0;
+	
+	if (windowClass.topMenu)
+	{
+		this.setActiveTopMenu(windowClass.topMenu);
 	}
 };
 
@@ -500,9 +548,13 @@ OS7.Desktop.prototype.removeWindow = function(windowClass)
 	
 	if (windowPos !== -1)
 	{
+		if (this.activeWindow === windowClass)
+		{
+			this.activeWindow = null;
+		}
+		
 		this.windows.splice(windowPos, 1);
 		this.removeChild(windowClass);
-		this.allObjects.splice(this.allObjects.indexOf(windowClass),1);
 		
 		if (windowClass.topMenu)
 		{
@@ -513,11 +565,11 @@ OS7.Desktop.prototype.removeWindow = function(windowClass)
 
 OS7.Desktop.prototype.addTopMenu = function(menuItem)
 {
-	var lastMenuPos = this.headerMenus.length-1;
+	var lastMenuPos = this.topMenus.length-1;
 	
 	if (lastMenuPos >= 0)
 	{
-		var lastMenu = this.headerMenus[lastMenuPos];
+		var lastMenu = this.topMenus[lastMenuPos];
 		menuItem.x = lastMenu.x + lastMenu.width;
 	}
 	else
@@ -527,8 +579,7 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	
 	menuItem.y = 1;
 	
-	this.headerMenus.push(menuItem);
-	this.allObjects.push(menuItem);
+	this.topMenus.push(menuItem);
 	this.addChild(menuItem);
 	
 	if(menuItem.dropMenu)
@@ -537,15 +588,22 @@ OS7.Desktop.prototype.addTopMenu = function(menuItem)
 	}
 };
 
+OS7.Desktop.prototype.setActiveTopMenu = function(topMenu)
+{
+	if (this.topMenus)
+	{
+		// TODO
+	}
+};
+
 OS7.Desktop.prototype.removeTopMenu = function(topMenu)
 {
-	var menuPos = this.headerMenus.indexOf(topMenu);
+	var menuPos = this.topMenus.indexOf(topMenu);
 	
 	if (menuPos !== -1)
 	{
-		this.headerMenus.splice(menuPos, 1);
+		this.topMenus.splice(menuPos, 1);
 		this.removeChild(topMenu);
-		this.allObjects.splice(this.allObjects.indexOf(topMenu),1);
 		
 		if (topMenu.dropMenu)
 		{
@@ -556,15 +614,20 @@ OS7.Desktop.prototype.removeTopMenu = function(topMenu)
 
 OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 {
-	var lastMenuPos = this.headerMenus.length-1;
-	var lastMenu = this.headerMenus[lastMenuPos];
+	var lastMenuPos = this.topMenus.length-1;
+	var lastMenu = this.topMenus[lastMenuPos];
 	
 	dropMenu.x = lastMenu.x;
 	dropMenu.y = 19;
 	
 	this.dropMenus.push(dropMenu);
-	this.allObjects.push(dropMenu);
 	this.addChild(dropMenu);
+	
+	for (var i = 0; i < dropMenu.menuItems.length; i++)
+	{
+		this.menuItems.push(dropMenu.menuItems[i]);
+		this.addChild(dropMenu.menuItems[i]);
+	}
 };
 
 OS7.Desktop.prototype.removeDropMenu = function(dropMenu)
@@ -573,9 +636,24 @@ OS7.Desktop.prototype.removeDropMenu = function(dropMenu)
 	
 	if (menuPos !== -1)
 	{
+		this.dropMenus[menuPos].toggleVisibility(false);
+		
+		var itemPos = 0;
+		
+		for (var i = dropMenu.menuItems.length - 1; i >= 0; i--)
+		{
+			
+			itemPos = this.menuItems.indexOf(dropMenu.menuItems[i]);
+			
+			if (itemPos !== -1)
+			{
+				this.removeChild(this.menuItems[itemPos]);
+				this.menuItems.splice(itemPos,1);
+			}
+		}
+		
 		this.dropMenus.splice(menuPos, 1);
 		this.removeChild(dropMenu);
-		this.allObjects.splice(this.allObjects.indexOf(dropMenu),1);
 	}
 };
 
@@ -631,14 +709,14 @@ OS7.Desktop.prototype.toString = function()
 {
 	var returnString = "";
 	
-	for (var i = 0; i < this.allObjects.length; i++)
+	for (var i = 0; i < this.children.length; i++)
 	{
 		if (i !== 0)
 		{
 			returnString += ", ";
 		}
 		
-		returnString += this.allObjects[i].toString();
+		returnString += this.children[i].toString();
 	}
 	
 	return "[OS7 Desktop containing " + returnString + "]";
@@ -727,7 +805,6 @@ OS7.Time.prototype.updateTime = function()
 OS7.Icon = function(textureString, x, y, windowClass)
 {
 	OS7.Basic.call(this, x, y);
-	this.texture = PIXI.Texture.fromImage(textureString);
 	
 	this.dragging = false;
 	this.offset = new PIXI.Point();
@@ -738,6 +815,12 @@ OS7.Icon = function(textureString, x, y, windowClass)
 	this.clickTime = -OS7.Icon.MIN_CLICK_TIME;
 	this.invertFilter = new PIXI.InvertFilter();
 	this.windowClass = windowClass;
+	
+	this.image = new PIXI.Sprite.fromImage(textureString);
+	this.addChild(this.image);
+	this.width = 43;
+	this.height = 42;
+	this.updateHitArea();
 };
 
 OS7.Icon.prototype = Object.create(OS7.Basic.prototype);
@@ -745,20 +828,20 @@ OS7.Icon.prototype.constructor = OS7.Icon;
 
 OS7.Icon.MIN_CLICK_TIME = 750;
 
-OS7.Icon.prototype.onClick = function(data)
+OS7.Icon.prototype.onClick = function()
 {
 	this.setInverted(true);
-	this.offset.x = data.global.x - this.position.x;
-	this.offset.y = data.global.y - this.position.y;
+	this.offset.x = OS7.mouse.x - this.position.x;
+	this.offset.y = OS7.mouse.y - this.position.y;
 	this.dragging = true;
 };
 
-OS7.Icon.prototype.onMove = function(data)
+OS7.Icon.prototype.onMove = function()
 {
 	if (this.dragging)
 	{
-		this.position.x = data.global.x - this.offset.x;
-		this.position.y = data.global.y - this.offset.y;
+		this.position.x = OS7.mouse.x - this.offset.x;
+		this.position.y = OS7.mouse.y - this.offset.y;
 		
 		if (this.position.y < 20)
 		{
@@ -782,7 +865,7 @@ OS7.Icon.prototype.onMove = function(data)
 	}
 };
 
-OS7.Icon.prototype.onRelease = function(data)
+OS7.Icon.prototype.onRelease = function()
 {
 	if (this.dragging)
 	{
@@ -791,7 +874,10 @@ OS7.Icon.prototype.onRelease = function(data)
 		
 		if (rightnow - this.clickTime < OS7.Icon.MIN_CLICK_TIME)
 		{
-			this.windowClass.create();
+			if (this.windowClass)
+			{
+				this.windowClass.create();
+			}
 		}
 		else
 		{
@@ -839,6 +925,14 @@ OS7.Window = function(x, y, width, height, windowType, topMenu)
 
 OS7.Window.prototype = Object.create(OS7.Basic.prototype);
 OS7.Window.prototype.constructor = OS7.Window;
+
+OS7.Window.prototype.onClick = function()
+{
+	if (OS7.MainDesktop.activeWindow !== this)
+	{
+		OS7.MainDesktop.setActiveWindow(this);
+	}
+};
 
 OS7.Window.prototype.create = function()
 {
@@ -905,7 +999,7 @@ OS7.Window.prototype.addText = function(textString, x, y)
 	this.windowObjects.push(text);
 };
 
-OS7.Text.prototype.toString = function()
+OS7.Window.prototype.toString = function()
 {
 	return "[OS7 Window]";
 };
@@ -931,27 +1025,28 @@ OS7.SettingsWindow.prototype.constructor = OS7.SettingsWindow;
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
  
-OS7.MenuItem = function(content, x, y, dropMenu, width)
+OS7.MenuItem = function(content, dropMenu, width, callFunction, parentWindow)
 {
 	this.width = width || 0;
 	this.type = content || "BLANK";
-	this.objectType = "menuitem";
-	
-	OS7.Basic.call(this, x, y, this.width, 16);
+	this.parentWindow = parentWindow;
 	
 	if (dropMenu)
 	{
 		this.dropMenu = dropMenu;
-		this.dropMenu.position.x = this.position.x;
-		this.dropMenu.position.y = 19;
-		this.dropMenu.visible = false;
-		
 		this.height = 18;
 	}
 	else
 	{
 		this.height = 16;
+		
+		if (callFunction)
+		{
+			this.callFunction = callFunction;
+		}
 	}
+	
+	OS7.Basic.call(this, 0, 0, this.width, this.height);
 	
 	if (content === OS7.MenuItem.SEPTAGON)
 	{
@@ -969,16 +1064,15 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		this.line.drawRect(0,8,this.width,1);
 		this.line.endFill();
 		this.addChild(this.line);
-		this.interactive = false;
 	}
 	else
 	{
 		this.text = new OS7.Text(content);
-		this.text.position.y = 2;
 		
 		if (this.dropMenu)
 		{
 			this.text.position.x = 9;
+			this.text.position.y = 3;
 			
 			if (this.width === 0)
 			{
@@ -988,6 +1082,7 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		else
 		{
 			this.text.position.x = 14;
+			this.text.position.y = 2;
 			
 			if (this.width === 0)
 			{
@@ -1000,7 +1095,6 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 	this.bg.beginFill(OS7.Colors.WHITE);
 	this.bg.drawRect(0,0,this.width,this.height);
 	this.bg.endFill();
-	this.bg.interactive = true;
 	this.addChild(this.bg);
 	
 	if (this.logo)
@@ -1018,11 +1112,8 @@ OS7.MenuItem = function(content, x, y, dropMenu, width)
 		this.addChild(this.text);
 	}
 	
-	if (this.interactive)
-	{
-		this.invert.bind(this);
-	}
-	
+	this.invert.bind(this);
+	this.objectType = "menuitem";
 	this.updateHitArea();
 };
 
@@ -1033,17 +1124,30 @@ OS7.MenuItem.SEPTAGON = "SEPTAGON";
 OS7.MenuItem.LINE = "LINE";
 OS7.MenuItem.GREY = "GREY_";
 
-OS7.MenuItem.prototype.onClick = function(data)
+OS7.MenuItem.prototype.onClick = function()
 {
 	if (this.dropMenu)
 	{
-		this.dropMenu.visible = !this.dropMenu.visible;
+		this.dropMenu.toggleVisibility();
+		OS7.MainDesktop.headerActive = !OS7.MainDesktop.headerActive;
+		OS7.MainDesktop.activeTopMenu = this;
+		this.invert();
 	}
-	
-	this.invert();
 };
 
-OS7.MenuItem.prototype.onRelease = function(data)
+OS7.MenuItem.prototype.onOver = function()
+{
+	if (!this.dropMenu)
+	{
+		this.invert();
+	}
+	else if (OS7.MainDesktop.headerActive && OS7.MainDesktop.activeTopMenu !== this)
+	{
+		this.onClick();
+	}
+};
+
+OS7.MenuItem.prototype.onOut = function()
 {
 	if (!this.dropMenu)
 	{
@@ -1051,26 +1155,39 @@ OS7.MenuItem.prototype.onRelease = function(data)
 	}
 };
 
+OS7.MenuItem.prototype.onRelease = function()
+{
+	if (this.callFunction && typeof this.callFunction === "function")
+	{
+		this.callFunction();
+	}
+	
+	if (!this.dropMenu)
+	{
+		this.invert(true);
+	}
+};
+
 OS7.MenuItem.prototype.invert = function(forceClear)
 {
-	if (this.bg.tint === OS7.Colors.WHITE && !forceClear)
+	if (this.bg.tint === OS7.Colors.BLACK || forceClear)
 	{
-		this.bg.tint = OS7.Colors.ALMOST_BLACK;
+		this.bg.tint = OS7.Colors.WHITE;
 	}
 	else
 	{
-		this.bg.tint = OS7.Colors.WHITE;
+		this.bg.tint = OS7.Colors.BLACK;
 	}
 	
 	if (this.text)
 	{
-		if (this.text.tint === OS7.Colors.ALMOST_BLACK && !forceClear)
+		if (this.text.tint === OS7.Colors.WHITE || forceClear)
 		{
-			this.text.tint = OS7.Colors.WHITE;
+			this.text.tint = OS7.Colors.ALMOST_BLACK;
 		}
 		else
 		{
-			this.text.tint = OS7.Colors.ALMOST_BLACK;
+			this.text.tint = OS7.Colors.WHITE;
 		}
 		
 		this.text.dirty = true;
@@ -1088,18 +1205,25 @@ OS7.MenuItem.prototype.toString = function()
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
 
-OS7.DropMenu = function(dropItems, dropFunctions, x, y)
+/**
+ * A DropMenu is just a container for a group of MenuItems, with a Window background.
+ * 
+ * @class	DropMenu
+ * @extends	Basic
+ * @constructor
+ * @param	dropItems {Array}		An array of text strings describing what each MenuItem will read.
+ * @param 	dropFunctions {Array}	An array of functions called by each MenuItem.
+ */
+
+OS7.DropMenu = function(dropItems, dropFunctions)
 {
-	OS7.Basic.call(this, x, y);
-	
 	this.width = 0;
 	this.menuItems = [];
-	this.dropFunctions = dropFunctions;
-	this.objectType = "dropmenu";
+	var widthText;
 	
 	for (var i = 0; i < dropItems.length; i++)
 	{
-		var widthText = new OS7.Text(dropItems[i],0,0);
+		widthText = new OS7.Text(dropItems[i],0,0);
 		
 		if (widthText.textWidth > this.width)
 		{
@@ -1110,14 +1234,22 @@ OS7.DropMenu = function(dropItems, dropFunctions, x, y)
 	this.width += 27;
 	this.height = 16 * dropItems.length + 3;
 	
+	OS7.Basic.call(this, 0, 19, this.width, this.height);
+	
+	this.visible = false;
+	this.objectType = "dropmenu";
 	this.window = new OS7.Window(0, 0, this.width, this.height);
 	this.window.createWindow("menu");
 	this.addChild(this.window);
+	this.toggleVisibility.bind(this);
 	
 	for (var o = 0; o < dropItems.length; o++)
 	{
-		var newItem = new OS7.MenuItem(dropItems[o], 1, o*16+1, null, this.width - 3);
-		this.addChild(newItem);
+		var newItem = new OS7.MenuItem(dropItems[o], null, this.width - 3, dropFunctions[o]);
+		newItem.x = this.x + 1;
+		newItem.y = this.y + o * 16 + 1;
+		newItem.visible = false;
+		//this.addChild(newItem); // don't need to add it here, as it's added to the desktop later
 		this.menuItems.push(newItem);
 	}
 };
@@ -1125,30 +1257,45 @@ OS7.DropMenu = function(dropItems, dropFunctions, x, y)
 OS7.DropMenu.prototype = Object.create(OS7.Basic.prototype);
 OS7.DropMenu.prototype.constructor = OS7.DropMenu;
 
-OS7.DropMenu.prototype.onClick = function()
+Object.defineProperty(OS7.DropMenu.prototype, 'x', {
+    get: function() {
+        return this.window.x;
+    },
+    set: function(value) {
+        this.window.x = value;
+		
+		for (var i = 0; i < this.menuItems.length; i++)
+		{
+			this.menuItems[i].x = value + 1;
+		}
+    }
+});
+
+OS7.DropMenu.prototype.clear = function()
 {
 	for (var i = 0; i < this.menuItems.length; i++)
 	{
-		if(OS7.collide(OS7.mouse.x, OS7.mouse.y, this.menuItems[i]))
-		{
-			this.menuItems[i].onClick();
-		}
+		this.menuItems[i].invert(true);
 	}
+	
+	this.visible = false;
 };
 
-OS7.DropMenu.prototype.onRelease = function()
+OS7.DropMenu.prototype.toggleVisibility = function(forceTo)
 {
+	if (typeof forceTo === "boolean")
+	{
+		this.visible = forceTo;
+	}
+	else
+	{
+		this.visible = !this.visible;
+	}
+	
 	for (var i = 0; i < this.menuItems.length; i++)
 	{
-		if(OS7.collide(OS7.mouse.x, OS7.mouse.y, this.menuItems[i]))
-		{
-			this.menuItems[i].onRelease();
-			
-			if (this.dropFunctions && this.dropFunctions[i])
-			{
-				this.dropFunctions[i]();
-			}
-		}
+		this.menuItems[i].invert(true);
+		this.menuItems[i].visible = this.visible;
 	}
 };
 
