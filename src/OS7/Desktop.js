@@ -20,6 +20,7 @@ OS7.Desktop = function()
 	this.objectType = "desktop";
 	this.headerActive = false;
 	this.activeTopMenu = null;
+	this.activeWindow = null;
 	
 	this.addChild(this.createBackground());
 	
@@ -109,6 +110,7 @@ OS7.Desktop.prototype.update = function()
 			{
 				if (OS7.mouse.justPressed && this.children[i].onClick)
 				{
+					console.log("clicked " + this.children[i]);
 					this.children[i].onClick();
 					this.clearFlag = false;
 				}
@@ -132,6 +134,10 @@ OS7.Desktop.prototype.update = function()
 					}
 				}
 			}
+			else if (this.children[i].onMove && OS7.mouse.justMoved)
+			{
+				this.children[i].onMove();
+			}
 			else if (this.children[i].onOut && this.children[i].mouseOver)
 			{
 				this.children[i].mouseOver = false;
@@ -139,6 +145,8 @@ OS7.Desktop.prototype.update = function()
 			}
 		}
 	}
+	
+	// if the user clicked away, or selected a dropmenu menuitem, need to clear top and drop menus
 	
 	if (this.clearFlag)
 	{
@@ -166,7 +174,7 @@ OS7.Desktop.prototype.update = function()
 	
 	// call update on windows
 	
-	for (i=0; i < this.windows.length; i++)
+	for (i = 0; i < this.windows.length; i++)
 	{
 		if (this.windows[i].update)
 		{
@@ -190,15 +198,17 @@ OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 
 OS7.Desktop.prototype.addWindow = function(windowClass)
 {
-	// we don't need to add the window again if it's already active
+	// we don't need to add the window again if it's already active, just give it focus
 	
 	if (this.windows.indexOf(windowClass) !== -1)
 	{
+		this.setActiveWindow(windowClass);
 		return;
 	}
 	
 	this.windows.push(windowClass);
 	this.addChild(windowClass);
+	this.setActiveWindow(windowClass);
 	
 	if(windowClass.topMenu)
 	{
@@ -210,10 +220,23 @@ OS7.Desktop.prototype.addWindow = function(windowClass)
 		
 		var genericFunction = [function(){ OS7.MainDesktop.removeWindow(windowClass); }];
 		var genericDropMenu = new OS7.DropMenu(["Exit"], genericFunction);
-		var genericTopMenu = new OS7.MenuItem("File", genericDropMenu);
+		var genericTopMenu = new OS7.MenuItem("File", genericDropMenu, 0, null, windowClass);
 		windowClass.topMenu = genericTopMenu;
 		this.addTopMenu(genericTopMenu);
 	}
+};
+
+OS7.Desktop.prototype.setActiveWindow = function(windowClass)
+{
+	// can't set a window to active if it's not on the desktop!
+	
+	if (this.windows.indexOf(windowClass) === -1)
+	{
+		return;
+	}
+	
+	this.activeWindow = windowClass;
+	windowClass.index = 0;
 };
 
 OS7.Desktop.prototype.removeWindow = function(windowClass)
@@ -222,6 +245,11 @@ OS7.Desktop.prototype.removeWindow = function(windowClass)
 	
 	if (windowPos !== -1)
 	{
+		if (this.activeWindow === windowClass)
+		{
+			this.activeWindow = null;
+		}
+		
 		this.windows.splice(windowPos, 1);
 		this.removeChild(windowClass);
 		

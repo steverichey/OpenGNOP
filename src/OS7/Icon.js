@@ -8,7 +8,6 @@
 OS7.Icon = function(textureString, x, y, windowClass)
 {
 	OS7.Basic.call(this, x, y);
-	this.texture = PIXI.Texture.fromImage(textureString);
 	
 	this.dragging = false;
 	this.offset = new PIXI.Point();
@@ -19,6 +18,12 @@ OS7.Icon = function(textureString, x, y, windowClass)
 	this.clickTime = -OS7.Icon.MIN_CLICK_TIME;
 	this.invertFilter = new PIXI.InvertFilter();
 	this.windowClass = windowClass;
+	
+	this.image = new PIXI.Sprite.fromImage(textureString);
+	this.addChild(this.image);
+	this.width = 43;
+	this.height = 42;
+	this.updateHitArea();
 };
 
 OS7.Icon.prototype = Object.create(OS7.Basic.prototype);
@@ -26,20 +31,20 @@ OS7.Icon.prototype.constructor = OS7.Icon;
 
 OS7.Icon.MIN_CLICK_TIME = 750;
 
-OS7.Icon.prototype.onClick = function(data)
+OS7.Icon.prototype.onClick = function()
 {
 	this.setInverted(true);
-	this.offset.x = data.global.x - this.position.x;
-	this.offset.y = data.global.y - this.position.y;
+	this.offset.x = OS7.mouse.x - this.position.x;
+	this.offset.y = OS7.mouse.y - this.position.y;
 	this.dragging = true;
 };
 
-OS7.Icon.prototype.onMove = function(data)
+OS7.Icon.prototype.onMove = function()
 {
 	if (this.dragging)
 	{
-		this.position.x = data.global.x - this.offset.x;
-		this.position.y = data.global.y - this.offset.y;
+		this.position.x = OS7.mouse.x - this.offset.x;
+		this.position.y = OS7.mouse.y - this.offset.y;
 		
 		if (this.position.y < 20)
 		{
@@ -63,7 +68,7 @@ OS7.Icon.prototype.onMove = function(data)
 	}
 };
 
-OS7.Icon.prototype.onRelease = function(data)
+OS7.Icon.prototype.onRelease = function()
 {
 	if (this.dragging)
 	{

@@ -48,6 +48,10 @@ OS7.mouse.justMoved = false;
 OS7.mouse.justReleased = false;
 OS7.mouse.pressed = false;
 
+// Override this to load your code
+
+OS7.onLoad = null;
+
 OS7.collide = function(pointX, pointY, basic)
 {
 	if(basic.visible)

@@ -36,10 +36,11 @@ OS7.Basic.prototype.constructor = OS7.Basic;
 
 OS7.Basic.mouseOver = false;
 
-OS7.Basic.prototype.onClick = function(data){};
-OS7.Basic.prototype.onOver = function(data){};
-OS7.Basic.prototype.onOut = function(data){};
-OS7.Basic.prototype.onRelease = function(data){};
+OS7.Basic.prototype.onClick = function(){};
+OS7.Basic.prototype.onOver = function(){};
+OS7.Basic.prototype.onMove = function(){};
+OS7.Basic.prototype.onOut = function(){};
+OS7.Basic.prototype.onRelease = function(){};
 
 OS7.Basic.prototype.updateHitArea = function()
 {

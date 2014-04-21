@@ -51,6 +51,11 @@ OS7.Main.init = function()
     
     OS7.Main.desktop = new OS7.Desktop();
 	OS7.Main.stage.addChild(OS7.Main.desktop);
+	
+	if (OS7.onLoad && typeof OS7.onLoad === "function")
+	{
+		OS7.onLoad();
+	}
     
 	window.requestAnimFrame(OS7.Main.update);
 };

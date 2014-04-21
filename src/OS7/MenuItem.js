@@ -5,10 +5,11 @@
  * @author Steve Richey http://www.steverichey.com @stvr_tweets
  */
  
-OS7.MenuItem = function(content, dropMenu, width, callFunction)
+OS7.MenuItem = function(content, dropMenu, width, callFunction, parentWindow)
 {
 	this.width = width || 0;
 	this.type = content || "BLANK";
+	this.parentWindow = parentWindow;
 	
 	if (dropMenu)
 	{
@@ -103,7 +104,7 @@ OS7.MenuItem.SEPTAGON = "SEPTAGON";
 OS7.MenuItem.LINE = "LINE";
 OS7.MenuItem.GREY = "GREY_";
 
-OS7.MenuItem.prototype.onClick = function(data)
+OS7.MenuItem.prototype.onClick = function()
 {
 	if (this.dropMenu)
 	{
@@ -114,7 +115,7 @@ OS7.MenuItem.prototype.onClick = function(data)
 	}
 };
 
-OS7.MenuItem.prototype.onOver = function(data)
+OS7.MenuItem.prototype.onOver = function()
 {
 	if (!this.dropMenu)
 	{
@@ -122,12 +123,11 @@ OS7.MenuItem.prototype.onOver = function(data)
 	}
 	else if (OS7.MainDesktop.headerActive && OS7.MainDesktop.activeTopMenu !== this)
 	{
-		OS7.MainDesktop.clearTop();
 		this.onClick();
 	}
 };
 
-OS7.MenuItem.prototype.onOut = function(data)
+OS7.MenuItem.prototype.onOut = function()
 {
 	if (!this.dropMenu)
 	{
@@ -135,7 +135,7 @@ OS7.MenuItem.prototype.onOut = function(data)
 	}
 };
 
-OS7.MenuItem.prototype.onRelease = function(data)
+OS7.MenuItem.prototype.onRelease = function()
 {
 	if (this.callFunction && typeof this.callFunction === "function")
 	{

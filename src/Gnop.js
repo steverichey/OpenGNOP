@@ -3,12 +3,7 @@
 /*global Icon*/
 /*global window*/
 
-var gnopIcon;
-
-function Gnop()
+OS7.onLoad = function()
 {
-	
+	OS7.MainDesktop.addIcon("assets/images/icon.png", 40, 40);
 };
-
-window.onload = OS7.Main.preload;
-window.onresize = OS7.Main.onResize;
