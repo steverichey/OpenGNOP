@@ -9,7 +9,6 @@ OS7.MenuItem = function(content, dropMenu, width, callFunction)
 {
 	this.width = width || 0;
 	this.type = content || "BLANK";
-	this.objectType = "menuitem";
 	
 	if (dropMenu)
 	{
@@ -93,6 +92,7 @@ OS7.MenuItem = function(content, dropMenu, width, callFunction)
 	}
 	
 	this.invert.bind(this);
+	this.objectType = "menuitem";
 	this.updateHitArea();
 };
 
@@ -107,7 +107,7 @@ OS7.MenuItem.prototype.onClick = function(data)
 {
 	if (this.dropMenu)
 	{
-		this.dropMenu.visible = !this.dropMenu.visible;
+		this.dropMenu.toggleVisibility();
 		OS7.MainDesktop.headerActive = !OS7.MainDesktop.headerActive;
 		OS7.MainDesktop.activeTopMenu = this;
 		this.invert();

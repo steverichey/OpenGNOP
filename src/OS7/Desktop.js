@@ -109,17 +109,28 @@ OS7.Desktop.prototype.update = function()
 			{
 				if (OS7.mouse.justPressed && this.children[i].onClick)
 				{
+					console.log("clicked " + this.children[i]);
 					this.children[i].onClick();
 					this.clearFlag = false;
 				}
 				else if (OS7.mouse.justReleased && this.children[i].onRelease)
 				{
+					console.log("released " + this.children[i]);
+					
+					// if we just clicked on a dropmenu menuitem, we'll need to clear dropmenus
+					
+					if (this.children[i].objectType === "menuitem" && !this.children[i].dropMenu)
+					{
+						this.clearFlag = true;
+					}
+					
 					this.children[i].onRelease();
 				}
 				else if (OS7.mouse.justMoved)
 				{
 					if (this.children[i].onOver && !this.children[i].mouseOver)
 					{
+						console.log("over " + this.children[i]);
 						this.children[i].mouseOver = true;
 						this.children[i].onOver();
 					}
@@ -127,6 +138,7 @@ OS7.Desktop.prototype.update = function()
 			}
 			else if (this.children[i].onOut && this.children[i].mouseOver)
 			{
+				console.log("out " + this.children[i]);
 				this.children[i].mouseOver = false;
 				this.children[i].onOut();
 			}
@@ -135,6 +147,8 @@ OS7.Desktop.prototype.update = function()
 	
 	if (this.clearFlag)
 	{
+		console.log("clearing");
+		
 		if (OS7.mouse.y > 20)
 		{
 			for (i = 0; i < this.icons.length; i++)
@@ -146,11 +160,13 @@ OS7.Desktop.prototype.update = function()
 		for (i = 0; i < this.headerMenus.length; i++)
 		{
 			this.headerMenus[i].invert(true);
+			console.log(this.headerMenus[i]);
 		}
 		
 		for (i = 0; i < this.dropMenus.length; i++)
 		{
-			this.dropMenus[i].clear();
+			console.log(this.dropMenus[i]);
+			this.dropMenus[i].toggleVisibility(false);
 		}
 		
 		this.headerActive = false;
@@ -183,7 +199,9 @@ OS7.Desktop.prototype.addIcon = function(iconImage, x, y, windowClass)
 
 OS7.Desktop.prototype.addWindow = function(windowClass)
 {
-	if (this.windows.indexOf(windowClass) === -1)
+	// we don't need to add the window again if it's already active
+	
+	if (this.windows.indexOf(windowClass) !== -1)
 	{
 		return;
 	}
@@ -197,6 +215,8 @@ OS7.Desktop.prototype.addWindow = function(windowClass)
 	}
 	else
 	{
+		// if the user didn't define a topmenu, just create a "File" -> "Exit" menu
+		
 		var genericFunction = [function(){ OS7.MainDesktop.removeWindow(windowClass); }];
 		var genericDropMenu = new OS7.DropMenu(["Exit"], genericFunction);
 		var genericTopMenu = new OS7.MenuItem("File", genericDropMenu);
@@ -271,28 +291,44 @@ OS7.Desktop.prototype.addDropMenu = function(dropMenu)
 	dropMenu.y = 19;
 	
 	this.dropMenus.push(dropMenu);
+	this.addChild(dropMenu);
 	
 	for (var i = 0; i < dropMenu.menuItems.length; i++)
 	{
 		this.menuItems.push(dropMenu.menuItems[i]);
+		this.addChild(dropMenu.menuItems[i]);
 	}
-	
-	this.addChild(dropMenu);
 };
 
 OS7.Desktop.prototype.removeDropMenu = function(dropMenu)
 {
+	console.log("removing " + dropMenu);
+	
 	var menuPos = this.dropMenus.indexOf(dropMenu);
 	
 	if (menuPos !== -1)
 	{
+		this.dropMenus[menuPos].toggleVisibility(false);
+		
+		var itemPos = 0;
+		
+		for (var i = dropMenu.menuItems.length - 1; i >= 0; i--)
+		{
+			console.log("removing " + dropMenu.menuItems[i]);
+			
+			itemPos = this.menuItems.indexOf(dropMenu.menuItems[i]);
+			
+			console.log("found at index " + itemPos);
+			
+			if (itemPos !== -1)
+			{
+				this.removeChild(this.menuItems[itemPos]);
+				this.menuItems.splice(itemPos,1);
+			}
+		}
+		
 		this.dropMenus.splice(menuPos, 1);
 		this.removeChild(dropMenu);
-		
-		for (var i = 0; i < dropMenu.menuItems.length; i++)
-		{
-			this.menuItems.push(dropMenu.menuItems[i]);
-		}
 	}
 };
 

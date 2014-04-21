@@ -41,19 +41,35 @@ OS7.DropMenu = function(dropItems, dropFunctions)
 	this.window = new OS7.Window(0, 0, this.width, this.height);
 	this.window.createWindow("menu");
 	this.addChild(this.window);
+	this.toggleVisibility.bind(this);
 	
 	for (var o = 0; o < dropItems.length; o++)
 	{
 		var newItem = new OS7.MenuItem(dropItems[o], null, this.width - 3, dropFunctions[o]);
-		newItem.x = 1;
-		newItem.y = o * 16 + 1;
-		this.addChild(newItem);
+		newItem.x = this.x + 1;
+		newItem.y = this.y + o * 16 + 1;
+		newItem.visible = false;
+		//this.addChild(newItem); // don't need to add it here, as it's added to the desktop later
 		this.menuItems.push(newItem);
 	}
 };
 
 OS7.DropMenu.prototype = Object.create(OS7.Basic.prototype);
 OS7.DropMenu.prototype.constructor = OS7.DropMenu;
+
+Object.defineProperty(OS7.DropMenu.prototype, 'x', {
+    get: function() {
+        return this.window.x;
+    },
+    set: function(value) {
+        this.window.x = value;
+		
+		for (var i = 0; i < this.menuItems.length; i++)
+		{
+			this.menuItems[i].x = value + 1;
+		}
+    }
+});
 
 OS7.DropMenu.prototype.clear = function()
 {
@@ -63,7 +79,25 @@ OS7.DropMenu.prototype.clear = function()
 	}
 	
 	this.visible = false;
-}
+};
+
+OS7.DropMenu.prototype.toggleVisibility = function(forceTo)
+{
+	if (typeof forceTo === "boolean")
+	{
+		this.visible = forceTo;
+	}
+	else
+	{
+		this.visible = !this.visible;
+	}
+	
+	for (var i = 0; i < this.menuItems.length; i++)
+	{
+		this.menuItems[i].invert(true);
+		this.menuItems[i].visible = this.visible;
+	}
+};
 
 OS7.DropMenu.prototype.toString = function()
 {
